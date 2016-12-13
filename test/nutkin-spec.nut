@@ -117,6 +117,10 @@ describe("Nutkin expectations", function() {
         it("toContain is an alias for contain", function() {
             expect([1, 2, 3]).toContain(2)
         })
+
+        it("works with not", function() {
+            expect([1, 2, 3]).to.not.contain(4)
+        })
     })
 
     describe("Match", function() {
@@ -133,6 +137,10 @@ describe("Nutkin expectations", function() {
         it("toMatch is an alias for contain", function() {
             expect("a").toMatch("[a-z]")
         })
+
+        it("works with not", function() {
+            expect("a").to.not.match("[1-9]")
+        })
     })
 
     describe("Less than", function() {
@@ -144,6 +152,10 @@ describe("Nutkin expectations", function() {
         it("toBeLessThan is an alias for lessThan", function() {
             expect(3).toBeLessThan(4)
         })
+
+        it("works with not", function() {
+            expect(3).to.not.be.lessThan(1)
+        })
     })
 
     describe("Greater than", function() {
@@ -154,6 +166,10 @@ describe("Nutkin expectations", function() {
 
         it("toBeGreaterThan is an alias for greaterThan", function() {
             expect(3).toBeGreaterThan(2)
+        })
+
+        it("works with not", function() {
+            expect(3).to.not.be.greaterThan(4)
         })
     })
 
@@ -178,6 +194,14 @@ describe("Nutkin expectations", function() {
 
         it("expectException is an alias for throw", function() {
             expectException("BANG!", function() { throw "BANG!" })
+        })
+
+        it("works with not but still getting an exception", function() {
+            expect(function() { throw "BOOM!" }).not.toThrow("BANG!")
+        })
+
+        it("works with not and no exception", function() {
+            expect(function() { return 1 }).not.toThrow("BANG!")
         })
     })
 

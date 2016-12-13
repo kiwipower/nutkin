@@ -80,6 +80,19 @@ class Expectation {
         }
     }
 
+    function _contains(value) {
+        if (_isTable(value)) {
+            local matcher = function(index, item) {
+                return _equal(value, item)
+            }
+            local filtered = actual.filter(matcher.bindenv(this))
+
+            return filtered.len() > 0
+        }
+
+        return actual.find(value) != null
+    }
+
     function equal(expected, description = "") {
         if (!_equal(actual, expected)) {
             throw Failure("Expected '" + _prettify(actual) + "' to equal " + _prettify(expected), description)
@@ -99,16 +112,7 @@ class Expectation {
     }
 
     function contain(value, description = "") {
-        if (_isTable(value)) {
-            local matcher = function(index, item) {
-                return _equal(value, item)
-            }
-            local filtered = actual.filter(matcher.bindenv(this))
-
-            if (filtered.len() == 0) {
-                throw Failure("Expected " + _prettify(actual) + " to contain " + _prettify(value), description)
-            }
-        } else if (actual.find(value) == null) {
+        if (!_contains(value)) {
             throw Failure("Expected " + _prettify(actual) + " to contain " + _prettify(value), description)
         }
     }
@@ -212,6 +216,42 @@ class NegatedExpectation extends Expectation {
     function falsy(description = "") {
         if (!actual) {
             throw Failure("Expected " + _prettify(actual) + " to not be falsy", description)
+        }
+    }
+
+    function contain(value, description = "") {
+        if (_contains(value)) {
+            throw Failure("Expected " + _prettify(actual) + " not to contain " + _prettify(value), description)
+        }
+    }
+
+    function match(expression, description = "") {
+        if (regexp(expression).match(actual)) {
+            throw Failure("Expected '" + _prettify(actual) + "' not to match: " + expression, description)
+        }
+    }
+
+    function lessThan(value, description = "") {
+        if (actual <= value) {
+            throw Failure("Expected " + _prettify(actual) + " not to be less than " + _prettify(value), description)
+        }
+    }
+
+    function greaterThan(value, description = "") {
+        if (actual >= value) {
+            throw Failure("Expected " + _prettify(actual) + " not to be greater than " + _prettify(value), description)
+        }
+    }
+
+    function throws(expected, description = "") {
+        try {
+            actual()
+        } catch (error) {
+            if (error != expected) {
+                return
+            } else {
+                throw Failure("Expected " + expected + " not to have been thrown but was", description)
+            }
         }
     }
 }

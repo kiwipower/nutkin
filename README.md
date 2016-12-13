@@ -95,14 +95,14 @@ expect(squirrel.name).to.be.equal("Whisky Frisky")
 // And for compatability with squirrel jasmine:
 expect(squirrel.name).toBe("Whisky Frisky")
 ```
-* truthy - true, 1, any string, any array and any table are truthy
+* truthy
 ```
 expect(squirrel.frisky).to.be.truthy()
 
 // And for compatability with squirrel jasmine:
 expect(squirrel.frisky).toBeTruthy()
 ```
-* falsy - false, 0 and null are falsy
+* falsy
 ```
 expect(squirrel.calm).to.be.falsy()
 
