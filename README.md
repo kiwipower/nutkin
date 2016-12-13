@@ -3,11 +3,13 @@
 Nutkin is a testing framework for the Squirrel programming language.
 It is very similar to the Mocha and Chai JavaScript frameworks.
 
+It is currently being developed for use with the [Electric Imp](https://electricimp.com) flavour of Squirrel but should be (mostly) applicable to any use case.
+
 ## About Squirrel
 If you're new to Squirrel, it's probably best to start with the Electric Imp [Squirrel Programming Guide](https://electricimp.com/docs/squirrel/squirrelcrib/). Please also read the [Developer Guides](https://electricimp.com/docs/resources/).
 
 ## Getting Started
-To build Nutkin you require the Builder module and the squirrel compiler. These instructions assume that you already have [Note/NPM](http://nodejs.org) and [brew](http://brew.sh/) installed.
+To build Nutkin you require the Builder module and the squirrel compiler. These instructions assume that you already have [Node/NPM](http://nodejs.org) and [brew](http://brew.sh/) installed.
 ```
 npm i -g Builder
 brew install squirrel
