@@ -37,7 +37,7 @@ NUTKIN_ENV=TEAM_CITY
 
 #### Console Output
 By default, Nutkin will output test information using a console reporter. This will output test details to stdout, coloured for clarity:
-![Console reporter example](https://github.com/kiwipower/nutkin/blob/master/docs/console_reporter_example.png)
+![Console reporter example](https://raw.githubusercontent.com/kiwipower/nutkin/master/docs/console_reporter_example.png)
 
 ## Examples
 
