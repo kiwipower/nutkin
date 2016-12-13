@@ -192,7 +192,7 @@ describe("Nutkin expectations", function() {
             expect(function() { throw "BANG!" }).toThrow("BANG!")
         })
 
-        it("expectException is an alias for throw", function() {
+        it("expectException is an alias for throws", function() {
             expectException("BANG!", function() { throw "BANG!" })
         })
 

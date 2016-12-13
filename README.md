@@ -143,9 +143,9 @@ expect(squirrelCount).toBeGreaterThan(1)
 ```
 * throws - expects an exception
 ```
-expect(squirrelNutkinPlayingNinepins).to.throw("A crab apple")
-// or
 expect(squirrelNutkinPlayingNinepins).throws("A crab apple")
+// or
+expect(squirrelNutkinPlayingNinepins).toThrow("A crab apple")
 
 // And for compatability with squirrel jasmine:
 expectException("A crab apple", squirrelNutkinPlayingNinepins)
