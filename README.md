@@ -77,3 +77,15 @@ it("has an assert comment", function() {
     expect(thing).to.equal(otherThing, "Things should have been equal")
 })
 ```
+
+You can skip tests or suites for later implementation:
+```
+describe.skip("Skipped suite", function() {
+    it("This test will be skipped", function() {})
+})
+
+describe("Skipped test", function() {
+    it.skip("This test will be skipped", function() {})
+    it("This test will NOT be skipped", function() {})
+})
+```

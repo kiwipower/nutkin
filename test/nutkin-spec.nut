@@ -157,6 +157,15 @@ describe("Nutkin expectations", function() {
         })
     })
 
+    describe("Skipping a test", function() {
+        it.skip("This test will be skipped and should show in the output", function() {})
+    })
+
+    describe.skip("Skipping a suite", function() {
+        it("This test will be skipped and should show in the output", function() {})
+        it("This test will also be skipped and should show in the output", function() {})
+    })
+
     describe("Throws", function() {
 
         it("asserts that an exception was thrown", function() {
@@ -171,4 +180,5 @@ describe("Nutkin expectations", function() {
             expectException("BANG!", function() { throw "BANG!" })
         })
     })
+
 })

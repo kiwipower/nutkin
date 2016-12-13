@@ -50,8 +50,8 @@ class BasicReporter {
         print("Test failed: " + name + ", error: " + safeGetErrorMessage(failure) + ", details: " + safeGetErrorDescription(failure))
     }
 
-    function testSkipped(name, comment) {
-        print("Test skipped: " + name + ": " + comment)
+    function testSkipped(name) {
+        print("Test skipped: " + name)
     }
 
     function stats(passed, failed, skipped, timeTaken) {
@@ -112,8 +112,10 @@ class ConsoleReporter extends BasicReporter {
         indent --;
     }
 
-    function testSkipped(name, comment) {
-        print(skipColour + "➾ " + name + " (" + comment + ")")
+    function testSkipped(name) {
+        indent++;
+        print(skipColour + "➾ " + name)
+        indent--;
     }
 
     function stats(passed, failed, skipped, timeTaken) {
@@ -158,8 +160,8 @@ class TeamCityReporter extends BasicReporter {
         testFinished(name)
     }
 
-    function testSkipped(name, comment) {
-        print("##teamcity[testIgnored name='" + name + "' message='" + comment + "']")
+    function testSkipped(name) {
+        print("##teamcity[testIgnored name='" + name + "']")
     }
 
     function stats(passed, failed, skipped, timeTaken) {
