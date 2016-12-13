@@ -139,6 +139,19 @@ class Expectation {
         }
     }
 
+    function throws(expected, description = "") {
+        try {
+            actual()
+        } catch (error) {
+            if (error == expected) {
+                return
+            } else {
+                throw Failure("Expected " + expected + " but caught " + error, description)
+            }
+        }
+        throw Failure("Expected exception to have been thrown but wasn't: " + expected, description)
+    }
+
     // SquirrelJasmine compatability functions
 
     function toBe(expected, description = "") {
@@ -206,4 +219,8 @@ class expect extends Expectation {
         base.constructor(actualValue);
         not = NegatedExpectation(actualValue)
     }
+}
+
+function expectException(expected, func) {
+    return expect(func).throws(expected)
 }

@@ -156,4 +156,15 @@ describe("Nutkin expectations", function() {
             expect(3).toBeGreaterThan(2)
         })
     })
+
+    describe("Throws", function() {
+
+        it("asserts that an exception was thrown", function() {
+            expect(function() { throw "BANG!" }).throws("BANG!")
+        })
+
+        it("expectException is an alias for throw", function() {
+            expectException("BANG!", function() { throw "BANG!" })
+        })
+    })
 })
