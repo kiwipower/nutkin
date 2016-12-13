@@ -109,6 +109,7 @@ class ConsoleReporter extends BasicReporter {
         if (desc != "") {
             print(skipColour + desc)
         }
+        indent --;
     }
 
     function testSkipped(name, comment) {
