@@ -9,7 +9,7 @@ It is currently being developed for use with the [Electric Imp](https://electric
 If you're new to Squirrel, it's probably best to start with the Electric Imp [Squirrel Programming Guide](https://electricimp.com/docs/squirrel/squirrelcrib/). Please also read the [Developer Guides](https://electricimp.com/docs/resources/).
 
 ## Getting Started
-To build Nutkin you require the Builder module and the squirrel compiler. These instructions assume that you already have [Node/NPM](http://nodejs.org) and [brew](http://brew.sh/) installed.
+To build Nutkin you require [Builder](https://www.npmjs.com/package/Builder) and the [Squirrel](http://www.squirrel-lang.org) compiler. These instructions assume that you already have [Node/npm](http://nodejs.org) and [brew](http://brew.sh/) installed.
 ```
 npm i -g Builder
 brew install squirrel
@@ -24,7 +24,7 @@ To build nutkin.nut:
 ```
 This will output the final built file to /build/nutkin.nut and run the tests. If all is green you may continue.
 
-Copy the nutkin.nut file somewhere useful to use and import it as required:
+Copy the nutkin.nut file somewhere useful to use and import it as required (note that @import is part of Builder)
 ```
 @import "path/to/nutkin.nut"
 ```
