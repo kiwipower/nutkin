@@ -119,7 +119,7 @@ class Expectation {
 
     function match(expression, description = "") {
         if (!regexp(expression).match(actual)) {
-            throw Failure("Expected '" + _prettify(actual) + "' to match: " + expression)
+            throw Failure("Expected '" + _prettify(actual) + "' to match: " + expression, description)
         }
     }
 
@@ -129,13 +129,13 @@ class Expectation {
 
     function lessThan(value, description = "") {
         if (actual > value) {
-            throw Failure("Expected " + _prettify(actual) + " to be less than " + _prettify(value))
+            throw Failure("Expected " + _prettify(actual) + " to be less than " + _prettify(value), description)
         }
     }
 
     function greaterThan(value, description = "") {
         if (actual < value) {
-            throw Failure("Expected " + _prettify(actual) + " to be greater than " + _prettify(value))
+            throw Failure("Expected " + _prettify(actual) + " to be greater than " + _prettify(value), description)
         }
     }
 

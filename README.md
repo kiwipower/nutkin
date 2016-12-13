@@ -26,6 +26,18 @@ Copy the nutkin.nut file somewhere useful to use and import it as required:
 ```
 @import "path/to/nutkin.nut"
 ```
+How you trigger the tests is up to you. One way would be to run the test files using sq in a script.
+
+#### Continous Integration
+Nutkin includes a test reporter for [TeamCity](TeamCityReporter) that outputs test information in a format that will let TeamCity automatically show information about the tests run and correctly detect a failure.
+To enable this reporter you need to set the following environment variable in your build:
+```
+NUTKIN_ENV=TEAM_CITY
+```
+
+#### Console Output
+By default, Nutkin will output test information using a console reporter. This will output test details to stdout, coloured for clarity:
+
 
 ## Examples
 
