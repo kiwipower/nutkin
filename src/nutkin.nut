@@ -37,7 +37,6 @@ class Nutkin {
         } catch (e) {
             failed++;
             reporter.testFailed(name, e)
-            reporter.testFinished(name)
             throw e
         }
     }

@@ -9,6 +9,14 @@ class Expectation {
         be = this
     }
 
+    function _isTable(x) {
+        return typeof x == typeof {}
+    }
+
+    function _isArray(x) {
+        return typeof x == typeof []
+    }
+
     function _prettify(x) {
         if (_isArray(x)) {
             local array = "["
@@ -18,7 +26,8 @@ class Expectation {
                 separator = ", "
             }
             return array + "]"
-        } if (_isTable(x)) {
+        }
+        if (_isTable(x)) {
             local table = "{"
             local separator = ""
             foreach (k, v in x) {
@@ -31,14 +40,6 @@ class Expectation {
         } else {
             return x
         }
-    }
-
-    function _isTable(x) {
-        return typeof x == typeof {}
-    }
-
-    function _isArray(x) {
-        return typeof x == typeof []
     }
 
     function _arraysEqual(a, b) {
@@ -79,13 +80,9 @@ class Expectation {
         }
     }
 
-    function toBe(expected, description = "") {
-        return equal(expected, description)
-    }
-
     function equal(expected, description = "") {
         if (!_equal(actual, expected)) {
-            throw Failure("Expected " + _prettify(actual) + " to equal " + _prettify(expected), description)
+            throw Failure("Expected '" + _prettify(actual) + "' to equal " + _prettify(expected), description)
         }
     }
 
@@ -99,6 +96,81 @@ class Expectation {
         if (actual) {
             throw Failure("Expected " + _prettify(actual) + " to be falsy", description)
         }
+    }
+
+    function contain(value, description = "") {
+        if (_isTable(value)) {
+            local matcher = function(index, item) {
+                return _equal(value, item)
+            }
+            local filtered = actual.filter(matcher.bindenv(this))
+
+            if (filtered.len() == 0) {
+                throw Failure("Expected " + _prettify(actual) + " to contain " + _prettify(value), description)
+            }
+        } else if (actual.find(value) == null) {
+            throw Failure("Expected " + _prettify(actual) + " to contain " + _prettify(value), description)
+        }
+    }
+
+    function contains(value, description = "") {
+        return contain(value, description)
+    }
+
+    function match(expression, description = "") {
+        if (!regexp(expression).match(actual)) {
+            throw Failure("Expected '" + _prettify(actual) + "' to match: " + expression)
+        }
+    }
+
+    function matches(expression, description = "") {
+        return match(expression, description)
+    }
+
+    function lessThan(value, description = "") {
+        if (actual > value) {
+            throw Failure("Expected " + _prettify(actual) + " to be less than " + _prettify(value))
+        }
+    }
+
+    function greaterThan(value, description = "") {
+        if (actual < value) {
+            throw Failure("Expected " + _prettify(actual) + " to be greater than " + _prettify(value))
+        }
+    }
+
+    // SquirrelJasmine compatability functions
+
+    function toBe(expected, description = "") {
+        return equal(expected, description)
+    }
+
+    function toBeTruthy() {
+        return truthy()
+    }
+
+    function toBeFalsy() {
+        return falsy()
+    }
+
+    function toBeNull() {
+        return equal(null)
+    }
+
+    function toContain(value) {
+        return contain(value)
+    }
+
+    function toMatch(regex) {
+
+    }
+
+    function toBeLessThan(value) {
+        return lessThan(value)
+    }
+
+    function toBeGreaterThan(value) {
+        return greaterThan(value)
     }
 }
 

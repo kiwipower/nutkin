@@ -13,6 +13,20 @@ npm i -g Builder
 brew install squirrel
 ```
 
+## Building and Using Nutkin
+To use Nutkin in your own squirrel code you will need to build the output file and import that.
+
+To build nutkin.nut:
+```
+./build.sh
+```
+This will output the final built file to /build/nutkin.nut and run the tests. If all is green you may continue.
+
+Copy the nutkin.nut file somewhere useful to use and import it as required:
+```
+@import "path/to/nutkin.nut"
+```
+
 ## Examples
 
 A simple example:
@@ -39,5 +53,12 @@ Expectations can be negated:
 ```
 it("has a negated expectation", function() {
     expect("Whisky Frisky").to.not.equal("Hippity Hop")
+})
+```
+
+Expectations all take an optional comment that will be included in the output on failure:
+```
+it("has an assert comment", function() {
+    expect(thing).to.equal(otherThing, "Things should have been equal")
 })
 ```

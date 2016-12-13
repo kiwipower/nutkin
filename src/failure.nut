@@ -8,6 +8,10 @@ class Failure {
     }
 
     _tostring = function() {
-        return message + ": " + description
+        local descriptionPart = ""
+        if (description != "") {
+            descriptionPart = ": " + description
+        }
+        return message + descriptionPart
     }
 }

@@ -154,6 +154,7 @@ class TeamCityReporter extends BasicReporter {
 
     function testFailed(name, failure) {
         print("##teamcity[testFailed name='" + name + "' message='" + safeGetErrorMessage(failure) + "' details='" + safeGetErrorDescription(failure) + "']")
+        testFinished(name)
     }
 
     function testSkipped(name, comment) {
