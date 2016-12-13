@@ -179,7 +179,7 @@ class Expectation {
     }
 
     function toMatch(regex) {
-
+        return match(regex)
     }
 
     function toBeLessThan(value) {
