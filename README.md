@@ -64,13 +64,6 @@ describe("A test suite", function() {
 })
 ```
 
-Expectations can be negated:
-```
-it("has a negated expectation", function() {
-    expect("Whisky Frisky").to.not.equal("Hippity Hop")
-})
-```
-
 Expectations all take an optional comment that will be included in the output on failure:
 ```
 it("has an assert comment", function() {
@@ -88,4 +81,78 @@ describe("Skipped test", function() {
     it.skip("This test will be skipped", function() {})
     it("This test will NOT be skipped", function() {})
 })
+```
+
+## Expectations
+The following are the built-in expectations:
+
+* equal - == equality for strings and numbers, and deep equals for arrays and tables
+```
+expect(squirrel.name).to.equal("Whisky Frisky")
+// or
+expect(squirrel.name).to.be.equal("Whisky Frisky")
+
+// And for compatability with squirrel jasmine:
+expect(squirrel.name).toBe("Whisky Frisky")
+```
+* truthy - true, 1, any string, any array and any table are truthy
+```
+expect(squirrel.frisky).to.be.truthy()
+
+// And for compatability with squirrel jasmine:
+expect(squirrel.frisky).toBeTruthy()
+```
+* falsy - false, 0 and null are falsy
+```
+expect(squirrel.calm).to.be.falsy()
+
+// And for compatability with squirrel jasmine:
+expect(squirrel.calm).toBeFalsy()
+```
+* contains - expects an array and will work for nested tables
+```
+expect(squirrels).to.contain("Furly Curly")
+// or
+expect(squirrels).contains("Furly Curly")
+
+// And for compatability with squirrel jasmine:
+expect(squirrels).toContain("Furly Curly")
+```
+* matches - expects a string and checks that they match the given regular expression
+```
+expect(squirrel.name).to.match("[A-Za-z]*")
+// or
+expect(squirrel.name).matches("[A-Za-z]*")
+
+// And for compatability with squirrel jasmine:
+expect(squirrel.name).toMatch("[A-Za-z]*")
+```
+* lessThan
+```
+expect(squirrelCount).to.be.lessThan(100)
+
+// And for compatability with squirrel jasmine:
+expect(squirrelCount).toBeLessThan(100)
+```
+* greaterThan
+```
+expect(squirrelCount).to.be.greaterThan(1)
+
+// And for compatability with squirrel jasmine:
+expect(squirrelCount).toBeGreaterThan(1)
+```
+* throws - expects an exception
+```
+expect(squirrelNutkinPlayingNinepins).to.throw("A crab apple")
+// or
+expect(squirrelNutkinPlayingNinepins).throws("A crab apple")
+
+// And for compatability with squirrel jasmine:
+expectException("A crab apple", squirrelNutkinPlayingNinepins)
+```
+
+Plus the meta-expectation *not*, which can prefix any of the above to give you the inverse, e.g.:
+
+```
+expect("Whisky Frisky").to.not.equal("Hippity Hop")
 ```
