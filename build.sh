@@ -5,9 +5,10 @@ pleasebuild src/globals.nut > build/nutkin.nut
 pleasebuild src/failure.nut >> build/nutkin.nut
 pleasebuild src/reporters.nut >> build/nutkin.nut
 pleasebuild src/expect.nut >> build/nutkin.nut
-pleasebuild src/nutkin.nut >> build/nutkin.nut
+pleasebuild -Denv test src/nutkin.nut >> build/nutkin.nut
 
 pleasebuild test/nutkin-spec.nut > build/nutkin-spec.nut
 
 # Run the tests
+export NUTKIN_ENV=NUTKIN_TEST
 sq build/nutkin-spec.nut

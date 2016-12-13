@@ -1,4 +1,5 @@
 @include "../build/nutkin.nut"
+@include "./testUtils.nut"
 
 describe("Nutkin expectations", function() {
 
@@ -45,6 +46,31 @@ describe("Nutkin expectations", function() {
         it("can be used with not", function() {
             expect("A String").to.not.equal("Another String")
         })
+
+        it("fails as expected for strings", function() {
+            expectReportedFailure("Expected 'A' to equal 'B'")
+            expect("A").to.equal("B")
+        })
+
+        it("fails as expected for numbers", function() {
+            expectReportedFailure("Expected 1 to equal 2")
+            expect(1).to.equal(2)
+        })
+
+        it("fails as expected for booleans", function() {
+            expectReportedFailure("Expected true to equal false")
+            expect(true).to.equal(false)
+        })
+
+        it("fails as expected for arrays", function() {
+            expectReportedFailure("Expected [1, 2, 3] to equal [1, 2, 4]")
+            expect([1, 2, 3]).to.equal([1, 2, 4])
+        })
+
+        it("fails as expected for tables", function() {
+            expectReportedFailure("Expected {foo: 'bar'} to equal {foo: 'baz'}")
+            expect({foo = "bar"}).to.equal({foo = "baz"})
+        })
     })
 
     describe("Truthy", function() {
@@ -76,6 +102,11 @@ describe("Nutkin expectations", function() {
         it("toBeTruthy is an alias for truthy", function() {
             expect(true).toBeTruthy()
         })
+
+        it("fails as expected", function() {
+            expectReportedFailure("Expected false to be truthy")
+            expect(false).to.be.truthy();
+        })
     })
 
     describe("Falsy", function() {
@@ -99,6 +130,11 @@ describe("Nutkin expectations", function() {
         it("toBeFalsy is an alias for truthy", function() {
             expect(false).toBeFalsy()
         })
+
+        it("fails as expected", function() {
+            expectReportedFailure("Expected true to be falsy")
+            expect(true).to.be.falsy();
+        })
     })
 
     describe("Contains", function() {
@@ -121,6 +157,11 @@ describe("Nutkin expectations", function() {
         it("works with not", function() {
             expect([1, 2, 3]).to.not.contain(4)
         })
+
+        it("fails as expected", function() {
+            expectReportedFailure("Expected [1, 2, 3] to contain 4")
+            expect([1, 2, 3]).to.contain(4);
+        })
     })
 
     describe("Match", function() {
@@ -141,6 +182,11 @@ describe("Nutkin expectations", function() {
         it("works with not", function() {
             expect("a").to.not.match("[1-9]")
         })
+
+        it("fails as expected", function() {
+            expectReportedFailure("Expected 'a' to match: [1-9]")
+            expect("a").to.match("[1-9]");
+        })
     })
 
     describe("Less than", function() {
@@ -156,6 +202,11 @@ describe("Nutkin expectations", function() {
         it("works with not", function() {
             expect(3).to.not.be.lessThan(1)
         })
+
+        it("fails as expected", function() {
+            expectReportedFailure("Expected 10 to be less than 4")
+            expect(10).to.be.lessThan(4);
+        })
     })
 
     describe("Greater than", function() {
@@ -170,6 +221,11 @@ describe("Nutkin expectations", function() {
 
         it("works with not", function() {
             expect(3).to.not.be.greaterThan(4)
+        })
+
+        it("fails as expected", function() {
+            expectReportedFailure("Expected 5 to be greater than 10")
+            expect(5).to.be.greaterThan(10);
         })
     })
 
@@ -202,6 +258,24 @@ describe("Nutkin expectations", function() {
 
         it("works with not and no exception", function() {
             expect(function() { return 1 }).not.toThrow("BANG!")
+        })
+    })
+
+    describe("Reporting failures", function() {
+
+        it("A Failure is reported with failure message and commentary", function() {
+            expectReportedFailure("Expected false to be truthy: Optional comment")
+            expect(false).to.be.truthy("Optional comment")
+        })
+
+        it("A Failure is reported with failure message only if no commentary provided", function() {
+            expectReportedFailure("Expected false to be truthy")
+            expect(false).to.be.truthy()
+        })
+
+        it("Exceptions are trapped at the test level and reported as a failure with a stack trace", function() {
+            expectReportedFailure("the index 'noMethod' does not exist")
+            expect(noMethod()).to.equal("WAT")
         })
     })
 

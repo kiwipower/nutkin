@@ -40,9 +40,16 @@ class Nutkin {
                 passed++
                 reporter.testFinished(name)
             } catch (e) {
-                failed++
-                reporter.testFailed(name, e)
-                throw e
+                local stack = ""
+                if (typeof e == typeof "") {
+                    e = Failure(e)
+                    stack = "\nStack: " + ::stackTrace()
+                }
+                if (reporter.testFailed(name, e, stack)) {
+                    failed++
+                } else {
+                    passed++
+                }
             }
         }
     }
@@ -57,13 +64,16 @@ class Nutkin {
     }
 }
 
-reporter <- getenv("NUTKIN_ENV") == "TEAM_CITY" ? TeamCityReporter() : ConsoleReporter()
+reporter <- ConsoleReporter()
+
+if (getenv("NUTKIN_ENV") == "TEAM_CITY") {
+    reporter <- TeamCityReporter()
+} else if (getenv("NUTKIN_ENV") == "NUTKIN_TEST") {
+    reporter <- TestReporter()
+}
+
 nutkin <- Nutkin(reporter)
 startTime <- time()
-
-function describe(title, suite) {
-    nutkin.runSuite(title, suite)
-}
 
 class describe {
 

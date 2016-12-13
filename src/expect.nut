@@ -17,6 +17,10 @@ class Expectation {
         return typeof x == typeof []
     }
 
+    function _isString(x) {
+        return typeof x == typeof ""
+    }
+
     function _prettify(x) {
         if (_isArray(x)) {
             local array = "["
@@ -37,6 +41,8 @@ class Expectation {
             return table + "}"
         } else if (x == null) {
             return "(null)"
+        } else if (_isString(x)) {
+            return "'" + x + "'"
         } else {
             return x
         }
@@ -95,7 +101,7 @@ class Expectation {
 
     function equal(expected, description = "") {
         if (!_equal(actual, expected)) {
-            throw Failure("Expected '" + _prettify(actual) + "' to equal " + _prettify(expected), description)
+            throw Failure("Expected " + _prettify(actual) + " to equal " + _prettify(expected), description)
         }
     }
 
@@ -123,7 +129,7 @@ class Expectation {
 
     function match(expression, description = "") {
         if (!regexp(expression).match(actual)) {
-            throw Failure("Expected '" + _prettify(actual) + "' to match: " + expression, description)
+            throw Failure("Expected " + _prettify(actual) + " to match: " + expression, description)
         }
     }
 

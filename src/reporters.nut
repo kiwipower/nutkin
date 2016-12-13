@@ -1,4 +1,4 @@
-class BasicReporter {
+class Reporter {
 
     function safeGetErrorMessage(thing) {
         local message = thing
@@ -20,46 +20,17 @@ class BasicReporter {
         ::println(message)
     }
 
-    function suiteStarted(name) {
-        print("Test Suite started: " + name)
-    }
-
-    function suiteFinished(name, error = "", details = "") {
-        if (error == "") {
-            print("Test Suite finished: " + name)
-        } else {
-            print("")
-            print("Test Suite FAILED: " + name)
-            print("Error: " + error)
-            if (details != "") {
-                print(details)
-            }
-        }
-        print("")
-    }
-
-    function testStarted(name) {
-        print("Test started: " + name)
-    }
-
-    function testFinished(name) {
-        print("Test finished: " + name)
-    }
-
-    function testFailed(name, failure) {
-        print("Test failed: " + name + ", error: " + safeGetErrorMessage(failure) + ", details: " + safeGetErrorDescription(failure))
-    }
-
-    function testSkipped(name) {
-        print("Test skipped: " + name)
-    }
-
-    function stats(passed, failed, skipped, timeTaken) {
-        print("Passed: " + passed + ", failed: " + failed + ", skipped: " + skipped + " (" + timeTaken + "ms)")
-    }
+    // Subclasses to implement these methods
+    function suiteStarted(name) {}
+    function suiteFinished(name, error = "", stack = "") {}
+    function testStarted(name) {}
+    function testFinished(name) {}
+    function testFailed(name, failure, stack = "") { return true }
+    function testSkipped(name) {}
+    function stats(passed, failed, skipped, timeTaken) {}
 }
 
-class ConsoleReporter extends BasicReporter {
+class ConsoleReporter extends Reporter {
     indent = 0
     bold = "\x1B[1m"
     titleColour = "\x1B[30m"
@@ -89,7 +60,7 @@ class ConsoleReporter extends BasicReporter {
         print(titleColour + name)
     }
 
-    function suiteFinished(name, error = "", details = "") {
+    function suiteFinished(name, error = "", stack = "") {
         indent --;
     }
 
@@ -102,9 +73,12 @@ class ConsoleReporter extends BasicReporter {
         indent --;
     }
 
-    function testFailed(name, failure) {
+    function testFailed(name, failure, stack = "") {
         print(failColour + "✗ " + name)
         print(failColour + bold + safeGetErrorMessage(failure))
+        if (stack != "") {
+            print(failColour + stack)
+        }
         local desc = safeGetErrorDescription(failure)
         if (desc != "") {
             print(skipColour + desc)
@@ -133,17 +107,35 @@ class ConsoleReporter extends BasicReporter {
     }
 }
 
-class TeamCityReporter extends BasicReporter {
+class TestReporter extends ConsoleReporter {
+    expectedFailure = null
+
+    function expectFailure(expected) {
+        expectedFailure = expected
+    }
+
+    function testFailed(name, failure, stack = "") {
+        if (expectedFailure && failure.tostring() == expectedFailure) {
+            base.testFinished(name)
+            return false
+        }
+
+        base.testFailed(name, failure, stack)
+        return true
+    }
+}
+
+class TeamCityReporter extends Reporter {
 
     function suiteStarted(name) {
         print("##teamcity[testSuiteStarted name='" + name + "']")
     }
 
-    function suiteFinished(name, error = "", details = "") {
+    function suiteFinished(name, error = "", stack = "") {
         print("##teamcity[testSuiteFinished name='" + name + "']")
 
         if (error != "") {
-            print("##teamcity[message text='" + error + "' status='ERROR' errorDetails='" + details + "']")
+            print("##teamcity[message text='" + error + "' status='ERROR' errorDetails='" + stack + "']")
         }
     }
 
@@ -155,9 +147,10 @@ class TeamCityReporter extends BasicReporter {
         print("##teamcity[testFinished name='" + name + "']")
     }
 
-    function testFailed(name, failure) {
+    function testFailed(name, failure, stack = "") {
         print("##teamcity[testFailed name='" + name + "' message='" + safeGetErrorMessage(failure) + "' details='" + safeGetErrorDescription(failure) + "']")
         testFinished(name)
+        return true
     }
 
     function testSkipped(name) {
