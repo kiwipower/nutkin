@@ -152,6 +152,10 @@ class Expectation {
         throw Failure("Expected exception to have been thrown but wasn't: " + expected, description)
     }
 
+    function toThrow(expected, description = "") {
+        return throws(expected, description)
+    }
+
     // SquirrelJasmine compatability functions
 
     function toBe(expected, description = "") {
