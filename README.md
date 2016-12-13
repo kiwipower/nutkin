@@ -22,13 +22,19 @@ To build nutkin.nut:
 ```
 ./build.sh
 ```
-This will output the final built file to /build/nutkin.nut and run the tests. If all is green you may continue.
+This will output the final built file to /build/nutkin.nut
 
 Copy the nutkin.nut file somewhere useful to use and import it as required (note that @import is part of Builder)
 ```
 @import "path/to/nutkin.nut"
 ```
 How you trigger the tests is up to you. One way would be to run the test files using sq in a script.
+
+#### Running the tests
+Nutkin can test itself. To run the unit tests do
+```
+./test.sh
+```
 
 #### Continous Integration
 Nutkin includes a test reporter for [TeamCity](TeamCityReporter) that outputs test information in a format that will let TeamCity automatically show information about the tests run and correctly detect a failure.
