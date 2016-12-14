@@ -353,5 +353,10 @@ describe("Custom matchers", function() {
             expect("Fluffball").not.is(called("Fluffball"))
         })
     })
+
+    it("toBe works as an alias for is", function() {
+        expect("Fluffball").toBe(called("Fluffball"))
+        expect("Fluffball").not.toBe(called("Nutkin"))
+    })
 })
 

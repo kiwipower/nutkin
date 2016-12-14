@@ -228,11 +228,17 @@ class Expectation {
         return throws(expected, description)
     }
 
-    // SquirrelJasmine compatability functions
-
-    function toBe(expected, description = "") {
-        return equal(expected, description)
+    function toBe(expectedOrMatcher, description = "") {
+        if (_isString(expectedOrMatcher)) {
+            // SquirrelJasmine compatability functions
+            return equal(expectedOrMatcher, description)
+        } else {
+            // Custom matcher
+            return is(expectedOrMatcher)
+        }
     }
+
+    // SquirrelJasmine compatability functions
 
     function toBeTruthy() {
         return truthy()
