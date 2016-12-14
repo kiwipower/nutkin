@@ -1,5 +1,4 @@
 @include "../build/nutkin.nut"
-@include "./testUtils.nut"
 
 describe("Nutkin expectations", function() {
 

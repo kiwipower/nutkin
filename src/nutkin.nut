@@ -66,10 +66,14 @@ class Nutkin {
 
 reporter <- ConsoleReporter()
 
-if (getenv("NUTKIN_ENV") == "TEAM_CITY") {
-    reporter <- TeamCityReporter()
-} else if (getenv("NUTKIN_ENV") == "NUTKIN_TEST") {
-    reporter <- TestReporter()
+local env = getenv("NUTKIN_ENV");
+
+try {
+    if (env && env != "" && reporters[env]) {
+        reporter <- reporters[env]
+    }
+} catch (e) {
+    throw "ERROR: Invalid NUTKIN_ENV: " + env
 }
 
 nutkin <- Nutkin(reporter)

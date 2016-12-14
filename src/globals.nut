@@ -18,3 +18,6 @@ stackTrace <- function() {
 
     return output
 }
+
+reporters <- {}
+

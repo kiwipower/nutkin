@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
+export NUTKIN_ENV=NUTKIN_TEST
+
 ./build.sh
 
 # Run the tests
-export NUTKIN_ENV=NUTKIN_TEST
 sq build/nutkin-spec.nut

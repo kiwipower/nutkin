@@ -103,25 +103,7 @@ class ConsoleReporter extends Reporter {
             print(skipColour + skipped + " skipped")
         }
         ::println(reset)
-        ::println("Done in " + timeTaken + "ms")
-    }
-}
-
-class TestReporter extends ConsoleReporter {
-    expectedFailure = null
-
-    function expectFailure(expected) {
-        expectedFailure = expected
-    }
-
-    function testFailed(name, failure, stack = "") {
-        if (expectedFailure && failure.tostring() == expectedFailure) {
-            base.testFinished(name)
-            return false
-        }
-
-        base.testFailed(name, failure, stack)
-        return true
+        //::println("Done in " + timeTaken + "ms")
     }
 }
 
@@ -161,3 +143,7 @@ class TeamCityReporter extends Reporter {
         // TeamCity does this for us
     }
 }
+
+reporters["DEV"] <- ConsoleReporter()
+reporters["TEAM_CITY"] <- TeamCityReporter()
+
