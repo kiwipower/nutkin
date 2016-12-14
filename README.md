@@ -89,8 +89,8 @@ describe("Skipped test", function() {
 })
 ```
 
-## Expectations
-The following are the built-in expectations:
+## Matchers
+The following are the built-in matchers:
 
 * equal - == equality for strings and numbers, and deep equals for arrays and tables
 ```
@@ -162,3 +162,100 @@ Plus the meta-expectation *not*, which can prefix any of the above to give you t
 ```
 expect("Whisky Frisky").to.not.equal("Hippity Hop")
 ```
+
+## Custom Matchers
+
+You can easily add your own matchers to Nutkin. All you need to do is extend Matcher and implement two methods.
+
+1. test - returns true if the value matches, false otherwise
+```
+function test(actual) { return boolean }
+```
+2. failureMessage - called if the test methods returns false and returns the failure message to pass to the reporter
+```
+function failureMessage(actual, isNegated) { return string }
+```
+
+All matchers have an *expected* variable in scope which represents the expected value (i.e. the value passed into expect() in the test).
+
+#### Examples
+
+Here is a simple matcher that checks against a constant value:
+```
+class SquirrelMatcher extends Matcher {
+
+    function test(actual) {
+        return actual == "Nutkin"
+    }
+
+    function failureMessage(actual, isNegated) {
+        return actual + " is not a squirrel"
+    }
+}
+ ```
+
+Here is an example that checks that actual value against the expected one:
+```
+class NameMatcher extends Matcher {
+
+    function test(actual) {
+        return actual == expected
+    }
+
+    function failureMessage(actual, isNegated) {
+        return actual + " is not called " + expected
+    }
+}
+```
+
+You can use the isNegated parameter to customise your failure message for the case when the matcher is preceeded by not:
+```
+test:
+expect("Fluffball").not.toBe(called("Fluffball"))
+
+matcher:
+class NameMatcher extends Matcher {
+
+    function test(actual) {
+        return actual == expected
+    }
+
+    function failureMessage(actual, isNegated) {
+        if (isNegated) {
+            return actual + " IS called " + expected
+        }
+        return actual + " is not called " + expected
+    }
+}
+
+```
+
+All matchers also have the following functions in scope:
+
+* isTable(thing): bool
+* isArray(thing): bool
+* isString(thing): bool
+* prettify(thing): string - outputs a formatted value - does the right thing for nulls, arrays and tables
+* arraysEqual(array1, array2): bool
+* tablesEqual(table1, table2): bool
+* equal: bool - generic equality checker that does a deep equal for arryas and tables
+* contains(array, thing): bool
+* negateIfRequired(string, bool): string - will prefix the given string with a negation (e.g. 'not ') if the second param is true
+
+All of the built-in matchers are implemented using this method, so the best place to see and example is in the source code itself.
+
+#### Usage
+
+A neat way of using a custom matcher is to define a local variable in your test with a fluent name. For example:
+```
+local aSquirrel = SquirrelMatcher
+```
+
+Then you can chain the matcher into an expect call in a readable way:
+```
+expect("Nutkin").toBe(aSquirrel())
+//or
+expect("Nutkin").is(aSquirrel())
+```
+
+All matchers can be used with the .not prefix with no extra work (apart from possibly customising the failure message).
