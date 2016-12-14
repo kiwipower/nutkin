@@ -5,6 +5,19 @@ class TestReporter extends ConsoleReporter {
         expectedFailure = expected
     }
 
+    function testStarted(name) {
+        expectedFailure = null
+        base.testStarted(name)
+    }
+
+    function testFinished(name) {
+        if (expectedFailure) {
+            base.testFailed(name, "Expected failure message but did not get one: " + expectedFailure)
+        } else {
+            base.testFinished(name)
+        }
+    }
+
     function testFailed(name, failure, stack = "") {
         if (expectedFailure && failure.tostring() == expectedFailure) {
             base.testFinished(name)

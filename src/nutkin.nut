@@ -10,6 +10,14 @@ class Nutkin {
         reporter = reporterInstance
     }
 
+    function reset() {
+        runningSuites = 0
+        passed = 0
+        failed = 0
+        skipped = 0
+        skipNextSuite = false
+    }
+
     function runSuite(name, suite) {
         runningSuites++
         reporter.suiteStarted(name)
@@ -27,6 +35,7 @@ class Nutkin {
         if (runningSuites == 0) {
             local timeTaken = time() - startTime
             reporter.stats(passed, failed, skipped, timeTaken)
+            reset();
         }
     }
 

@@ -1,5 +1,13 @@
 @include "../build/nutkin.nut"
 
+//function addCustomMatcher(name, matcher) {
+//    Expectation.newmember(name, matcher.test)
+//::println(Expectation["aSquirrel"])
+//::println(Expectation["equal"])
+//}
+//
+//addCustomMatcher("aSquirrel", SquirrelMatcher())
+
 describe("Nutkin expectations", function() {
 
     describe("equal", function() {
@@ -277,5 +285,73 @@ describe("Nutkin expectations", function() {
             expect(noMethod()).to.equal("WAT")
         })
     })
-
 })
+
+class SquirrelMatcher extends Matcher {
+
+    function test(actual) {
+        return actual == "Nutkin"
+    }
+
+    function failureMessage(actual) {
+        return actual + " is not a squirrel"
+    }
+}
+
+class NameMatcher extends Matcher {
+
+    function test(actual) {
+        return actual == expected
+    }
+
+    function failureMessage(actual) {
+        return actual + " is not called " + expected
+    }
+}
+
+local aSquirrel = SquirrelMatcher
+local called = NameMatcher
+
+describe("Custom matchers", function() {
+
+    describe("No-arg matchers", function() {
+        it("Work for positive outcomes", function() {
+            expect("Nutkin").is(aSquirrel())
+        })
+
+        it("Work for negative outcomes", function() {
+            expectReportedFailure("Fluffball is not a squirrel")
+            expect("Fluffball").is(aSquirrel())
+        })
+
+        it("Works with not", function() {
+            expect("Fluffball").not.is(aSquirrel())
+        })
+
+        it("Works with failing not", function() {
+            expectReportedFailure("Not Nutkin is not a squirrel")
+            expect("Nutkin").not.is(aSquirrel())
+        })
+    })
+
+    describe("Expected arg matchers", function() {
+        it("Work for positive outcomes", function() {
+            expect("Nutkin").is(called("Nutkin"))
+        })
+
+        it("Work for negative outcomes", function() {
+            expectReportedFailure("Fluffball is not called Nutkin")
+            expect("Fluffball").is(called("Nutkin"))
+        })
+
+        it("Works with not", function() {
+            expect("Fluffball").not.is(called("Nutkin"))
+        })
+
+        it("Works with failing not", function() {
+            expectReportedFailure("Not Fluffball is not called Fluffball")
+            expect("Fluffball").not.is(called("Fluffball"))
+        })
+    })
+})
+

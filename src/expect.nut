@@ -1,3 +1,59 @@
+class Matcher {
+
+    expected = null
+
+    constructor(expectedVal = null) {
+        expected = expectedVal
+    }
+
+    function isTable(x) {
+        return typeof x == typeof {}
+    }
+
+    function isArray(x) {
+        return typeof x == typeof []
+    }
+
+    function isString(x) {
+        return typeof x == typeof ""
+    }
+
+    function prettify(x) {
+        if (isArray(x)) {
+            local array = "["
+            local separator = ""
+            foreach (e in x) {
+                array += separator + prettify(e)
+                separator = ", "
+            }
+            return array + "]"
+        }
+        if (isTable(x)) {
+            local table = "{"
+            local separator = ""
+            foreach (k, v in x) {
+                table += separator + k + ": " + prettify(v)
+                separator = ", "
+            }
+            return table + "}"
+        } else if (x == null) {
+            return "(null)"
+        } else if (isString(x)) {
+            return "'" + x + "'"
+        } else {
+            return x
+        }
+    }
+
+    function test(actual, expected) {
+        return false
+    }
+
+    function failureMessage(actual, expected) {
+        return "Expected " + prettify(expected) + " but got " + prettify(actual)
+    }
+}
+
 class Expectation {
     actual = null
     to = null
@@ -7,6 +63,12 @@ class Expectation {
         actual = actualValue
         to = this
         be = this
+    }
+
+    function is(matcher) {
+        if (!matcher.test(actual)) {
+            throw Failure(matcher.failureMessage(actual))
+        }
     }
 
     function _isTable(x) {
@@ -205,6 +267,12 @@ class NegatedExpectation extends Expectation {
 
     constructor(actualValue) {
         base.constructor(actualValue);
+    }
+
+    function is(matcher) {
+        if (matcher.test(actual)) {
+            throw Failure("Not " + matcher.failureMessage(actual))
+        }
     }
 
     function equal(expected, description = "") {
