@@ -64,12 +64,12 @@ class Expectation {
     }
 
     function toBe(expectedOrMatcher, description = "") {
-        if (isString(expectedOrMatcher)) {
-            // SquirrelJasmine compatability functions
-            return equal(expectedOrMatcher, description)
-        } else {
+        if (typeof expectedOrMatcher == "instance") {
             // Custom matcher
             return is(expectedOrMatcher)
+        } else {
+            // SquirrelJasmine compatability functions
+            return equal(expectedOrMatcher, description)
         }
     }
 

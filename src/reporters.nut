@@ -56,12 +56,12 @@ class ConsoleReporter extends Reporter {
 
     function suiteStarted(name) {
         indent ++;
-        print("")
         print(titleColour + name)
     }
 
     function suiteFinished(name, error = "", stack = "") {
         indent --;
+        print("")
     }
 
     function testStarted(name) {
@@ -94,7 +94,6 @@ class ConsoleReporter extends Reporter {
 
     function stats(passed, failed, skipped, timeTaken) {
         indent++
-        print("")
         print(passColour + passed + " passing")
         if (failed > 0) {
             print(failColour + failed + " failing")
