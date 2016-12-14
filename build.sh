@@ -10,6 +10,7 @@ then
 pleasebuild test/testReporter.nut >> build/nutkin.nut
 fi
 
+pleasebuild src/matchers.nut >> build/nutkin.nut
 pleasebuild src/expect.nut >> build/nutkin.nut
 pleasebuild src/nutkin.nut >> build/nutkin.nut
 

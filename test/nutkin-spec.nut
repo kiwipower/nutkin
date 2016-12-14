@@ -54,9 +54,19 @@ describe("Nutkin expectations", function() {
             expect("A String").to.not.equal("Another String")
         })
 
+        it("shows expect message in failure", function() {
+            expectReportedFailure("Expected 'A' to equal 'B': Some message")
+            expect("A").to.equal("B", "Some message")
+        })
+
         it("fails as expected for strings", function() {
             expectReportedFailure("Expected 'A' to equal 'B'")
             expect("A").to.equal("B")
+        })
+
+        it("fails as expected for null", function() {
+            expectReportedFailure("Expected 1 to equal (null)")
+            expect(1).to.equal(null)
         })
 
         it("fails as expected for numbers", function() {
@@ -293,7 +303,10 @@ class SquirrelMatcher extends Matcher {
         return actual == "Nutkin"
     }
 
-    function failureMessage(actual) {
+    function failureMessage(actual, isNegated) {
+        if (isNegated) {
+            return actual + " IS a squirrel"
+        }
         return actual + " is not a squirrel"
     }
 }
@@ -304,7 +317,10 @@ class NameMatcher extends Matcher {
         return actual == expected
     }
 
-    function failureMessage(actual) {
+    function failureMessage(actual, isNegated) {
+        if (isNegated) {
+            return actual + " IS called " + expected
+        }
         return actual + " is not called " + expected
     }
 }
@@ -329,7 +345,7 @@ describe("Custom matchers", function() {
         })
 
         it("Works with failing not", function() {
-            expectReportedFailure("Not Nutkin is not a squirrel")
+            expectReportedFailure("Nutkin IS a squirrel")
             expect("Nutkin").not.is(aSquirrel())
         })
     })
@@ -349,7 +365,7 @@ describe("Custom matchers", function() {
         })
 
         it("Works with failing not", function() {
-            expectReportedFailure("Not Fluffball is not called Fluffball")
+            expectReportedFailure("Fluffball IS called Fluffball")
             expect("Fluffball").not.is(called("Fluffball"))
         })
     })
@@ -357,6 +373,16 @@ describe("Custom matchers", function() {
     it("toBe works as an alias for is", function() {
         expect("Fluffball").toBe(called("Fluffball"))
         expect("Fluffball").not.toBe(called("Nutkin"))
+    })
+
+    it("custom matchers can take a failure comment", function() {
+        expectReportedFailure("Fluffball is not called Nutkin: Names are important")
+        expect("Fluffball").toBe(called("Nutkin", "Names are important"))
+    })
+
+    it("custom matchers can take a failure comment when notted", function() {
+        expectReportedFailure("Fluffball IS called Fluffball: Names are important")
+        expect("Fluffball").not.toBe(called("Fluffball", "Names are important"))
     })
 })
 

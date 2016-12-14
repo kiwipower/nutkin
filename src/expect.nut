@@ -1,59 +1,3 @@
-class Matcher {
-
-    expected = null
-
-    constructor(expectedVal = null) {
-        expected = expectedVal
-    }
-
-    function isTable(x) {
-        return typeof x == typeof {}
-    }
-
-    function isArray(x) {
-        return typeof x == typeof []
-    }
-
-    function isString(x) {
-        return typeof x == typeof ""
-    }
-
-    function prettify(x) {
-        if (isArray(x)) {
-            local array = "["
-            local separator = ""
-            foreach (e in x) {
-                array += separator + prettify(e)
-                separator = ", "
-            }
-            return array + "]"
-        }
-        if (isTable(x)) {
-            local table = "{"
-            local separator = ""
-            foreach (k, v in x) {
-                table += separator + k + ": " + prettify(v)
-                separator = ", "
-            }
-            return table + "}"
-        } else if (x == null) {
-            return "(null)"
-        } else if (isString(x)) {
-            return "'" + x + "'"
-        } else {
-            return x
-        }
-    }
-
-    function test(actual, expected) {
-        return false
-    }
-
-    function failureMessage(actual, expected) {
-        return "Expected " + prettify(expected) + " but got " + prettify(actual)
-    }
-}
-
 class Expectation {
     actual = null
     to = null
@@ -65,124 +9,30 @@ class Expectation {
         be = this
     }
 
-    function is(matcher) {
-        if (!matcher.test(actual)) {
-            throw Failure(matcher.failureMessage(actual))
-        }
-    }
-
-    function _isTable(x) {
-        return typeof x == typeof {}
-    }
-
-    function _isArray(x) {
-        return typeof x == typeof []
-    }
-
-    function _isString(x) {
+    function isString(x) {
         return typeof x == typeof ""
     }
 
-    function _prettify(x) {
-        if (_isArray(x)) {
-            local array = "["
-            local separator = ""
-            foreach (e in x) {
-                array += separator + _prettify(e)
-                separator = ", "
-            }
-            return array + "]"
+    function is(matcher) {
+        if (!matcher.test(actual)) {
+            throw Failure(matcher.failureMessage(actual, false), matcher.description)
         }
-        if (_isTable(x)) {
-            local table = "{"
-            local separator = ""
-            foreach (k, v in x) {
-                table += separator + k + ": " + _prettify(v)
-                separator = ", "
-            }
-            return table + "}"
-        } else if (x == null) {
-            return "(null)"
-        } else if (_isString(x)) {
-            return "'" + x + "'"
-        } else {
-            return x
-        }
-    }
-
-    function _arraysEqual(a, b) {
-        if (a.len() == b.len()) {
-            foreach (i, value in a) {
-                if (!_equal(value, b[i])) {
-                    return false
-                }
-            }
-            return true
-        } else {
-            return false
-        }
-    }
-
-    function _tablesEqual(a, b) {
-        if (a.len() == b.len()) {
-            foreach (key, value in a) {
-                if (!(key in b)) {
-                    return false
-                } else if (!_equal(value, b[key])) {
-                    return false
-                }
-            }
-            return true
-        } else {
-            return false
-        }
-    }
-
-    function _equal(a, b) {
-        if (_isArray(a) && _isArray(b)) {
-            return _arraysEqual(a, b)
-        } else if (_isTable(a) && _isTable(b)) {
-            return _tablesEqual(a, b)
-        } else {
-            return a == b
-        }
-    }
-
-    function _contains(value) {
-        if (_isTable(value)) {
-            local matcher = function(index, item) {
-                return _equal(value, item)
-            }
-            local filtered = actual.filter(matcher.bindenv(this))
-
-            return filtered.len() > 0
-        }
-
-        return actual.find(value) != null
     }
 
     function equal(expected, description = "") {
-        if (!_equal(actual, expected)) {
-            throw Failure("Expected " + _prettify(actual) + " to equal " + _prettify(expected), description)
-        }
+        return is(EqualsMatcher(expected, description))
     }
 
     function truthy(description = "") {
-        if (!actual) {
-            throw Failure("Expected " + _prettify(actual) + " to be truthy", description)
-        }
+        return is(TruthyMatcher(null, description))
     }
 
     function falsy(description = "") {
-        if (actual) {
-            throw Failure("Expected " + _prettify(actual) + " to be falsy", description)
-        }
+        return is(FalsyMatcher(null, description))
     }
 
-    function contain(value, description = "") {
-        if (!_contains(value)) {
-            throw Failure("Expected " + _prettify(actual) + " to contain " + _prettify(value), description)
-        }
+    function contain(expected, description = "") {
+        return is(ContainsMatcher(expected, description))
     }
 
     function contains(value, description = "") {
@@ -190,9 +40,7 @@ class Expectation {
     }
 
     function match(expression, description = "") {
-        if (!regexp(expression).match(actual)) {
-            throw Failure("Expected " + _prettify(actual) + " to match: " + expression, description)
-        }
+        return is(RegexpMatcher(expression, description))
     }
 
     function matches(expression, description = "") {
@@ -200,28 +48,15 @@ class Expectation {
     }
 
     function lessThan(value, description = "") {
-        if (actual > value) {
-            throw Failure("Expected " + _prettify(actual) + " to be less than " + _prettify(value), description)
-        }
+        return is(LessThanMatcher(value, description))
     }
 
     function greaterThan(value, description = "") {
-        if (actual < value) {
-            throw Failure("Expected " + _prettify(actual) + " to be greater than " + _prettify(value), description)
-        }
+        return is(GreaterThanMatcher(value, description))
     }
 
-    function throws(expected, description = "") {
-        try {
-            actual()
-        } catch (error) {
-            if (error == expected) {
-                return
-            } else {
-                throw Failure("Expected " + expected + " but caught " + error, description)
-            }
-        }
-        throw Failure("Expected exception to have been thrown but wasn't: " + expected, description)
+    function throws(exception, description = "") {
+        return is(ThrowsMatcher(exception, description))
     }
 
     function toThrow(expected, description = "") {
@@ -229,7 +64,7 @@ class Expectation {
     }
 
     function toBe(expectedOrMatcher, description = "") {
-        if (_isString(expectedOrMatcher)) {
+        if (isString(expectedOrMatcher)) {
             // SquirrelJasmine compatability functions
             return equal(expectedOrMatcher, description)
         } else {
@@ -271,67 +106,9 @@ class Expectation {
 
 class NegatedExpectation extends Expectation {
 
-    constructor(actualValue) {
-        base.constructor(actualValue);
-    }
-
     function is(matcher) {
         if (matcher.test(actual)) {
-            throw Failure("Not " + matcher.failureMessage(actual))
-        }
-    }
-
-    function equal(expected, description = "") {
-        if (_equal(actual, expected)) {
-            throw Failure("Expected " + _prettify(actual) + " not to equal " + _prettify(expected), description)
-        }
-    }
-
-    function truthy(description = "") {
-        if (actual) {
-            throw Failure("Expected " + _prettify(actual) + " to not be truthy", description)
-        }
-    }
-
-    function falsy(description = "") {
-        if (!actual) {
-            throw Failure("Expected " + _prettify(actual) + " to not be falsy", description)
-        }
-    }
-
-    function contain(value, description = "") {
-        if (_contains(value)) {
-            throw Failure("Expected " + _prettify(actual) + " not to contain " + _prettify(value), description)
-        }
-    }
-
-    function match(expression, description = "") {
-        if (regexp(expression).match(actual)) {
-            throw Failure("Expected '" + _prettify(actual) + "' not to match: " + expression, description)
-        }
-    }
-
-    function lessThan(value, description = "") {
-        if (actual <= value) {
-            throw Failure("Expected " + _prettify(actual) + " not to be less than " + _prettify(value), description)
-        }
-    }
-
-    function greaterThan(value, description = "") {
-        if (actual >= value) {
-            throw Failure("Expected " + _prettify(actual) + " not to be greater than " + _prettify(value), description)
-        }
-    }
-
-    function throws(expected, description = "") {
-        try {
-            actual()
-        } catch (error) {
-            if (error != expected) {
-                return
-            } else {
-                throw Failure("Expected " + expected + " not to have been thrown but was", description)
-            }
+            throw Failure(matcher.failureMessage(actual, true), matcher.description)
         }
     }
 }
@@ -339,12 +116,12 @@ class NegatedExpectation extends Expectation {
 class expect extends Expectation {
     not = null
 
-    constructor(actualValue) {
-        base.constructor(actualValue);
-        not = NegatedExpectation(actualValue)
+    constructor(expectedValue) {
+        base.constructor(expectedValue);
+        not = NegatedExpectation(expectedValue)
     }
 }
 
-function expectException(expected, func) {
-    return expect(func).throws(expected)
+function expectException(exception, func) {
+    return expect(func).throws(exception)
 }
