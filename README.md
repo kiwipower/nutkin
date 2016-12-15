@@ -89,7 +89,7 @@ describe("Skipped test", function() {
 })
 ```
 
-You can run individual tests at the it() or describe() level if you want to only run a sub-set
+You can flag individual tests at the it() or describe() level if you want to only run a sub-set of tests:
 ```
 describe.only("Only this suite will run", function() {
     it("This test will be run", function() {})
