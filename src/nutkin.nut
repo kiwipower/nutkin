@@ -11,8 +11,12 @@ class SpecBuilder {
         SpecBuilder(specName, specToRun, true)
     }
 
-    constructor(specName, specToRun, skipped = false) {
-        Spec(specName, specToRun, suiteStack.top(), skipped)
+    static function only(specName, specToRun) {
+        SpecBuilder(specName, specToRun, false, true)
+    }
+
+    constructor(specName, specToRun, skipped = false, only = false) {
+        Spec(specName, specToRun, suiteStack.top(), skipped, only)
     }
 }
 
@@ -21,8 +25,12 @@ class SuiteBuilder {
         SuiteBuilder(suiteName, suiteToParse, true)
     }
 
-    constructor(suiteName, suiteToParse, skipped = false) {
-        Suite(suiteName, suiteToParse, suiteStack.top(), skipped).parse()
+    static function only(suiteName, suiteToParse) {
+        SuiteBuilder(suiteName, suiteToParse, false, true)
+    }
+
+    constructor(suiteName, suiteToParse, skipped = false, only = false) {
+        Suite(suiteName, suiteToParse, suiteStack.top(), skipped, only).parse()
     }
 }
 
@@ -31,21 +39,33 @@ class Spec {
     suite = null
     spec = null
     skipped = null
+    only = null
 
-    constructor(specName, specToRun, parentSuite, isSkipped = false) {
+    constructor(specName, specToRun, parentSuite, isSkipped = false, isOnly = false) {
         name = specName
         suite = parentSuite
         spec = specToRun
         skipped = isSkipped
+        only = isOnly
 
         parentSuite.queue(this)
+
+        if (only) {
+            parentSuite.markOnly()
+        }
     }
 
     function shouldBeSkipped() {
-        return this.skipped || this.suite.shouldBeSkipped()
+        return skipped || suite.shouldBeSkipped()
     }
 
-    function run(reporter) {
+    function isOnly() {
+        return only
+    }
+
+    function run(reporter, onlyMode) {
+        if (onlyMode && !only) return []
+
         if (shouldBeSkipped()) {
             reporter.testSkipped(name)
             return [Outcome.SKIPPED]
@@ -76,24 +96,37 @@ class Suite {
     suiteFunction = null
     parent = null
     skipped = null
+    only = null
     runQueue = null
     it = SpecBuilder
     describe = SuiteBuilder
 
-    constructor(suiteName, suiteToParse, parentSuite = null, isSkipped = false) {
+    constructor(suiteName, suiteToParse, parentSuite = null, isSkipped = false, isOnly = false) {
         name = suiteName
         suiteFunction = suiteToParse
         parent = parentSuite
         skipped = isSkipped
+        only = isOnly
         runQueue = []
 
         if (parentSuite) {
             parentSuite.queue(this)
         }
+
+        if (only) {
+            parentSuite.markOnly()
+        }
     }
 
     function shouldBeSkipped() {
-        return this.skipped || (this.parent ? this.parent.shouldBeSkipped() : false)
+        return skipped || (parent ? parent.shouldBeSkipped() : false)
+    }
+
+    function markOnly() {
+        only = true
+        if (parent) {
+            parent.markOnly()
+        }
     }
 
     function queue(thing) {
@@ -106,17 +139,25 @@ class Suite {
         suiteStack.pop()
     }
 
-    function run(reporter) {
+    function run(reporter, onlyMode) {
+        if (onlyMode && !only) return []
+
+        local explicitOnlyInChild = false
+        foreach(thing in runQueue) {
+            if (thing.only) explicitOnlyInChild = true
+        }
+
         reporter.suiteStarted(name)
         local outcomes = []
         try {
             foreach(thing in runQueue) {
-                outcomes.extend(thing.run(reporter))
+                outcomes.extend(thing.run(reporter, explicitOnlyInChild ? only : false))
             }
             reporter.suiteFinished(name, "")
         } catch (e) {
             reporter.suiteFinished(name, e, ::stackTrace())
         }
+
         return outcomes
     }
 }
@@ -141,7 +182,7 @@ class Nutkin {
     function runTests() {
         reporter.begin()
         local started = clock()
-        local outcomes = rootSuite.run(reporter)
+        local outcomes = rootSuite.run(reporter, false)
         local passed = outcomes.filter(@(index, item) item == Outcome.PASSED).len()
         local failed = outcomes.filter(@(index, item) item == Outcome.FAILED).len()
         local skipped = outcomes.filter(@(index, item) item == Outcome.SKIPPED).len()
@@ -183,6 +224,10 @@ class describe {
     static function skip(title, suite) {
         nutkin.skipSuite(title, suite)
         nutkin.runTests()
+    }
+
+    static function only(title, suite) {
+        describe(title, suite)
     }
 
     constructor(title, suite) {

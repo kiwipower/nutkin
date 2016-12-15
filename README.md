@@ -89,6 +89,23 @@ describe("Skipped test", function() {
 })
 ```
 
+You can run individual tests at the it() or describe() level if you want to only run a sub-set
+```
+describe.only("Only this suite will run", function() {
+    it("This test will be run", function() {})
+})
+
+describe("Suite", function() {
+    it.only("This test will run", function() {})
+    it("This test will NOT run", function() {})
+})
+
+describe.only("Suite", function() {
+    it.only("This test will run", function() {}) // This .only takes precedence
+    it("This test will NOT run", function() {})
+})
+```
+
 ## Matchers
 The following are the built-in matchers:
 
@@ -256,6 +273,8 @@ Then you can chain the matcher into an expect call in a readable way:
 expect("Nutkin").toBe(aSquirrel())
 //or
 expect("Nutkin").is(aSquirrel())
+//or
+expect("Old Brown").not.toBe(aSquirrel())
 ```
 
-All matchers can be used with the .not prefix with no extra work (apart from possibly customising the failure message).
+Note that all matchers can be used with the .not prefix with no extra work (apart from possibly customising the failure message).
