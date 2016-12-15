@@ -56,22 +56,22 @@ class ConsoleReporter extends Reporter {
     }
 
     function suiteStarted(name) {
-        indent ++;
+        indent ++
         print(titleColour + name)
     }
 
     function suiteFinished(name, error = "", stack = "") {
-        indent --;
+        indent --
         print("")
     }
 
     function testStarted(name) {
-        indent ++;
+        indent ++
     }
 
     function testFinished(name) {
         print(passColour + "✓ " + testColour + name)
-        indent --;
+        indent --
     }
 
     function testFailed(name, failure, stack = "") {
@@ -84,13 +84,13 @@ class ConsoleReporter extends Reporter {
         if (desc != "") {
             print(skipColour + desc)
         }
-        indent --;
+        indent --
     }
 
     function testSkipped(name) {
-        indent++;
+        indent++
         print(skipColour + "➾ " + name)
-        indent--;
+        indent--
     }
 
     function begin() {

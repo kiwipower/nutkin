@@ -42,7 +42,7 @@ class Spec {
     }
 
     function shouldBeSkipped() {
-        return this.skipped || this.suite.shouldBeSkipped();
+        return this.skipped || this.suite.shouldBeSkipped()
     }
 
     function run(reporter) {
@@ -145,7 +145,7 @@ class Nutkin {
         local passed = outcomes.filter(@(index, item) item == Outcome.PASSED).len()
         local failed = outcomes.filter(@(index, item) item == Outcome.FAILED).len()
         local skipped = outcomes.filter(@(index, item) item == Outcome.SKIPPED).len()
-        local stopped = clock();
+        local stopped = clock()
 
         local took = ((stopped - started) * 1000) + "ms"
 
@@ -155,7 +155,7 @@ class Nutkin {
 
 reporter <- ConsoleReporter()
 
-local env = getenv("NUTKIN_ENV");
+local env = getenv("NUTKIN_ENV")
 
 try {
     if (env && env != "" && reporters[env]) {

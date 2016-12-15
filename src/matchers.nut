@@ -104,7 +104,7 @@ class Matcher {
 
     function negateIfRequired(text, isNegated) {
         local negatedText = isNegated ? "not " : ""
-        return negatedText + text;
+        return negatedText + text
     }
 
     function failureMessage(actual, isNegated) {

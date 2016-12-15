@@ -117,7 +117,7 @@ class expect extends Expectation {
     not = null
 
     constructor(expectedValue) {
-        base.constructor(expectedValue);
+        base.constructor(expectedValue)
         not = NegatedExpectation(expectedValue)
     }
 }

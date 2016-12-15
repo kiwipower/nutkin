@@ -5,19 +5,19 @@ describe("Nutkin expectations", function() {
     describe("equal", function() {
 
         it("works with strings", function() {
-            expect("A String").to.equal("A String", "strings should be equal");
+            expect("A String").to.equal("A String", "strings should be equal")
         })
 
         it("works with numbers", function() {
-            expect(123).to.equal(123, "numbers should be equal");
+            expect(123).to.equal(123, "numbers should be equal")
         })
 
         it("works with floats", function() {
-            expect(123.456).to.equal(123.456, "numbers should be equal");
+            expect(123.456).to.equal(123.456, "numbers should be equal")
         })
 
         it("works with arrays", function() {
-            expect([1, 2, 3]).to.equal([1, 2, 3], "arrays should be equal");
+            expect([1, 2, 3]).to.equal([1, 2, 3], "arrays should be equal")
         })
 
         it("works with tables", function() {
@@ -27,15 +27,15 @@ describe("Nutkin expectations", function() {
             }).to.equal({
                 foo = "bar",
                 baz = 101
-            }, "tables should be equal");
+            }, "tables should be equal")
         })
 
         it("to.be.equal is an alias for to.equal", function() {
-            expect("A String").to.be.equal("A String");
+            expect("A String").to.be.equal("A String")
         })
 
         it("toBe is an alias for to.equal", function() {
-            expect("A String").toBe("A String");
+            expect("A String").toBe("A String")
         })
 
         it("toBeNull is an alias for to.equal(null)", function() {
@@ -114,7 +114,7 @@ describe("Nutkin expectations", function() {
 
         it("fails as expected", function() {
             expectReportedFailure("Expected false to be truthy")
-            expect(false).to.be.truthy();
+            expect(false).to.be.truthy()
         })
     })
 
@@ -142,7 +142,7 @@ describe("Nutkin expectations", function() {
 
         it("fails as expected", function() {
             expectReportedFailure("Expected true to be falsy")
-            expect(true).to.be.falsy();
+            expect(true).to.be.falsy()
         })
     })
 
@@ -169,7 +169,7 @@ describe("Nutkin expectations", function() {
 
         it("fails as expected", function() {
             expectReportedFailure("Expected [1, 2, 3] to contain 4")
-            expect([1, 2, 3]).to.contain(4);
+            expect([1, 2, 3]).to.contain(4)
         })
     })
 
@@ -194,7 +194,7 @@ describe("Nutkin expectations", function() {
 
         it("fails as expected", function() {
             expectReportedFailure("Expected 'a' to match: [1-9]")
-            expect("a").to.match("[1-9]");
+            expect("a").to.match("[1-9]")
         })
     })
 
@@ -214,7 +214,7 @@ describe("Nutkin expectations", function() {
 
         it("fails as expected", function() {
             expectReportedFailure("Expected 10 to be less than 4")
-            expect(10).to.be.lessThan(4);
+            expect(10).to.be.lessThan(4)
         })
     })
 
@@ -234,7 +234,7 @@ describe("Nutkin expectations", function() {
 
         it("fails as expected", function() {
             expectReportedFailure("Expected 5 to be greater than 10")
-            expect(5).to.be.greaterThan(10);
+            expect(5).to.be.greaterThan(10)
         })
     })
 
