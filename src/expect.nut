@@ -68,7 +68,7 @@ class Expectation {
             // Custom matcher
             return is(expectedOrMatcher)
         } else {
-            // SquirrelJasmine compatability functions
+            // SquirrelJasmine compatability function
             return equal(expectedOrMatcher, description)
         }
     }
@@ -122,6 +122,7 @@ class expect extends Expectation {
     }
 }
 
+// SquirrelJasmine compatability function
 function expectException(exception, func) {
     return expect(func).throws(exception)
 }

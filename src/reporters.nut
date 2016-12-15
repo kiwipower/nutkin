@@ -27,7 +27,8 @@ class Reporter {
     function testFinished(name) {}
     function testFailed(name, failure, stack = "") { return true }
     function testSkipped(name) {}
-    function stats(passed, failed, skipped, timeTaken) {}
+    function begin() {}
+    function end(passed, failed, skipped, timeTaken) {}
 }
 
 class ConsoleReporter extends Reporter {
@@ -92,7 +93,11 @@ class ConsoleReporter extends Reporter {
         indent--;
     }
 
-    function stats(passed, failed, skipped, timeTaken) {
+    function begin() {
+        ::println("")
+    }
+
+    function end(passed, failed, skipped, timeTaken) {
         indent++
         print(passColour + passed + " passing")
         if (failed > 0) {
@@ -102,7 +107,9 @@ class ConsoleReporter extends Reporter {
             print(skipColour + skipped + " skipped")
         }
         ::println(reset)
-        //::println("Done in " + timeTaken + "ms")
+        print("Took " + timeTaken)
+        ::print(reset)
+        indent--
     }
 }
 
@@ -136,10 +143,6 @@ class TeamCityReporter extends Reporter {
 
     function testSkipped(name) {
         print("##teamcity[testIgnored name='" + name + "']")
-    }
-
-    function stats(passed, failed, skipped, timeTaken) {
-        // TeamCity does this for us
     }
 }
 

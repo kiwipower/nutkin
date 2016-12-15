@@ -1,13 +1,5 @@
 @include "../build/nutkin.nut"
 
-//function addCustomMatcher(name, matcher) {
-//    Expectation.newmember(name, matcher.test)
-//::println(Expectation["aSquirrel"])
-//::println(Expectation["equal"])
-//}
-//
-//addCustomMatcher("aSquirrel", SquirrelMatcher())
-
 describe("Nutkin expectations", function() {
 
     describe("equal", function() {
