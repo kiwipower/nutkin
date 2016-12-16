@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export NUTKIN_ENV=NUTKIN_TEST
+NUTKIN_ENV=${NUTKIN_ENV:-NUTKIN_TEST}
 
 ./build.sh
 pleasebuild test/testPrinter.nut >> build/nutkin.nut
