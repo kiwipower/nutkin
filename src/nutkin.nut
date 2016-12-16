@@ -166,7 +166,7 @@ class Nutkin {
     reporter = null
     rootSuite = null
 
-    constructor(reporterInstance = ConsoleReporter()) {
+    constructor(reporterInstance) {
         reporter = reporterInstance
     }
 

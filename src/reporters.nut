@@ -1,8 +1,17 @@
 class Reporter {
+    printer = null
+
+    constructor(printerImpl = Printer()) {
+        printer = printerImpl
+    }
+
+    function isFailure(thing) {
+        return thing instanceof Failure
+    }
 
     function safeGetErrorMessage(thing) {
         local message = thing
-        if (typeof thing == typeof {}) {
+        if (isFailure(thing)) {
             message = thing.message
         }
         return message
@@ -10,14 +19,14 @@ class Reporter {
 
     function safeGetErrorDescription(thing) {
         local description = ""
-        if (typeof thing == typeof {}) {
+        if (isFailure(thing)) {
             description = thing.description
         }
         return description
     }
 
     function print(message) {
-        ::println(message)
+        printer.println(message)
     }
 
     // Subclasses to implement these methods
@@ -52,26 +61,26 @@ class ConsoleReporter extends Reporter {
     }
 
     function print(message) {
-        ::println(padding() + message + reset + logColour)
+        printer.println(padding() + message + reset + logColour)
     }
 
     function suiteStarted(name) {
-        indent ++
+        indent++
         print(titleColour + name)
     }
 
     function suiteFinished(name, error = "", stack = "") {
-        indent --
+        indent--
         print("")
     }
 
     function testStarted(name) {
-        indent ++
+        indent++
     }
 
     function testFinished(name) {
         print(passColour + "✓ " + testColour + name)
-        indent --
+        indent--
     }
 
     function testFailed(name, failure, stack = "") {
@@ -84,7 +93,7 @@ class ConsoleReporter extends Reporter {
         if (desc != "") {
             print(skipColour + desc)
         }
-        indent --
+        indent--
     }
 
     function testSkipped(name) {
@@ -94,7 +103,7 @@ class ConsoleReporter extends Reporter {
     }
 
     function begin() {
-        ::println("")
+        printer.println("")
     }
 
     function end(passed, failed, skipped, timeTaken) {
@@ -106,9 +115,9 @@ class ConsoleReporter extends Reporter {
         if (skipped > 0) {
             print(skipColour + skipped + " skipped")
         }
-        ::println(reset)
+        printer.println(reset)
         print("Took " + timeTaken)
-        ::print(reset)
+        printer.print(reset)
         indent--
     }
 }
@@ -146,6 +155,5 @@ class TeamCityReporter extends Reporter {
     }
 }
 
-reporters["DEV"] <- ConsoleReporter()
 reporters["TEAM_CITY"] <- TeamCityReporter()
 

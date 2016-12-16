@@ -1,5 +1,3 @@
-println <- @(line) ::print(line + "\n")
-
 stackTrace <- function() {
     local level = 1
     local output = ""
