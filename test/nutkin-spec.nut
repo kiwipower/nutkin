@@ -600,26 +600,31 @@ describe("Nutkin", function() {
         local rootBeforeCalled = false
         local nestedAfterCalled = false
         local nestedBeforeCalled = false
+        local beforeState = 0
+        local afterState = 0
 
         before(function() {
             rootBeforeCalled = true
             nestedBeforeCalled = false
+            beforeState = 1
         })
 
         after(function() {
             rootBeforeCalled = false
-            nestedAfterCalled = false
+            afterState = 1
         })
 
         describe("Nested before & after", function() {
 
             before(function() {
                 nestedBeforeCalled = true
+                beforeState = 2
             })
 
             after(function() {
                 nestedBeforeCalled = false
                 nestedAfterCalled = true
+                afterState = 2
             })
 
             it("before chain is called starting at highest level and working down", function() {
@@ -635,12 +640,18 @@ describe("Nutkin", function() {
 
                 nestedAfterCalled = false
             })
+
+            it("befores are applied from root to test", function() {
+                expect(beforeState).to.equal(2);
+            })
         })
 
-        it("before and afters are applied at the current test level and above", function() {
-            expect(rootBeforeCalled).to.be.truthy();
-            expect(nestedBeforeCalled).to.be.falsy();
-            expect(nestedAfterCalled).to.be.falsy();
+        it("afters are applied from test to root", function() {
+            expect(beforeState).to.equal(1);
+            expect(afterState).to.equal(1);
+
+            expect(rootBeforeCalled).to.be.truthy("Root before should have been called");
+            expect(nestedBeforeCalled).to.be.falsy("Nested before should not have been called");
         })
     })
 })

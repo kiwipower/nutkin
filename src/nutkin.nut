@@ -177,12 +177,12 @@ class Suite {
     }
 
     function runAfters() {
-        if (parent) {
-            parent.runAfters()
-        }
-
         if (afterFunc) {
             afterFunc()
+        }
+
+        if (parent) {
+            parent.runAfters()
         }
     }
 
