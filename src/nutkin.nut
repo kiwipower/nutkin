@@ -7,44 +7,44 @@ enum Outcome {
 }
 
 class SpecBuilder {
-    static function skip(specName, specToRun) {
-        SpecBuilder(specName, specToRun, true)
+    static function skip(specName, spec) {
+        SpecBuilder(specName, spec, true)
     }
 
-    static function only(specName, specToRun) {
-        SpecBuilder(specName, specToRun, false, true)
+    static function only(specName, spec) {
+        SpecBuilder(specName, spec, false, true)
     }
 
-    constructor(specName, specToRun, skipped = false, only = false) {
-        Spec(specName, specToRun, suiteStack.top(), skipped, only)
+    constructor(specName, spec, skipped = false, only = false) {
+        Spec(specName, spec, suiteStack.top(), skipped, only)
     }
 }
 
 class SuiteBuilder {
-    static function skip(suiteName, suiteToParse) {
-        SuiteBuilder(suiteName, suiteToParse, true)
+    static function skip(suiteName, suite) {
+        SuiteBuilder(suiteName, suite, true)
     }
 
-    static function only(suiteName, suiteToParse) {
-        SuiteBuilder(suiteName, suiteToParse, false, true)
+    static function only(suiteName, suite) {
+        SuiteBuilder(suiteName, suite, false, true)
     }
 
-    constructor(suiteName, suiteToParse, skipped = false, only = false) {
-        Suite(suiteName, suiteToParse, suiteStack.top(), skipped, only).parse()
+    constructor(suiteName, suite, skipped = false, only = false) {
+        Suite(suiteName, suite, suiteStack.top(), skipped, only).parse()
     }
 }
 
 class Spec {
     name = null
     suite = null
-    spec = null
+    specBody = null
     skipped = null
     only = null
 
-    constructor(specName, specToRun, parentSuite, isSkipped = false, isOnly = false) {
+    constructor(specName, spec, parentSuite, isSkipped = false, isOnly = false) {
         name = specName
         suite = parentSuite
-        spec = specToRun
+        specBody = spec
         skipped = isSkipped
         only = isOnly
 
@@ -72,7 +72,7 @@ class Spec {
         } else {
             reporter.testStarted(name)
             try {
-                spec()
+                specBody()
                 reporter.testFinished(name)
                 return [Outcome.PASSED]
             } catch (e) {
@@ -93,17 +93,19 @@ class Spec {
 
 class Suite {
     name = null
-    suiteFunction = null
+    suiteBody = null
     parent = null
+    beforeFunc = null
+    afterFunc = null
     skipped = null
     only = null
     runQueue = null
     it = SpecBuilder
     describe = SuiteBuilder
 
-    constructor(suiteName, suiteToParse, parentSuite = null, isSkipped = false, isOnly = false) {
+    constructor(suiteName, suite, parentSuite = null, isSkipped = false, isOnly = false) {
         name = suiteName
-        suiteFunction = suiteToParse
+        suiteBody = suite
         parent = parentSuite
         skipped = isSkipped
         only = isOnly
@@ -118,6 +120,22 @@ class Suite {
         }
     }
 
+    function before(beforeImpl) {
+        if (typeof beforeImpl != "function") {
+            throw "before() takes a function argument"
+        }
+
+        beforeFunc = beforeImpl
+    }
+
+    function after(afterImpl) {
+        if (typeof afterImpl != "function") {
+            throw "after() takes a function argument"
+        }
+
+        afterFunc = afterImpl
+    }
+
     function shouldBeSkipped() {
         return skipped || (parent ? parent.shouldBeSkipped() : false)
     }
@@ -129,29 +147,60 @@ class Suite {
         }
     }
 
-    function queue(thing) {
-        runQueue.push(thing)
+    function queue(runnable) {
+        runQueue.push(runnable)
     }
 
     function parse() {
         suiteStack.push(this)
-        suiteFunction()
+        suiteBody()
         suiteStack.pop()
     }
 
-    function run(reporter, onlyMode) {
-        if (onlyMode && !only) return []
+    function hasAnOnlyDescendant() {
+        foreach(runnable in runQueue) {
+            if (runnable.only) {
+                return true
+            }
+        }
+        return false
+    }
 
-        local explicitOnlyInChild = false
-        foreach(thing in runQueue) {
-            if (thing.only) explicitOnlyInChild = true
+    function runBefores() {
+        if (parent) {
+            parent.runBefores()
         }
 
-        reporter.suiteStarted(name)
+        if (beforeFunc) {
+            beforeFunc()
+        }
+    }
+
+    function runAfters() {
+        if (parent) {
+            parent.runAfters()
+        }
+
+        if (afterFunc) {
+            afterFunc()
+        }
+    }
+
+    function run(reporter, onlyMode) {
+        if (onlyMode && !only) {
+            return []
+        }
+
+        local explicitOnlyInChild = hasAnOnlyDescendant()
         local outcomes = []
+
+        reporter.suiteStarted(name)
+
         try {
-            foreach(thing in runQueue) {
-                outcomes.extend(thing.run(reporter, explicitOnlyInChild ? only : false))
+            foreach(runnable in runQueue) {
+                runBefores()
+                outcomes.extend(runnable.run(reporter, explicitOnlyInChild ? only : false))
+                runAfters()
             }
             reporter.suiteFinished(name, "")
         } catch (e) {

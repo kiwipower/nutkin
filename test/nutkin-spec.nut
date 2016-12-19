@@ -324,6 +324,7 @@ describe("Nutkin", function() {
     describe("Custom matchers", function() {
 
         describe("No-arg matchers", function() {
+
             it("Work for positive outcomes", function() {
                 expect("Nutkin").is(aSquirrel())
             })
@@ -344,6 +345,7 @@ describe("Nutkin", function() {
         })
 
         describe("Expected arg matchers", function() {
+
             it("Work for positive outcomes", function() {
                 expect("Nutkin").is(called("Nutkin"))
             })
@@ -385,23 +387,24 @@ describe("Nutkin", function() {
     
             local printer = TestPrinter()
             local tcReporter = TeamCityReporter(printer)
+
+            before(function() {
+                printer.reset()
+            })
     
             it("Outputs a correctly formatted suite started message", function() {
-                printer.reset()
                 tcReporter.suiteStarted("A Suite")
     
                 expect(printer.lastLine()).to.equal("##teamcity[testSuiteStarted name='A Suite']\n")
             })
     
             it("Outputs a correctly formatted suite finished message", function() {
-                printer.reset()
                 tcReporter.suiteFinished("A Suite")
     
                 expect(printer.lastLine()).to.equal("##teamcity[testSuiteFinished name='A Suite']\n")
             })
     
             it("Outputs a correctly formatted suite finished message with an error", function() {
-                printer.reset()
                 tcReporter.suiteFinished("A Suite", "An error", "A stack trace" )
     
                 local lines = printer.getLines()
@@ -411,28 +414,24 @@ describe("Nutkin", function() {
             })
     
             it("Outputs a correctly formatted test started message", function() {
-                printer.reset()
                 tcReporter.testStarted("A Test")
     
                 expect(printer.lastLine()).to.equal("##teamcity[testStarted name='A Test']\n")
             })
     
             it("Outputs a correctly formatted test finished message", function() {
-                printer.reset()
                 tcReporter.testFinished("A Test")
     
                 expect(printer.lastLine()).to.equal("##teamcity[testFinished name='A Test']\n")
             })
     
             it("Outputs a correctly formatted test skipped message", function() {
-                printer.reset()
                 tcReporter.testSkipped("A Test")
     
                 expect(printer.lastLine()).to.equal("##teamcity[testIgnored name='A Test']\n")
             })
     
             it("Outputs a correctly formatted test failed message", function() {
-                printer.reset()
                 tcReporter.testFailed("A Test", "String failure", "A stack")
     
                 local lines = printer.getLines()
@@ -442,7 +441,6 @@ describe("Nutkin", function() {
             })
     
             it("Outputs a correctly formatted test failed message with a Failure", function() {
-                printer.reset()
                 local failure = Failure("Failure", "details")
                 tcReporter.testFailed("A Test", failure, "A stack")
     
@@ -453,7 +451,6 @@ describe("Nutkin", function() {
             })
     
             it("Outputs nothing for begin", function() {
-                printer.reset()
                 tcReporter.begin()
     
                 local lines = printer.getLines()
@@ -461,7 +458,6 @@ describe("Nutkin", function() {
             })
     
             it("Outputs nothing for end", function() {
-                printer.reset()
                 tcReporter.end(0, 0, 0, 0)
     
                 local lines = printer.getLines()
@@ -472,51 +468,48 @@ describe("Nutkin", function() {
         describe("Console Reporter", function() {
             local printer = TestPrinter()
             local reporter = ConsoleReporter(printer)
+
+            after(function() {
+                printer.reset()
+            })
             
             it("Outputs a correctly formatted suite started message", function() {
-                printer.reset()
                 reporter.suiteStarted("A Suite")
                 
                 expect(printer.lastLine()).to.equal("  \x1B[30mA Suite\x1B[0m\x1B[36m\n")
             })
             
             it("Outputs a correctly formatted suite finished message", function() {
-                printer.reset()
                 reporter.suiteFinished("A Suite")
                 
                 expect(printer.lastLine()).to.equal("\x1B[0m\x1B[36m\n")
             })
             
             it("Outputs a correctly formatted suite finished message with an error", function() {
-                printer.reset()
                 reporter.suiteFinished("A Suite", "An error", "A stack trace" )
 
                 expect(printer.lastLine()).to.equal("\x1B[0m\x1B[36m\n")
             })
             
             it("Outputs nothing for test started", function() {
-                printer.reset()
                 reporter.testStarted("A Test")
                 
                 expect(printer.getLines().len()).to.equal(0)
             })
             
             it("Outputs a correctly formatted test finished message", function() {
-                printer.reset()
                 reporter.testFinished("A Test")
 
                 expect(printer.lastLine()).to.equal("\x1B[32m✓ \x1B[38;5;240mA Test\x1B[0m\x1B[36m\n")
             })
             
             it("Outputs a correctly formatted test skipped message", function() {
-                printer.reset()
                 reporter.testSkipped("A Test")
 
                 expect(printer.lastLine()).to.equal("\x1B[33m➾ A Test\x1B[0m\x1B[36m\n")
             })
             
             it("Outputs a correctly formatted test failed string message", function() {
-                printer.reset()
                 reporter.testFailed("A Test", "String failure")
 
                 local lines = printer.getLines()
@@ -526,7 +519,6 @@ describe("Nutkin", function() {
             })
 
             it("Outputs a correctly formatted test failed string message with a stack trace", function() {
-                printer.reset()
                 reporter.testFailed("A Test", "String failure", "A stack")
 
                 local lines = printer.getLines()
@@ -537,7 +529,6 @@ describe("Nutkin", function() {
             })
 
             it("Outputs a correctly formatted Failure", function() {
-                printer.reset()
                 local failure = Failure("Failure", "details")
                 reporter.testFailed("A Test", failure)
 
@@ -549,7 +540,6 @@ describe("Nutkin", function() {
             })
 
             it("Outputs a correctly formatted Failure with stack", function() {
-                printer.reset()
                 local failure = Failure("Failure", "details")
                 reporter.testFailed("A Test", failure, "A stack")
 
@@ -562,14 +552,12 @@ describe("Nutkin", function() {
             })
 
             it("Outputs an empty line for begin", function() {
-                printer.reset()
                 reporter.begin()
 
                 expect(printer.lastLine()).to.equal("\n")
             })
             
             it("Outputs stats summary on end", function() {
-                printer.reset()
                 reporter.end(5, 3, 1, "300ms")
                 
                 local lines = printer.getLines()
@@ -583,7 +571,6 @@ describe("Nutkin", function() {
             })
 
             it("Omits failures from stats summary on end if there are none", function() {
-                printer.reset()
                 reporter.end(5, 0, 1, "300ms")
 
                 local lines = printer.getLines()
@@ -596,7 +583,6 @@ describe("Nutkin", function() {
             })
 
             it("Omits skipped from stats summary on end if there are none", function() {
-                printer.reset()
                 reporter.end(5, 3, 0, "300ms")
 
                 local lines = printer.getLines()
@@ -607,6 +593,54 @@ describe("Nutkin", function() {
                 expect(lines[3]).to.equal("Took 300ms\x1B[0m\x1B[36m\n")
                 expect(lines[4]).to.equal("\x1B[0m")
             })
+        })
+    })
+
+    describe("Before & After", function() {
+        local rootBeforeCalled = false
+        local nestedAfterCalled = false
+        local nestedBeforeCalled = false
+
+        before(function() {
+            rootBeforeCalled = true
+            nestedBeforeCalled = false
+        })
+
+        after(function() {
+            rootBeforeCalled = false
+            nestedAfterCalled = false
+        })
+
+        describe("Nested before & after", function() {
+
+            before(function() {
+                nestedBeforeCalled = true
+            })
+
+            after(function() {
+                nestedBeforeCalled = false
+                nestedAfterCalled = true
+            })
+
+            it("before chain is called starting at highest level and working down", function() {
+                expect(rootBeforeCalled).to.be.truthy("Root before should have been called before this test");
+                expect(nestedBeforeCalled).to.be.truthy("Nested before should have been called before this test");
+                expect(nestedAfterCalled).to.be.falsy("Nested after should not have been called yet");
+            })
+
+            it("before is called before each enclosed test", function() {
+                expect(nestedAfterCalled).to.be.truthy("Nested after should have been called after previous test");
+                expect(nestedBeforeCalled).to.be.truthy("Nested before should have been called before this test");
+                expect(rootBeforeCalled).to.be.truthy("Root before should have been called before this test");
+
+                nestedAfterCalled = false
+            })
+        })
+
+        it("before and afters are applied at the current test level and above", function() {
+            expect(rootBeforeCalled).to.be.truthy();
+            expect(nestedBeforeCalled).to.be.falsy();
+            expect(nestedAfterCalled).to.be.falsy();
         })
     })
 })
