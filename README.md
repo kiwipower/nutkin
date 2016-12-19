@@ -232,6 +232,14 @@ expect(squirrel.calm).to.be.falsy()
 // And for compatability with squirrel jasmine:
 expect(squirrel.calm).toBeFalsy()
 ```
+* number - matches any integer or float
+```
+expect(1).to.be.a.number()
+```
+* ofType
+```
+expect("something").to.be.ofType("string")
+```
 * contains - expects an array and will work for nested tables
 ```
 expect(squirrels).to.contain("Furly Curly")
