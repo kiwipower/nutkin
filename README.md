@@ -136,7 +136,7 @@ describe("Has an after", function() {
 })
 ```
 
-Nested suites can also specify before() and after() and these are run top down for each descendant test
+Nested suites can also specify before() and after() and these are run for each descendant test
 ```
 describe("Root suite", function() {
     before(function() {
@@ -174,6 +174,8 @@ describe("Root suite", function() {
     })
 })
 ```
+
+Note that before() calls are executed top down, whereas after() alls are executed bottom up.
 
 ### Test Selection
 
