@@ -228,9 +228,13 @@ class Nutkin {
         rootSuite.parse()
     }
 
-    function getTime() {
+    function getTimeInMillis() {
         try {
-            return clock()
+            if (typeof clock == "function") {
+                return clock() * 1000
+            } else {
+                return clock
+            }
         } catch (e) {
             // Target env has no clock (e.g. device stub)
             return -1
@@ -243,13 +247,13 @@ class Nutkin {
             return ""
         }
 
-        local stopped = getTime()
+        local stopped = getTimeInMillis()
         local timeTaken = stopped - started
-        return ((timeTaken) * 1000) + "ms"
+        return timeTaken + "ms"
     }
 
     function runTests() {
-        local started = getTime()
+        local started = getTimeInMillis()
         reporter.begin()
 
         local outcomes = rootSuite.run(reporter, false)

@@ -711,17 +711,26 @@ describe("Nutkin", function() {
 
     describe("Clock handling", function() {
         it("Uses the clock to calculate the time taken", function() {
-            local timestamp = nutkin.getTime()
+            local timestamp = nutkin.getTimeInMillis()
             local timeTaken = nutkin.calculateTimeTaken(0)
 
             expect(timestamp).to.be.a.number()
             expect(timeTaken).to.match("\\d+\\.\\d+ms")
         })
 
-        it("Deals with the clock not behaving as expected", function() {
-            // When run in the Electric IMP squirrel, clock() does not do what you expect
+        it("Deals with the clock being a variable not a function", function() {
             local actualClock = clock;
             clock = 1234
+
+            local timeTaken = nutkin.calculateTimeTaken(0)
+
+            expect(timeTaken).to.equal("1234ms")
+            clock = actualClock
+        })
+
+        it("Deals with the clock not being defined", function() {
+            local actualClock = clock;
+            clock = null
 
             local timeTaken = nutkin.calculateTimeTaken(-1)
 
