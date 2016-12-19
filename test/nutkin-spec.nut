@@ -178,6 +178,60 @@ describe("Nutkin", function() {
             })
         })
 
+        describe("Number", function() {
+
+            it("Works for integers", function() {
+                expect(1).to.be.a.number()
+                expect(0).to.be.a.number()
+                expect(-1).to.be.a.number()
+                expect(0x0012).to.be.a.number()
+                expect(075).to.be.a.number()
+                expect('w').to.be.a.number()
+            })
+
+            it("Works for floats", function() {
+                expect(0.1245).to.be.a.number()
+            })
+
+            it("Works with not", function() {
+                expect(true).not.to.be.a.number()
+            })
+
+            it("Fails as expected", function() {
+                expectReportedFailure("Expected '1' to be a number")
+
+                expect("1").to.be.a.number()
+            })
+        })
+
+        describe("Type", function() {
+
+            it("Works for all types", function() {
+                expect(1).to.be.ofType("integer")
+                expect(0x0012).to.be.ofType("integer")
+                expect(075).to.be.ofType("integer")
+                expect('w').to.be.ofType("integer")
+                expect(1.34634).to.be.ofType("float")
+                expect("a string").to.be.ofType("string")
+                expect(true).to.be.ofType("bool")
+                expect([]).to.be.ofType("array")
+                expect({}).to.be.ofType("table")
+                expect(null).to.be.ofType("null")
+                expect(function() {}).to.be.ofType("function")
+                expect(TypeMatcher()).to.be.ofType("instance")
+            })
+
+            it("Works with not", function() {
+                expect(true).not.to.be.ofType("number")
+            })
+
+            it("Fails as expected", function() {
+                expectReportedFailure("Expected (null) to be of type function")
+
+                expect(null).to.be.ofType("function")
+            })
+        })
+
         describe("Contains", function() {
 
             it("works for arrays", function() {
@@ -652,6 +706,27 @@ describe("Nutkin", function() {
 
             expect(rootBeforeCalled).to.be.truthy("Root before should have been called");
             expect(nestedBeforeCalled).to.be.falsy("Nested before should not have been called");
+        })
+    })
+
+    describe("Clock handling", function() {
+        it("Uses the clock to calculate the time taken", function() {
+            local timestamp = nutkin.getTime()
+            local timeTaken = nutkin.calculateTimeTaken(0)
+
+            expect(timestamp).to.be.a.number()
+            expect(timeTaken).to.match("\\d+\\.\\d+ms")
+        })
+
+        it("Deals with the clock not behaving as expected", function() {
+            // When run in the Electric IMP squirrel, clock() does not do what you expect
+            local actualClock = clock;
+            clock = 1234
+
+            local timeTaken = nutkin.calculateTimeTaken(-1)
+
+            expect(timeTaken).to.equal("")
+            clock = actualClock
         })
     })
 })

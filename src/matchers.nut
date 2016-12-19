@@ -189,6 +189,28 @@ class GreaterThanMatcher extends Matcher {
     }
 }
 
+class TypeMatcher extends Matcher {
+
+    function test(actual) {
+        return typeof actual == expected
+    }
+
+    function failureMessage(actual, isNegated) {
+        return "Expected " + prettify(actual) + negateIfRequired(" to be of type " + expected, isNegated)
+    }
+}
+
+class NumberMatcher extends Matcher {
+
+    function test(actual) {
+        return typeof actual == "integer" || typeof actual == "float"
+    }
+
+    function failureMessage(actual, isNegated) {
+        return "Expected " + prettify(actual) + negateIfRequired(" to be a number", isNegated)
+    }
+}
+
 class ThrowsMatcher extends Matcher {
 
     function test(actual) {

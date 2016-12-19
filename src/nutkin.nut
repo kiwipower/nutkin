@@ -228,18 +228,37 @@ class Nutkin {
         rootSuite.parse()
     }
 
+    function getTime() {
+        try {
+            return clock()
+        } catch (e) {
+            // Target env has no clock (e.g. device stub)
+            return -1
+        }
+    }
+
+    function calculateTimeTaken(started) {
+        if (started < 0) {
+            // No clock
+            return ""
+        }
+
+        local stopped = getTime()
+        local timeTaken = stopped - started
+        return ((timeTaken) * 1000) + "ms"
+    }
+
     function runTests() {
+        local started = getTime()
         reporter.begin()
-        local started = clock()
+
         local outcomes = rootSuite.run(reporter, false)
+
         local passed = outcomes.filter(@(index, item) item == Outcome.PASSED).len()
         local failed = outcomes.filter(@(index, item) item == Outcome.FAILED).len()
         local skipped = outcomes.filter(@(index, item) item == Outcome.SKIPPED).len()
-        local stopped = clock()
 
-        local took = ((stopped - started) * 1000) + "ms"
-
-        reporter.end(passed, failed, skipped, took)
+        reporter.end(passed, failed, skipped, calculateTimeTaken(started))
     }
 }
 

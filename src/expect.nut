@@ -2,11 +2,13 @@ class Expectation {
     actual = null
     to = null
     be = null
+    a = null
 
     constructor(actualValue) {
         actual = actualValue
         to = this
         be = this
+        a = this
     }
 
     function isString(x) {
@@ -61,6 +63,14 @@ class Expectation {
 
     function toThrow(expected, description = "") {
         return throws(expected, description)
+    }
+
+    function number(description = "") {
+        return is(NumberMatcher(null, description))
+    }
+
+    function ofType(type, description = "") {
+        return is(TypeMatcher(type, description))
     }
 
     function toBe(expectedOrMatcher, description = "") {
