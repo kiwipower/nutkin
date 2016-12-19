@@ -103,6 +103,15 @@ it("has a failure comment", function() {
 })
 ```
 
+All matcher functions can be prefixed with not to give a negated match
+```
+it("has a not", function() {
+    expect(thing).not.to.equal(otherThing)
+})
+```
+
+See the [Matchers](#matchers) section later for a list of all built in matchers.
+
 ### Before & After
 
 You can run some setup code before each test using before()
@@ -286,7 +295,7 @@ function failureMessage(actual, isNegated) { return string }
 
 All matchers have an *expected* variable in scope which represents the expected value (i.e. the value passed into expect() in the test).
 
-#### How To Write Nutkin Tests
+#### Examples
 
 Here is a simple matcher that checks against a constant value:
 ```
