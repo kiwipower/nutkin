@@ -48,20 +48,22 @@ By default, Nutkin will output test information using a console reporter. This w
 
 ![Console reporter example](https://raw.githubusercontent.com/kiwipower/nutkin/master/docs/console_reporter_example.png)
 
-## Examples
+## How To Write Nutkin Tests
 
-A simple example:
+### Suites and Specs
+
+Tests are specified using it(), and these must be defined inside a describe() suite
 ```
-describe("A test suite", function() {
+describe("A suite", function() {
    it("contains this test", function() {
         expect(true).to.be.truthy()
    })
 })
 ```
 
-Suites can be nested:
+Suites can be nested
 ```
-describe("A test suite", function() {
+describe("A suite", function() {
     describe("A nested suite", function() {
         it("contains this test", function() {
             expect(false).to.be.falsy()
@@ -70,26 +72,115 @@ describe("A test suite", function() {
 })
 ```
 
-Expectations all take an optional comment that will be included in the output on failure:
+You can mix and match suites and tests at the same level
 ```
-it("has an assert comment", function() {
-    expect(thing).to.equal(otherThing, "Things should have been equal")
+describe("A suite", function() {
+    describe("A nested suite", function() {
+        it("contains this test", function() {
+            expect(false).to.be.falsy()
+        })
+    })
+
+    it("Another test that is in the root suite", function() {
+        expect(false).to.be.falsy()
+    })
 })
 ```
 
-You can skip tests or suites for later implementation:
+### Asserting Behaviour
+
+You can assert values by chaining calls to an expect()
+```
+it("uses an expect", function() {
+    expect(thing).to.equal(otherThing)
+})
+```
+
+All matcher functions take an optional message parameter that will be included in the output on failure
+```
+it("has a failure comment", function() {
+    expect(thing).to.equal(otherThing, "This message is shown on failure")
+})
+```
+
+### Before & After
+
+You can run some setup code before each test using before()
+```
+describe("Has a before", function() {
+    before(function() {
+        // Run before each test in this suite
+    })
+
+    it("A test", function() {})
+})
+```
+
+And, likewise, you can also use after() for tear down code
+```
+describe("Has an after", function() {
+    after(function() {
+        // Run after each test in this suite
+    })
+
+    it("A test", function() {})
+})
+```
+
+Nested suites can also specify before() and after() and these are run top down for each descendant test
+```
+describe("Root suite", function() {
+    before(function() {
+        // Root before
+    })
+
+    after(function() {
+        // Root after
+    })
+
+    describe("Nested suite", function() {
+        before(function() {
+            // Nested before
+        })
+
+        after(function() {
+            // Nested after
+        })
+
+        it("Leaf test", function() {
+            // Execution order for this test is:
+            // Root before
+            // Nested before
+            // This test
+            // Nested after
+            // Root after
+        })
+    })
+
+    it("Another test", function() {
+        // Execution order for this test is:
+        // Root before
+        // This test
+        // Root after
+    })
+})
+```
+
+### Test Selection
+
+You can mark tests and suites as skipped for later implementation
 ```
 describe.skip("Skipped suite", function() {
     it("This test will be skipped", function() {})
 })
 
-describe("Skipped test", function() {
+describe("Skipped test inside this suite", function() {
     it.skip("This test will be skipped", function() {})
     it("This test will NOT be skipped", function() {})
 })
 ```
 
-You can flag individual tests at the it() or describe() level if you want to only run a sub-set of tests:
+You can flag individual tests at the it() or describe() level if you want to only run a sub-set of tests
 ```
 describe.only("Only this suite will run", function() {
     it("This test will be run", function() {})
@@ -195,7 +286,7 @@ function failureMessage(actual, isNegated) { return string }
 
 All matchers have an *expected* variable in scope which represents the expected value (i.e. the value passed into expect() in the test).
 
-#### Examples
+#### How To Write Nutkin Tests
 
 Here is a simple matcher that checks against a constant value:
 ```
