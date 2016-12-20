@@ -137,7 +137,7 @@ class TeamCityReporter extends Reporter {
     }
 
     function testStarted(name) {
-        print("##teamcity[testStarted name='" + name + "']")
+        print("##teamcity[testStarted name='" + name + "'] captureStandardOutput='true'")
     }
 
     function testFinished(name) {
@@ -147,7 +147,7 @@ class TeamCityReporter extends Reporter {
     function testFailed(name, failure, stack = "") {
         print("##teamcity[testFailed name='" + name + "' message='" + safeGetErrorMessage(failure) + "' details='" + safeGetErrorDescription(failure) + "']")
         testFinished(name)
-        return true
+        return false
     }
 
     function testSkipped(name) {

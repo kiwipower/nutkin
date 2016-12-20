@@ -470,7 +470,7 @@ describe("Nutkin", function() {
             it("Outputs a correctly formatted test started message", function() {
                 tcReporter.testStarted("A Test")
     
-                expect(printer.lastLine()).to.equal("##teamcity[testStarted name='A Test']\n")
+                expect(printer.lastLine()).to.equal("##teamcity[testStarted name='A Test'] captureStandardOutput='true'\n")
             })
     
             it("Outputs a correctly formatted test finished message", function() {
