@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-export NUTKIN_ENV="NUTKIN_TEST"
+if [ "$NUTKIN_ENV" = "" ]
+then
+    export NUTKIN_ENV="NUTKIN_TEST"
+fi
 
 ./build.sh
 pleasebuild test/testPrinter.nut >> build/nutkin.nut
