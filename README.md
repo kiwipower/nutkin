@@ -175,7 +175,7 @@ describe("Root suite", function() {
 })
 ```
 
-Note that before() calls are executed top down, whereas after() calls are executed bottom up.
+Note that beforeEach() calls are executed top down, whereas afterEach() calls are executed bottom up.
 
 If you want to run some setup or tear down code once for a describe suite then you can use before() and after():
 
@@ -216,7 +216,6 @@ describe("Root suite", function() {
         })
 
         after(function() {
-
             // Nested after
         })
     })
