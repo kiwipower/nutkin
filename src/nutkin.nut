@@ -97,6 +97,8 @@ class Suite {
     parent = null
     beforeFunc = null
     afterFunc = null
+    beforeEachFunc = null
+    afterEachFunc = null
     skipped = null
     only = null
     runQueue = null
@@ -136,6 +138,22 @@ class Suite {
         afterFunc = afterImpl
     }
 
+    function beforeEach(beforeEachImpl) {
+        if (typeof beforeEachImpl != "function") {
+            throw "beforeEach() takes a function argument"
+        }
+
+        beforeEachFunc = beforeEachImpl
+    }
+
+    function afterEach(afterEachImpl) {
+        if (typeof afterEachImpl != "function") {
+            throw "afterEach() takes a function argument"
+        }
+
+        afterEachFunc = afterEachImpl
+    }
+
     function shouldBeSkipped() {
         return skipped || (parent ? parent.shouldBeSkipped() : false)
     }
@@ -167,10 +185,6 @@ class Suite {
     }
 
     function runBefores() {
-        if (parent) {
-            parent.runBefores()
-        }
-
         if (beforeFunc) {
             beforeFunc()
         }
@@ -180,9 +194,25 @@ class Suite {
         if (afterFunc) {
             afterFunc()
         }
+    }
+
+    function runBeforeEaches() {
+        if (parent) {
+            parent.runBeforeEaches()
+        }
+
+        if (beforeEachFunc) {
+            beforeEachFunc()
+        }
+    }
+
+    function runAfterEaches() {
+        if (afterEachFunc) {
+            afterEachFunc()
+        }
 
         if (parent) {
-            parent.runAfters()
+            parent.runAfterEaches()
         }
     }
 
@@ -195,13 +225,16 @@ class Suite {
         local outcomes = []
 
         reporter.suiteStarted(name)
+        runBefores()
 
         try {
             foreach(runnable in runQueue) {
-                runBefores()
+                runBeforeEaches()
                 outcomes.extend(runnable.run(reporter, explicitOnlyInChild ? only : false))
-                runAfters()
+                runAfterEaches()
             }
+
+            runAfters()
             reporter.suiteFinished(name, "")
         } catch (e) {
             reporter.suiteFinished(name, e, ::stackTrace())

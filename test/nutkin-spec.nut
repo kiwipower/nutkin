@@ -442,7 +442,7 @@ describe("Nutkin", function() {
             local printer = TestPrinter()
             local tcReporter = TeamCityReporter(printer)
 
-            before(function() {
+            beforeEach(function() {
                 printer.reset()
             })
     
@@ -523,7 +523,7 @@ describe("Nutkin", function() {
             local printer = TestPrinter()
             local reporter = ConsoleReporter(printer)
 
-            after(function() {
+            afterEach(function() {
                 printer.reset()
             })
             
@@ -650,62 +650,109 @@ describe("Nutkin", function() {
         })
     })
 
-    describe("Before & After", function() {
-        local rootBeforeCalled = false
-        local nestedAfterCalled = false
-        local nestedBeforeCalled = false
-        local beforeState = 0
-        local afterState = 0
+    describe("before & after", function() {
+        local rootBeforeCallCount = 0
+        local rootAfterCallCount = 0
+        local nestedBeforeCallCount = 0
+        local nestedAfterCallCount = 0
 
         before(function() {
-            rootBeforeCalled = true
-            nestedBeforeCalled = false
-            beforeState = 1
+            rootBeforeCallCount++
         })
 
         after(function() {
-            rootBeforeCalled = false
-            afterState = 1
+            rootAfterCallCount++
         })
 
         describe("Nested before & after", function() {
 
             before(function() {
-                nestedBeforeCalled = true
-                beforeState = 2
+                nestedBeforeCallCount++
             })
 
             after(function() {
-                nestedBeforeCalled = false
-                nestedAfterCalled = true
-                afterState = 2
+                nestedAfterCallCount++
             })
 
-            it("before chain is called starting at highest level and working down", function() {
-                expect(rootBeforeCalled).to.be.truthy("Root before should have been called before this test");
-                expect(nestedBeforeCalled).to.be.truthy("Nested before should have been called before this test");
-                expect(nestedAfterCalled).to.be.falsy("Nested after should not have been called yet");
+            it("before is applied once per describe", function() {
+                expect(nestedBeforeCallCount).to.equal(1)
+                expect(nestedAfterCallCount).to.equal(0)
+                expect(rootBeforeCallCount).to.equal(1)
+                expect(rootAfterCallCount).to.equal(0)
             })
 
-            it("before is called before each enclosed test", function() {
-                expect(nestedAfterCalled).to.be.truthy("Nested after should have been called after previous test");
-                expect(nestedBeforeCalled).to.be.truthy("Nested before should have been called before this test");
-                expect(rootBeforeCalled).to.be.truthy("Root before should have been called before this test");
-
-                nestedAfterCalled = false
-            })
-
-            it("befores are applied from root to test", function() {
-                expect(beforeState).to.equal(2);
+            it("before and after do not delegate up the suite chain when called", function() {
+                expect(nestedBeforeCallCount).to.equal(1)
+                expect(nestedAfterCallCount).to.equal(0)
+                expect(rootBeforeCallCount).to.equal(1)
+                expect(rootAfterCallCount).to.equal(0)
             })
         })
 
-        it("afters are applied from test to root", function() {
-            expect(beforeState).to.equal(1);
-            expect(afterState).to.equal(1);
+        it("after is not applied until after all specs for the describe have executed", function() {
+            expect(nestedBeforeCallCount).to.equal(1)
+            expect(nestedAfterCallCount).to.equal(1)
+            expect(rootBeforeCallCount).to.equal(1)
+            expect(rootAfterCallCount).to.equal(0)
+        })
+    })
 
-            expect(rootBeforeCalled).to.be.truthy("Root before should have been called");
-            expect(nestedBeforeCalled).to.be.falsy("Nested before should not have been called");
+    describe("beforeEach & afterEach", function() {
+        local rootBeforeEachCalled = false
+        local nestedAfterEachCalled = false
+        local nestedBeforeEachCalled = false
+        local beforeEachState = 0
+        local afterEachState = 0
+
+        beforeEach(function() {
+            rootBeforeEachCalled = true
+            nestedBeforeEachCalled = false
+            beforeEachState = 1
+        })
+
+        afterEach(function() {
+            rootBeforeEachCalled = false
+            afterEachState = 1
+        })
+
+        describe("Nested beforeEach & afterEach", function() {
+
+            beforeEach(function() {
+                nestedBeforeEachCalled = true
+                beforeEachState = 2
+            })
+
+            afterEach(function() {
+                nestedBeforeEachCalled = false
+                nestedAfterEachCalled = true
+                afterEachState = 2
+            })
+
+            it("beforeEach chain is called starting at highest level and working down", function() {
+                expect(rootBeforeEachCalled).to.be.truthy("Root beforeEach should have been called before this test");
+                expect(nestedBeforeEachCalled).to.be.truthy("Nested beforeEach should have been called before this test");
+                expect(nestedAfterEachCalled).to.be.falsy("Nested afterEach should not have been called yet");
+            })
+
+            it("beforeEach is called before each enclosed test", function() {
+                expect(nestedAfterEachCalled).to.be.truthy("Nested afterEach should have been called after previous test");
+                expect(nestedBeforeEachCalled).to.be.truthy("Nested beforeEach should have been called before this test");
+                expect(rootBeforeEachCalled).to.be.truthy("Root beforeEach should have been called before this test");
+
+                nestedAfterEachCalled = false
+            })
+
+            it("beforeEaches are applied from root to test", function() {
+                expect(beforeEachState).to.equal(2);
+            })
+        })
+
+        it("afterEaches are applied from test to root", function() {
+            expect(beforeEachState).to.equal(1);
+            expect(afterEachState).to.equal(1);
+
+            expect(rootBeforeEachCalled).to.be.truthy("Root beforeEach should have been called");
+            expect(nestedBeforeEachCalled).to.be.falsy("Nested beforeEach should not have been called");
         })
     })
 

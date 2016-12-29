@@ -112,12 +112,12 @@ it("has a not", function() {
 
 See the [Matchers](#matchers) section later for a list of all built in matchers.
 
-### Before & After
+### Before & After Each Test & Each Suite
 
-You can run some setup code before each test using before()
+You can run some setup code before each test using beforeEach()
 ```
-describe("Has a before", function() {
-    before(function() {
+describe("Has a beforeEach", function() {
+    beforeEach(function() {
         // Run before each test in this suite
     })
 
@@ -125,10 +125,10 @@ describe("Has a before", function() {
 })
 ```
 
-And, likewise, you can also use after() for tear down code
+And, likewise, you can also use afterEach() for tear down code
 ```
-describe("Has an after", function() {
-    after(function() {
+describe("Has an afterEach", function() {
+    afterEach(function() {
         // Run after each test in this suite
     })
 
@@ -136,7 +136,70 @@ describe("Has an after", function() {
 })
 ```
 
-Nested suites can also specify before() and after() and these are run for each descendant test
+Nested suites can also specify beforeEach() and afterEach() and these are run for each descendant test
+```
+describe("Root suite", function() {
+    beforeEach(function() {
+        // Root beforeEach
+    })
+
+    afterEach(function() {
+        // Root afterEach
+    })
+
+    describe("Nested suite", function() {
+        beforeEach(function() {
+            // Nested beforeEach
+        })
+
+        afterEach(function() {
+            // Nested afterEach
+        })
+
+        it("Leaf test", function() {
+            // Execution order for this test is:
+            // Root beforeEach
+            // Nested beforeEach
+            // This test
+            // Nested afterEach
+            // Root afterEach
+        })
+    })
+
+    it("Another test", function() {
+        // Execution order for this test is:
+        // Root beforeEach
+        // This test
+        // Root afterEach
+    })
+})
+```
+
+Note that before() calls are executed top down, whereas after() calls are executed bottom up.
+
+If you want to run some setup or tear down code once for a describe suite then you can use before() and after():
+
+```
+describe("Has a before", function() {
+    before(function() {
+        // Run before any test in this suite is executed
+    })
+
+    it("A test", function() {})
+})
+```
+
+```
+describe("Has an after", function() {
+    after(function() {
+        // Run after all of the tests in this suite have executed
+    })
+
+    it("A test", function() {})
+})
+```
+
+Nested suites can also specify before() and after() and these are run at the start and end of their respective suite:
 ```
 describe("Root suite", function() {
     before(function() {
@@ -153,29 +216,16 @@ describe("Root suite", function() {
         })
 
         after(function() {
+
             // Nested after
         })
-
-        it("Leaf test", function() {
-            // Execution order for this test is:
-            // Root before
-            // Nested before
-            // This test
-            // Nested after
-            // Root after
-        })
-    })
-
-    it("Another test", function() {
-        // Execution order for this test is:
-        // Root before
-        // This test
-        // Root after
     })
 })
 ```
 
-Note that before() calls are executed top down, whereas after() alls are executed bottom up.
+Note that, unlike beforeEach() and afterEach(), before() and after() do not call any before() or after() implementations in their ancestor suites.
+
+And, of course, you can mix and match before(), after(), beforeEach() and afterEach() to achieve the setup an tear down that you need.
 
 ### Test Selection
 
