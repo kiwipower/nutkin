@@ -2,39 +2,57 @@ class Expectation {
     actual = null
     to = null
     be = null
+    been = null
     a = null
+    has = null
+    have = null
+    with = null
+    that = null
+    which = null
+    and = null
+    of = null
+    is = null
 
     constructor(actualValue) {
         actual = actualValue
         to = this
         be = this
+        been = this
         a = this
+        has = this
+        have = this
+        with = this
+        that = this
+        which = this
+        and = this
+        of = this
+        is = this
     }
 
     function isString(x) {
         return typeof x == typeof ""
     }
 
-    function is(matcher) {
+    function execMatcher(matcher) {
         if (!matcher.test(actual)) {
             throw Failure(matcher.failureMessage(actual, false), matcher.description)
         }
     }
 
     function equal(expected, description = "") {
-        return is(EqualsMatcher(expected, description))
+        return execMatcher(EqualsMatcher(expected, description))
     }
 
     function truthy(description = "") {
-        return is(TruthyMatcher(null, description))
+        return execMatcher(TruthyMatcher(null, description))
     }
 
     function falsy(description = "") {
-        return is(FalsyMatcher(null, description))
+        return execMatcher(FalsyMatcher(null, description))
     }
 
     function contain(expected, description = "") {
-        return is(ContainsMatcher(expected, description))
+        return execMatcher(ContainsMatcher(expected, description))
     }
 
     function contains(value, description = "") {
@@ -42,7 +60,7 @@ class Expectation {
     }
 
     function match(expression, description = "") {
-        return is(RegexpMatcher(expression, description))
+        return execMatcher(RegexpMatcher(expression, description))
     }
 
     function matches(expression, description = "") {
@@ -50,15 +68,15 @@ class Expectation {
     }
 
     function lessThan(value, description = "") {
-        return is(LessThanMatcher(value, description))
+        return execMatcher(LessThanMatcher(value, description))
     }
 
     function greaterThan(value, description = "") {
-        return is(GreaterThanMatcher(value, description))
+        return execMatcher(GreaterThanMatcher(value, description))
     }
 
     function throws(exception, description = "") {
-        return is(ThrowsMatcher(exception, description))
+        return execMatcher(ThrowsMatcher(exception, description))
     }
 
     function toThrow(expected, description = "") {
@@ -66,17 +84,17 @@ class Expectation {
     }
 
     function number(description = "") {
-        return is(NumberMatcher(null, description))
+        return execMatcher(NumberMatcher(null, description))
     }
 
     function ofType(type, description = "") {
-        return is(TypeMatcher(type, description))
+        return execMatcher(TypeMatcher(type, description))
     }
 
     function toBe(expectedOrMatcher, description = "") {
         if (typeof expectedOrMatcher == "instance") {
             // Custom matcher
-            return is(expectedOrMatcher)
+            return execMatcher(expectedOrMatcher)
         } else {
             // SquirrelJasmine compatability function
             return equal(expectedOrMatcher, description)
@@ -116,7 +134,7 @@ class Expectation {
 
 class NegatedExpectation extends Expectation {
 
-    function is(matcher) {
+    function execMatcher(matcher) {
         if (matcher.test(actual)) {
             throw Failure(matcher.failureMessage(actual, true), matcher.description)
         }

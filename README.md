@@ -440,8 +440,6 @@ Then you can chain the matcher into an expect call in a readable way:
 ```
 expect("Nutkin").toBe(aSquirrel())
 
-expect("Nutkin").is(aSquirrel())
-
 expect("Old Brown").not.toBe(aSquirrel())
 ```
 

@@ -324,6 +324,13 @@ describe("Nutkin", function() {
             })
         })
 
+        describe("Chainables", function() {
+
+            it("Provides some chaining words to improve test readability that ironically make this test less readable", function() {
+                expect(1).to.be.been.a.has.have.with.that.which.and.of.is.equal(1);
+            })
+        })
+
         describe("Skipping a test", function() {
             it.skip("This test will be skipped and should show in the output", function() {})
         })
@@ -380,42 +387,42 @@ describe("Nutkin", function() {
         describe("No-arg matchers", function() {
 
             it("Work for positive outcomes", function() {
-                expect("Nutkin").is(aSquirrel())
+                expect("Nutkin").toBe(aSquirrel())
             })
 
             it("Work for negative outcomes", function() {
                 expectReportedFailure("Fluffball is not a squirrel")
-                expect("Fluffball").is(aSquirrel())
+                expect("Fluffball").toBe(aSquirrel())
             })
 
             it("Works with not", function() {
-                expect("Fluffball").not.is(aSquirrel())
+                expect("Fluffball").not.toBe(aSquirrel())
             })
 
             it("Works with failing not", function() {
                 expectReportedFailure("Nutkin IS a squirrel")
-                expect("Nutkin").not.is(aSquirrel())
+                expect("Nutkin").not.toBe(aSquirrel())
             })
         })
 
         describe("Expected arg matchers", function() {
 
             it("Work for positive outcomes", function() {
-                expect("Nutkin").is(called("Nutkin"))
+                expect("Nutkin").toBe(called("Nutkin"))
             })
 
             it("Work for negative outcomes", function() {
                 expectReportedFailure("Fluffball is not called Nutkin")
-                expect("Fluffball").is(called("Nutkin"))
+                expect("Fluffball").toBe(called("Nutkin"))
             })
 
             it("Works with not", function() {
-                expect("Fluffball").not.is(called("Nutkin"))
+                expect("Fluffball").not.toBe(called("Nutkin"))
             })
 
             it("Works with failing not", function() {
                 expectReportedFailure("Fluffball IS called Fluffball")
-                expect("Fluffball").not.is(called("Fluffball"))
+                expect("Fluffball").not.toBe(called("Fluffball"))
             })
         })
 
