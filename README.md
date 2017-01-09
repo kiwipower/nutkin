@@ -5,6 +5,24 @@ It is very similar to the Mocha and Chai JavaScript frameworks.
 
 It is currently being developed for use with the [Electric Imp](https://electricimp.com) flavour of Squirrel but should be (mostly) applicable to any use case.
 
+## Contents
+
+* [About Squirrel](#about-squirrel)
+* [Getting Started](#getting-started)
+* [Building & Using Nutkin](#building-and-using-nutkin)
+    * [Running The Tests](#running-the-tests)
+    * [Continuous Integration](#continuous-integration)
+    * [Console Output](#console-output)
+* [How To Write Nutkin Tests](#how-to-write-nutkin-tests)
+    * [Suites & Specs](#suites-and-specs)
+    * [Asserting Behaviour](#asserting-behaviour)
+    * [Setup & Teardown](#setup-and-teardown)
+    * [Test Selection](#test-selection)
+* [Matchers](#matchers)
+* [Custom Matchers](#custom-matchers)
+    * [Examples](#examples)
+    * [Usage](#usage)
+
 ## About Squirrel
 If you're new to Squirrel, it's probably best to start with the Electric Imp [Squirrel Programming Guide](https://electricimp.com/docs/squirrel/squirrelcrib/) and the [Developer Guides](https://electricimp.com/docs/resources/).
 
@@ -30,20 +48,20 @@ Copy the nutkin.nut file somewhere useful to use and import it as required (note
 ```
 How you trigger the tests is up to you. One way would be to run the test files using sq in a script.
 
-#### Running the tests
+### Running the tests
 Nutkin can test itself. To run the unit tests do
 ```
 ./test.sh
 ```
 
-#### Continous Integration
+### Continuous Integration
 Nutkin includes a test reporter for [TeamCity](TeamCityReporter) that outputs test information in a format that will let TeamCity automatically show information about the tests run and correctly detect a failure.
 To enable this reporter you need to set the following environment variable in your build:
 ```
 NUTKIN_ENV=TEAM_CITY
 ```
 
-#### Console Output
+### Console Output
 By default, Nutkin will output test information using a console reporter. This will output test details to stdout, coloured for clarity:
 
 ![Console reporter example](https://raw.githubusercontent.com/kiwipower/nutkin/master/docs/console_reporter_example.png)
@@ -112,7 +130,7 @@ it("has a not", function() {
 
 See the [Matchers](#matchers) section later for a list of all built in matchers.
 
-### Before & After Each Test & Each Suite
+### Setup and Teardown
 
 You can run some setup code before each test using beforeEach()
 ```
@@ -345,7 +363,7 @@ function failureMessage(actual, isNegated) { return string }
 
 All matchers have an *expected* variable in scope which represents the expected value, i.e. the value passed into expect() in the test.
 
-#### Examples
+### Examples
 
 Here is a simple matcher that checks against a constant value:
 ```
@@ -411,7 +429,7 @@ All matchers also have the following functions in scope:
 
 All of the built-in matchers are implemented this way, so the best place to see an example is in the source code itself.
 
-#### Usage
+### Usage
 
 A neat way of using a custom matcher is to define a local variable in your test with a fluent name. For example:
 ```
