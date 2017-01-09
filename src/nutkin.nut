@@ -264,9 +264,9 @@ class Nutkin {
     function getTimeInMillis() {
         try {
             if (typeof clock == "function") {
-                return clock() * 1000
+                return clock() * 1000.0
             } else {
-                return clock
+                return clock * 1.0 // To ensure it's a float
             }
         } catch (e) {
             // Target env has no clock (e.g. device stub)
@@ -282,6 +282,11 @@ class Nutkin {
 
         local stopped = getTimeInMillis()
         local timeTaken = stopped - started
+
+        if (timeTaken > 1000) {
+            return (timeTaken / 1000) + "s"
+        }
+
         return timeTaken + "ms"
     }
 

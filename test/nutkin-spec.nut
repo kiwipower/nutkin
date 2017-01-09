@@ -767,11 +767,21 @@ describe("Nutkin", function() {
 
         it("Deals with the clock being a variable not a function", function() {
             local actualClock = clock;
-            clock = 1234
+            clock = 123
 
             local timeTaken = nutkin.calculateTimeTaken(0)
 
-            expect(timeTaken).to.equal("1234ms")
+            expect(timeTaken).to.equal("123ms")
+            clock = actualClock
+        })
+
+        it("Reports time taken in seconds if greater than 1000ms", function() {
+            local actualClock = clock;
+            clock = 11534
+
+            local timeTaken = nutkin.calculateTimeTaken(0)
+
+            expect(timeTaken).to.equal("11.534s")
             clock = actualClock
         })
 
