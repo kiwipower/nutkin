@@ -18,6 +18,7 @@ It is currently being developed for use with the [Electric Imp](https://electric
     * [Asserting Behaviour](#asserting-behaviour)
     * [Setup & Teardown](#setup-and-teardown)
     * [Test Selection](#test-selection)
+* [Chainables](#chainables)
 * [Matchers](#matchers)
 * [Custom Matchers](#custom-matchers)
     * [Examples](#examples)
@@ -267,6 +268,23 @@ describe.only("Suite", function() {
     it("This test will NOT run", function() {})
 })
 ```
+
+## Chainables
+The following are available to use for chaining calls to expect() to make your tests more readable:
+
+* to 
+* be 
+* been 
+* a 
+* has 
+* have 
+* with 
+* that 
+* which 
+* and 
+* of 
+* is
+
 
 ## Matchers
 The following are the built-in matchers:
