@@ -657,27 +657,27 @@ describe("Nutkin", function() {
         })
     })
 
-    describe("before & after", function() {
+    describe("beforeAll & afterAll", function() {
         local rootBeforeCallCount = 0
         local rootAfterCallCount = 0
         local nestedBeforeCallCount = 0
         local nestedAfterCallCount = 0
 
-        before(function() {
+        beforeAll(function() {
             rootBeforeCallCount++
         })
 
-        after(function() {
+        afterAll(function() {
             rootAfterCallCount++
         })
 
-        describe("Nested before & after", function() {
+        describe("Nested beforeAll & afterAll", function() {
 
-            before(function() {
+            beforeAll(function() {
                 nestedBeforeCallCount++
             })
 
-            after(function() {
+            afterAll(function() {
                 nestedAfterCallCount++
             })
 

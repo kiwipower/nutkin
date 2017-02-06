@@ -95,8 +95,8 @@ class Suite {
     name = null
     suiteBody = null
     parent = null
-    beforeFunc = null
-    afterFunc = null
+    beforeAllFunc = null
+    afterAllFunc = null
     beforeEachFunc = null
     afterEachFunc = null
     skipped = null
@@ -122,20 +122,20 @@ class Suite {
         }
     }
 
-    function before(beforeImpl) {
-        if (typeof beforeImpl != "function") {
+    function beforeAll(beforeAllImpl) {
+        if (typeof beforeAllImpl != "function") {
             throw "before() takes a function argument"
         }
 
-        beforeFunc = beforeImpl
+        beforeAllFunc = beforeAllImpl
     }
 
-    function after(afterImpl) {
-        if (typeof afterImpl != "function") {
+    function afterAll(afterAllImpl) {
+        if (typeof afterAllImpl != "function") {
             throw "after() takes a function argument"
         }
 
-        afterFunc = afterImpl
+        afterAllFunc = afterAllImpl
     }
 
     function beforeEach(beforeEachImpl) {
@@ -184,15 +184,15 @@ class Suite {
         return false
     }
 
-    function runBefores() {
-        if (beforeFunc) {
-            beforeFunc()
+    function runBeforeAlls() {
+        if (beforeAllFunc) {
+            beforeAllFunc()
         }
     }
 
-    function runAfters() {
-        if (afterFunc) {
-            afterFunc()
+    function runAfterAlls() {
+        if (afterAllFunc) {
+            afterAllFunc()
         }
     }
 
@@ -225,7 +225,7 @@ class Suite {
         local outcomes = []
 
         reporter.suiteStarted(name)
-        runBefores()
+        runBeforeAlls()
 
         try {
             foreach(runnable in runQueue) {
@@ -234,7 +234,7 @@ class Suite {
                 runAfterEaches()
             }
 
-            runAfters()
+            runAfterAlls()
             reporter.suiteFinished(name, "")
         } catch (e) {
             reporter.suiteFinished(name, e, ::stackTrace())

@@ -71,7 +71,7 @@ By default, Nutkin will output test information using a console reporter. This w
 
 ### Suites and Specs
 
-Tests are specified using it(), and these must be defined inside a describe() suite
+Tests are specified using ```it()```, and these must be defined inside a ```describe()``` suite
 ```
 describe("A suite", function() {
    it("contains this test", function() {
@@ -108,7 +108,7 @@ describe("A suite", function() {
 
 ### Asserting Behaviour
 
-You can assert values by chaining calls to expect()
+You can assert values by chaining calls to ```expect()```
 ```
 it("uses an expect", function() {
     expect(thing).to.equal(otherThing)
@@ -133,7 +133,7 @@ See the [Matchers](#matchers) section later for a list of all built in matchers.
 
 ### Setup and Teardown
 
-You can run some setup code before each test using beforeEach()
+You can run some setup code before each test using ```beforeEach()```
 ```
 describe("Has a beforeEach", function() {
     beforeEach(function() {
@@ -142,7 +142,7 @@ describe("Has a beforeEach", function() {
 })
 ```
 
-And, likewise, you can also use afterEach() for tear down code
+And, likewise, you can also use ```afterEach()``` for tear down code
 ```
 describe("Has an afterEach", function() {
     afterEach(function() {
@@ -151,7 +151,7 @@ describe("Has an afterEach", function() {
 })
 ```
 
-Nested suites can also specify beforeEach() and afterEach() and these are run for each descendant test
+Nested suites can also specify ```beforeEach()``` and ```afterEach()``` and these are run for each descendant test
 ```
 describe("Root suite", function() {
     beforeEach(function() {
@@ -190,52 +190,52 @@ describe("Root suite", function() {
 })
 ```
 
-Note that beforeEach() calls are executed top down in the suite stack, whereas afterEach() calls are executed bottom up.
+Note that ```beforeEach()``` calls are executed top down in the suite stack, whereas ```afterEach()``` calls are executed bottom up.
 
-If you want to run some setup or tear down code once for a describe suite then you can use before() and after():
+If you want to run some setup or tear down code once for a describe suite then you can use ```beforeAll()``` and ```afterAll()```:
 
 ```
-describe("Has a before", function() {
-    before(function() {
+describe("Has a beforeAll", function() {
+    beforeAll(function() {
         // Run before any test in this suite is executed
     })
 })
 ```
 
 ```
-describe("Has an after", function() {
-    after(function() {
+describe("Has an afterAll", function() {
+    afterAll(function() {
         // Run after all of the tests in this suite have executed
     })
 })
 ```
 
-Nested suites can also specify before() and after() and these are run at the start and end of their respective suite:
+Nested suites can also specify ```beforeAll()``` and ```afterAll()``` and these are run at the start and end of their respective suite:
 ```
 describe("Root suite", function() {
-    before(function() {
-        // Root before
+    beforeAll(function() {
+        // Root beforeAll
     })
 
-    after(function() {
-        // Root after
+    afterAll(function() {
+        // Root afterAll
     })
 
     describe("Nested suite", function() {
-        before(function() {
-            // Nested before run before all tests in this nested suite, root before is not re-run
+        beforeAll(function() {
+            // Nested beforeAll run before all tests in this nested suite, root beforeAll is not re-run
         })
 
-        after(function() {
-            // Nested after works like the nested before, but after all the tests in this suite have run
+        afterAll(function() {
+            // Nested after works like the nested beforeAll, but after all the tests in this suite have run
         })
     })
 })
 ```
 
-Note that, unlike beforeEach() and afterEach(), before() and after() do not call any before() or after() implementations in their ancestor suites.
+Note that, unlike ```beforeEach()``` and ```afterEach()```, ```beforeAll()``` and ```afterAll()``` do not call any ```beforeAll()``` or ```afterAll()``` implementations in their ancestor suites.
 
-And, of course, you can mix and match before(), after(), beforeEach() and afterEach() to achieve the setup and tear down that you need.
+And, of course, you can mix and match ```beforeAll()```, ```afterAll()```, ```beforeEach()``` and ```afterEach()``` to achieve the setup and tear down that you need.
 
 ### Test Selection
 
@@ -251,7 +251,7 @@ describe("Skipped test inside this suite", function() {
 })
 ```
 
-You can flag individual tests at the it() or describe() level if you want to only run a sub-set of tests
+You can flag individual tests at the ```it()``` or ```describe()``` level if you want to only run a sub-set of tests
 ```
 describe.only("Only this suite will run", function() {
     it("This test will be run", function() {})
@@ -270,7 +270,7 @@ describe.only("Suite", function() {
 ```
 
 ## Chainables
-The following are available to use for chaining calls to expect() to make your tests more readable:
+The following are available to use for chaining calls to ```expect()``` to make your tests more readable:
 
 * to 
 * be 
@@ -289,36 +289,36 @@ The following are available to use for chaining calls to expect() to make your t
 ## Matchers
 The following are the built-in matchers:
 
-* equal - == equality for strings and numbers, and deep equals for arrays and tables
+* **equal** - == equality for strings and numbers, and deep equals for arrays and tables
 ```
 expect(squirrel.name).to.equal("Whisky Frisky")
 
 // For compatability with squirrel jasmine:
 expect(squirrel.name).toBe("Whisky Frisky")
 ```
-* truthy
+* **truthy**
 ```
 expect(squirrel.frisky).to.be.truthy()
 
 // For compatability with squirrel jasmine:
 expect(squirrel.frisky).toBeTruthy()
 ```
-* falsy
+* **falsy**
 ```
 expect(squirrel.calm).to.be.falsy()
 
 // For compatability with squirrel jasmine:
 expect(squirrel.calm).toBeFalsy()
 ```
-* number - matches any integer or float
+* **number** - matches any integer or float
 ```
 expect(1).to.be.a.number()
 ```
-* ofType - matches against built-in Squirrel type names
+* **ofType** - matches against built-in Squirrel type names
 ```
 expect("something").to.be.ofType("string")
 ```
-* contains - expects an array and will work with nested tables
+* **contains** - expects an array and will work with nested tables
 ```
 expect(squirrels).to.contain("Furly Curly")
 // or
@@ -327,7 +327,7 @@ expect(squirrels).contains("Furly Curly")
 // For compatability with squirrel jasmine:
 expect(squirrels).toContain("Furly Curly")
 ```
-* matches - expects a string and checks that it matches the given regular expression
+* **matches** - expects a string and checks that it matches the given regular expression
 ```
 expect(squirrel.name).to.match("[A-Za-z]*")
 // or
@@ -336,21 +336,21 @@ expect(squirrel.name).matches("[A-Za-z]*")
 // For compatability with squirrel jasmine:
 expect(squirrel.name).toMatch("[A-Za-z]*")
 ```
-* lessThan
+* **lessThan**
 ```
 expect(squirrelCount).to.be.lessThan(100)
 
 // For compatability with squirrel jasmine:
 expect(squirrelCount).toBeLessThan(100)
 ```
-* greaterThan
+* **greaterThan**
 ```
 expect(squirrelCount).to.be.greaterThan(1)
 
 // For compatability with squirrel jasmine:
 expect(squirrelCount).toBeGreaterThan(1)
 ```
-* throws - expects an exception
+* **throws** - expects an exception
 ```
 expect(squirrelNutkinPlayingNinepins).throws("A crab apple")
 // or
@@ -360,7 +360,7 @@ expect(squirrelNutkinPlayingNinepins).toThrow("A crab apple")
 expectException("A crab apple", squirrelNutkinPlayingNinepins)
 ```
 
-Plus the meta-expectation *not*, which can prefix any of the above to give you the inverse, e.g.:
+Plus the meta-expectation **not**, which can prefix any of the above to give you the inverse, e.g.:
 
 ```
 expect("Whisky Frisky").to.not.equal("Hippity Hop")
@@ -368,18 +368,18 @@ expect("Whisky Frisky").to.not.equal("Hippity Hop")
 
 ## Custom Matchers
 
-You can easily add your own matchers to Nutkin. All you need to do is extend Matcher and implement two methods:
+You can easily add your own matchers to Nutkin. All you need to do is extend ```Matcher``` and implement two methods:
 
-1. test - returns true if the value matches, false otherwise
+1. **test** - returns true if the value matches, false otherwise
 ```
 function test(actual) { return boolean }
 ```
-2. failureMessage - called if the test method returns false and returns the failure message to pass to the reporter
+2. **failureMessage** - called if the test method returns false and returns the failure message to pass to the reporter
 ```
 function failureMessage(actual, isNegated) { return string }
 ```
 
-All matchers have an *expected* variable in scope which represents the expected value, i.e. the value passed into expect() in the test.
+All matchers have an ```expected``` variable in scope which represents the expected value, i.e. the value passed into ```expect()``` in the test.
 
 ### Examples
 
@@ -411,7 +411,7 @@ class NameMatcher extends Matcher {
 }
 ```
 
-You can use the isNegated parameter to customise your failure message for the case when the matcher is preceeded by not:
+You can use the ```isNegated``` parameter to customise your failure message for the case when the matcher is preceeded by not:
 ```
 test:
 expect("Fluffball").not.toBe(called("Fluffball"))
@@ -435,15 +435,15 @@ class NameMatcher extends Matcher {
 
 All matchers also have the following functions in scope:
 
-* isTable(thing): bool
-* isArray(thing): bool
-* isString(thing): bool
-* prettify(thing): string - outputs a formatted value - does the right thing for nulls, arrays and tables
-* arraysEqual(array1, array2): bool
-* tablesEqual(table1, table2): bool
-* equal: bool - generic equality checker that does a deep equal for arrays and tables
-* contains(array, thing): bool
-* negateIfRequired(string, bool): string - will prefix the given string with a negation (e.g. 'not ') if the second param is true
+* ```isTable(thing): bool```
+* ```isArray(thing): bool```
+* ```isString(thing): bool```
+* ```prettify(thing): string``` - outputs a formatted value - does the right thing for nulls, arrays and tables
+* ```arraysEqual(array1, array2): bool```
+* ```tablesEqual(table1, table2): bool```
+* ```equal: bool``` - generic equality checker that does a deep equal for arrays and tables
+* ```contains(array, thing): bool```
+* ```negateIfRequired(string, bool): string``` - will prefix the given string with a negation (e.g. 'not ') if the second param is true
 
 All of the built-in matchers are implemented this way, so the best place to see an example is in the source code itself.
 
@@ -461,4 +461,4 @@ expect("Nutkin").toBe(aSquirrel())
 expect("Old Brown").not.toBe(aSquirrel())
 ```
 
-Note that all matchers will work with the .not prefix for free, apart from possibly customising the failure message.
+Note that all matchers will work with the ```.not``` prefix for free, apart from possibly customising the failure message.
