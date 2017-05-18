@@ -48,6 +48,10 @@ describe("Nutkin", function() {
                 expect(123.456).to.equal(123.456, "numbers should be equal")
             })
 
+            it("works with floats and numbers", function() {
+                expect(123.000).to.equal(123, "numbers should be equal")
+            })
+
             it("works with arrays", function() {
                 expect([1, 2, 3]).to.equal([1, 2, 3], "arrays should be equal")
             })
@@ -229,6 +233,25 @@ describe("Nutkin", function() {
                 expectReportedFailure("Expected (null) to be of type function")
 
                 expect(null).to.be.ofType("function")
+            })
+        })
+
+        describe("To be close to", function() {
+
+            it("compares floating point numbers to a specified precision", function() {
+                expect(1.123).to.beCloseTo(1.12, 2);
+                expect(1.1235).to.be.closeTo(1.1234, 3);
+                expect(1.123).toBeCloseTo(1.13);
+            })
+
+            it("Works with not", function() {
+                expect(100).not.to.beCloseTo(1)
+            })
+
+            it("Fails as expected", function() {
+                expectReportedFailure("Expected 100 to be close to 1.2")
+
+                expect(100).to.beCloseTo(1.2)
             })
         })
 

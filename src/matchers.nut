@@ -189,6 +189,32 @@ class GreaterThanMatcher extends Matcher {
     }
 }
 
+class CloseToMatcher extends Matcher {
+
+    precision = null
+
+    constructor(expectedVal = null, precisionInDps = 1, matchDescription = "") {
+        base.constructor(expectedVal, matchDescription)
+        precision = precisionInDps
+    }
+
+    function round(val, decimalPoints) {
+        local f = pow(10, decimalPoints) * 1.0;
+        local newVal = val * f;
+
+        newVal = floor(newVal)
+        return newVal;
+    }
+
+    function test(actual) {
+        return round(expected, precision) == round(actual, precision)
+    }
+
+    function failureMessage(actual, isNegated) {
+        return "Expected " + prettify(actual) + negateIfRequired(" to be close to " + expected, isNegated)
+    }
+}
+
 class TypeMatcher extends Matcher {
 
     function test(actual) {

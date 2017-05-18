@@ -91,6 +91,14 @@ class Expectation {
         return execMatcher(TypeMatcher(type, description))
     }
 
+    function closeTo(value, precision = 1, description = "") {
+        return execMatcher(CloseToMatcher(value, precision, description))
+    }
+
+    function beCloseTo(value, precision = 1, description = "") {
+        return closeTo(value, precision, description)
+    }
+
     function toBe(expectedOrMatcher, description = "") {
         if (typeof expectedOrMatcher == "instance") {
             // Custom matcher
@@ -129,6 +137,10 @@ class Expectation {
 
     function toBeGreaterThan(value) {
         return greaterThan(value)
+    }
+
+    function toBeCloseTo(value, precision = 1) {
+        return closeTo(value, precision)
     }
 }
 
