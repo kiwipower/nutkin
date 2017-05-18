@@ -244,6 +244,12 @@ describe("Nutkin", function() {
                 expect(1.123).toBeCloseTo(1.13);
             })
 
+            it("also compares negative floating point numbers to a specified precision", function() {
+                expect(-1.123).to.beCloseTo(-1.12, 2);
+                expect(-1.1235).to.be.closeTo(-1.1234, 3);
+                expect(-1.123).toBeCloseTo(-1.13);
+            })
+
             it("Works with not", function() {
                 expect(100).not.to.beCloseTo(1)
             })

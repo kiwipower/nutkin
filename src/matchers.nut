@@ -201,8 +201,7 @@ class CloseToMatcher extends Matcher {
     function round(val, decimalPoints) {
         local f = pow(10, decimalPoints) * 1.0;
         local newVal = val * f;
-
-        newVal = floor(newVal)
+        newVal = (val >= 0) ? floor(newVal) : ceil(newVal)
         return newVal;
     }
 
