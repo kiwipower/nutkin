@@ -81,7 +81,7 @@ class Spec {
                     e = Failure(e)
                     stack = "\nStack: " + ::stackTrace()
                 }
-                if (reporter.testFailed(name, e, stack)) {
+                if (reporter.testHasFailed(name, e, stack)) {
                     return [Outcome.FAILED]
                 } else {
                     return [Outcome.PASSED]

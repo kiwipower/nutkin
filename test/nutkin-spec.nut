@@ -683,6 +683,23 @@ describe("Nutkin", function() {
                 expect(lines[3]).to.equal("Took 300ms\x1B[0m\x1B[36m\n")
                 expect(lines[4]).to.equal("\x1B[0m")
             })
+
+            it("Lists any failed tests at the bottom so you don't need to scroll", function() {
+                reporter.failures = ["Monkey poo", "Elephants"]
+                reporter.end(5, 1, 0, "300ms")
+
+                local lines = printer.getLines()
+                expect(lines.len()).to.equal(9)
+                expect(lines[0]).to.equal("\x1B[32m5 passing\x1B[0m\x1B[36m\n")
+                expect(lines[1]).to.equal("\x1B[31m1 failing\x1B[0m\x1B[36m\n")
+                expect(lines[2]).to.equal("\x1B[0m\n")
+                expect(lines[3]).to.equal("\x1B[31mFAILURES:\x1B[0m\x1B[36m\n")
+                expect(lines[4]).to.equal("\x1B[31m✗ Monkey poo\x1B[0m\x1B[36m\n")
+                expect(lines[5]).to.equal("\x1B[31m✗ Elephants\x1B[0m\x1B[36m\n")
+                expect(lines[6]).to.equal("\x1B[0m\n")
+                expect(lines[7]).to.equal("Took 300ms\x1B[0m\x1B[36m\n")
+                expect(lines[8]).to.equal("\x1B[0m")
+            })
         })
     })
 

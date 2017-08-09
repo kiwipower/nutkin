@@ -1,8 +1,10 @@
 class Reporter {
     printer = null
+    failures = null
 
     constructor(printerImpl = Printer()) {
         printer = printerImpl
+        failures = []
     }
 
     function isFailure(thing) {
@@ -29,6 +31,14 @@ class Reporter {
         printer.println(message)
     }
 
+    function testHasFailed(name, failure, stack = "") {
+        local itReallyFailed = testFailed(name, failure, stack)
+        if (itReallyFailed) {
+            failures.append(name)
+        }
+        return itReallyFailed
+    }
+
     // Subclasses to implement these methods
     function suiteStarted(name) {}
     function suiteFinished(name, error = "", stack = "") {}
@@ -38,6 +48,7 @@ class Reporter {
     function testSkipped(name) {}
     function begin() {}
     function end(passed, failed, skipped, timeTaken) {}
+    function listFailures() {}
 }
 
 class ConsoleReporter extends Reporter {
@@ -116,9 +127,22 @@ class ConsoleReporter extends Reporter {
             print(skipColour + skipped + " skipped")
         }
         printer.println(reset)
+        listFailures()
         print("Took " + timeTaken)
         printer.print(reset)
         indent--
+    }
+
+    function listFailures() {
+        if (failures.len() > 0) {
+            print(failColour + "FAILURES:")
+            indent++
+            foreach (failure in failures) {
+                print(failColour + "✗ " + failure)
+            }
+            printer.println(reset)
+            indent--
+        }
     }
 }
 
