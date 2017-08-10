@@ -76,6 +76,7 @@ class Spec {
                 reporter.testFinished(name)
                 return [Outcome.PASSED]
             } catch (e) {
+                // When an exception has been caught, the relevant stack has already been unwound, so stackTrace() doesn't help us
                 local stack = ""
                 if (typeof e == typeof "") {
                     e = Failure(e)

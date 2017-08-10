@@ -105,6 +105,7 @@ class ConsoleReporter extends Reporter {
             print(skipColour + desc)
         }
         indent--
+        return true
     }
 
     function testSkipped(name) {

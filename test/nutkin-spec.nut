@@ -566,7 +566,7 @@ describe("Nutkin", function() {
             it("Outputs a correctly formatted suite started message", function() {
                 reporter.suiteStarted("A Suite")
                 
-                expect(printer.lastLine()).to.equal("  \x1B[30mA Suite\x1B[0m\x1B[36m\n")
+                expect(printer.lastLine()).to.equal("  \x1B[34mA Suite\x1B[0m\x1B[36m\n")
             })
             
             it("Outputs a correctly formatted suite finished message", function() {
