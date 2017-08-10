@@ -54,7 +54,7 @@ class Reporter {
 class ConsoleReporter extends Reporter {
     indent = 0
     bold = "\x1B[1m"
-    titleColour = "\x1B[30m"
+    titleColour = "\x1B[34m"
     testColour = "\x1B[38;5;240m"
     passColour = "\x1B[32m"
     failColour = "\x1B[31m"
