@@ -13,6 +13,10 @@ class TestPrinter extends Printer {
         return lines
     }
 
+    function firstLine() {
+        return lines[0];
+    }
+
     function lastLine() {
         return lines.top()
     }
