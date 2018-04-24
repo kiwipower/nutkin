@@ -34,6 +34,20 @@ class SuiteBuilder {
     }
 }
 
+class NotApplicableSuite {
+    static function skip(suiteName, suite) {
+        NotApplicableSuite(suiteName, suite)
+    }
+
+    static function only(suiteName, suite) {
+        NotApplicableSuite(suiteName, suite)
+    }
+
+    constructor(suiteName, suite) {
+        reporter.print("Not applicable suite: "+ suiteName)
+    }
+}
+
 class Spec {
     name = null
     suite = null
@@ -92,6 +106,18 @@ class Spec {
     }
 }
 
+class PredicateSuite {
+    describe = null;
+
+    constructor(condition) {
+        if(condition) {
+            describe = SuiteBuilder
+        } else {
+            describe = NotApplicableSuite
+        }
+    }
+}
+
 class Suite {
     name = null
     suiteBody = null
@@ -105,6 +131,7 @@ class Suite {
     runQueue = null
     it = SpecBuilder
     describe = SuiteBuilder
+    onlyIf = PredicateSuite
 
     constructor(suiteName, suite, parentSuite = null, isSkipped = false, isOnly = false) {
         name = suiteName

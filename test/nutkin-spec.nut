@@ -369,6 +369,14 @@ describe("Nutkin", function() {
             it("This test will also be skipped and should show in the output", function() {})
         })
 
+        describe("Conditional suite", function() {
+            onlyIf(true).
+                describe("run suite when condition is true", function() {})
+
+            onlyIf(false).
+                describe("don't run suite when condition is false", function() {})
+        })
+
         describe("Throws", function() {
 
             it("asserts that an exception was thrown", function() {
