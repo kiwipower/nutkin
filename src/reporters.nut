@@ -186,7 +186,7 @@ class TeamCityReporter extends Reporter {
     }
 
     function suiteError(name, error, stack = "") {
-        print("##teamcity[message text='" + error + "' status='ERROR' errorDetails='" + stack + "']")
+        print("##teamcity[message text='suiteError: " + error + "' status='ERROR' errorDetails='" + stack + "']")
         suiteFinished(name)
     }
 
