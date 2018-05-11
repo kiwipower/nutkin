@@ -253,19 +253,24 @@ class Suite {
         local outcomes = []
 
         reporter.suiteStarted(name)
-        runBeforeAlls()
 
         try {
+            runBeforeAlls()
+
             foreach(runnable in runQueue) {
-                runBeforeEaches()
-                outcomes.extend(runnable.run(reporter, explicitOnlyInChild ? only : false))
-                runAfterEaches()
+                try {
+                    runBeforeEaches()
+                    outcomes.extend(runnable.run(reporter, explicitOnlyInChild ? only : false))
+                    runAfterEaches()
+                } catch (e) {
+                    reporter.suiteFinished(name, e, "\nStack: " + ::stackTrace())
+                }
             }
 
             runAfterAlls()
             reporter.suiteFinished(name, "")
         } catch (e) {
-            reporter.suiteFinished(name, e, ::stackTrace())
+            reporter.suiteFinished(name, e, "\nStack: " + ::stackTrace())
         }
 
         return outcomes

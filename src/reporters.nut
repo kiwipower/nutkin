@@ -82,7 +82,7 @@ class ConsoleReporter extends Reporter {
 
     function suiteFinished(name, error = "", stack = "") {
         if(error != "") {
-            print(failColour + bold + error)
+                print(failColour + bold + "✗ " + error)
         }
 
         if(stack != "") {

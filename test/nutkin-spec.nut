@@ -586,7 +586,7 @@ describe("Nutkin", function() {
             it("Outputs a correctly formatted suite finished message with an error", function() {
                 reporter.suiteFinished("A Suite", "An error", "A stack trace" )
 
-                expect(printer.firstLine()).to.equal("\x1B[31m\x1B[1mAn error\x1B[0m\x1B[36m\n")
+                expect(printer.firstLine()).to.equal("\x1B[31m\x1B[1m✗ An error\x1B[0m\x1B[36m\n")
                 expect(printer.lastLine()).to.equal("\x1B[0m\x1B[36m\n")
             })
             
