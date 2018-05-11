@@ -503,12 +503,12 @@ describe("Nutkin", function() {
             })
     
             it("Outputs a correctly formatted suite finished message with an error", function() {
-                tcReporter.suiteFinished("A Suite", "An error", "A stack trace" )
+                tcReporter.suiteErrorDetected("A Suite", "An error", "A stack trace" )
     
                 local lines = printer.getLines()
                 expect(lines.len()).to.equal(2)
-                expect(lines[0]).to.equal("##teamcity[testSuiteFinished name='A Suite']\n")
-                expect(lines[1]).to.equal("##teamcity[message text='An error' status='ERROR' errorDetails='A stack trace']\n")
+                expect(lines[0]).to.equal("##teamcity[message text='An error' status='ERROR' errorDetails='A stack trace']\n")
+                expect(lines[1]).to.equal("##teamcity[testSuiteFinished name='A Suite']\n")
             })
     
             it("Outputs a correctly formatted test started message", function() {
@@ -568,6 +568,8 @@ describe("Nutkin", function() {
             local reporter = ConsoleReporter(printer)
 
             afterEach(function() {
+                reporter.testFailures = []
+                reporter.suiteErrors = []
                 printer.reset()
             })
             
@@ -584,9 +586,9 @@ describe("Nutkin", function() {
             })
             
             it("Outputs a correctly formatted suite finished message with an error", function() {
-                reporter.suiteFinished("A Suite", "An error", "A stack trace" )
+                reporter.suiteErrorDetected("A Suite", "An error", "A stack trace" )
 
-                expect(printer.firstLine()).to.equal("\x1B[31m\x1B[1m✗ An error\x1B[0m\x1B[36m\n")
+                expect(printer.firstLine()).to.equal("\x1B[31m\x1B[1mAn error\x1B[0m\x1B[36m\n")
                 expect(printer.lastLine()).to.equal("\x1B[0m\x1B[36m\n")
             })
             
@@ -694,7 +696,7 @@ describe("Nutkin", function() {
             })
 
             it("Lists any failed tests at the bottom so you don't need to scroll", function() {
-                reporter.failures = ["Monkey poo", "Elephants"]
+                reporter.testFailures = ["Monkey poo", "Elephants"]
                 reporter.end(5, 1, 0, "300ms")
 
                 local lines = printer.getLines()
@@ -702,12 +704,29 @@ describe("Nutkin", function() {
                 expect(lines[0]).to.equal("\x1B[32m5 passing\x1B[0m\x1B[36m\n")
                 expect(lines[1]).to.equal("\x1B[31m1 failing\x1B[0m\x1B[36m\n")
                 expect(lines[2]).to.equal("\x1B[0m\n")
-                expect(lines[3]).to.equal("\x1B[31mFAILURES:\x1B[0m\x1B[36m\n")
+                expect(lines[3]).to.equal("\x1B[31mTEST FAILURES:\x1B[0m\x1B[36m\n")
                 expect(lines[4]).to.equal("\x1B[31m✗ Monkey poo\x1B[0m\x1B[36m\n")
                 expect(lines[5]).to.equal("\x1B[31m✗ Elephants\x1B[0m\x1B[36m\n")
                 expect(lines[6]).to.equal("\x1B[0m\n")
                 expect(lines[7]).to.equal("Took 300ms\x1B[0m\x1B[36m\n")
                 expect(lines[8]).to.equal("\x1B[0m")
+            })
+
+            it("Lists any suite errors detected at the bottom", function() {
+                reporter.testFailures = []
+                reporter.suiteErrors = ["Monkey poo", "Elephants"]
+                reporter.end(5, 0, 0, "300ms")
+
+                local lines = printer.getLines()
+                expect(lines.len()).to.equal(8)
+                expect(lines[0]).to.equal("\x1B[32m5 passing\x1B[0m\x1B[36m\n")
+                expect(lines[1]).to.equal("\x1B[0m\n")
+                expect(lines[2]).to.equal("\x1B[31mSUITE ERRORS:\x1B[0m\x1B[36m\n")
+                expect(lines[3]).to.equal("\x1B[31m✗ Monkey poo\x1B[0m\x1B[36m\n")
+                expect(lines[4]).to.equal("\x1B[31m✗ Elephants\x1B[0m\x1B[36m\n")
+                expect(lines[5]).to.equal("\x1B[0m\n")
+                expect(lines[6]).to.equal("Took 300ms\x1B[0m\x1B[36m\n")
+                expect(lines[7]).to.equal("\x1B[0m")
             })
         })
     })

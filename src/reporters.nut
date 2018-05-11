@@ -1,10 +1,12 @@
 class Reporter {
     printer = null
-    failures = null
+    testFailures = null
+    suiteErrors = null
 
     constructor(printerImpl = Printer()) {
         printer = printerImpl
-        failures = []
+        testFailures = []
+        suiteErrors = []
     }
 
     function isFailure(thing) {
@@ -34,14 +36,20 @@ class Reporter {
     function testHasFailed(name, failure, stack = "") {
         local itReallyFailed = testFailed(name, failure, stack)
         if (itReallyFailed) {
-            failures.append(name)
+            testFailures.append(name)
         }
         return itReallyFailed
     }
 
+    function suiteErrorDetected(name, error, stack = "") {
+        suiteErrors.append(name)
+        suiteError(name, error, stack)
+    }
+
     // Subclasses to implement these methods
     function suiteStarted(name) {}
-    function suiteFinished(name, error = "", stack = "") {}
+    function suiteFinished(name) {}
+    function suiteError(name, error, stack = "")
     function testStarted(name) {}
     function testFinished(name) {}
     function testFailed(name, failure, stack = "") { return true }
@@ -80,17 +88,19 @@ class ConsoleReporter extends Reporter {
         print(titleColour + name)
     }
 
-    function suiteFinished(name, error = "", stack = "") {
-        if(error != "") {
-                print(failColour + bold + "✗ " + error)
-        }
+    function suiteFinished(name) {
+        indent--
+        print("")
+    }
+
+    function suiteError(name, error, stack = "") {
+        print(failColour + bold + error)
 
         if(stack != "") {
             print(failColour + stack)
         }
 
-        indent--
-        print("")
+        suiteFinished(name)
     }
 
     function testStarted(name) {
@@ -143,10 +153,20 @@ class ConsoleReporter extends Reporter {
     }
 
     function listFailures() {
-        if (failures.len() > 0) {
-            print(failColour + "FAILURES:")
+        if (testFailures.len() > 0) {
+            print(failColour + "TEST FAILURES:")
             indent++
-            foreach (failure in failures) {
+            foreach (failure in testFailures) {
+                print(failColour + "✗ " + failure)
+            }
+            printer.println(reset)
+            indent--
+        }
+
+        if(suiteErrors.len() > 0) {
+            print(failColour + "SUITE ERRORS:")
+            indent++
+            foreach (failure in suiteErrors) {
                 print(failColour + "✗ " + failure)
             }
             printer.println(reset)
@@ -161,12 +181,13 @@ class TeamCityReporter extends Reporter {
         print("##teamcity[testSuiteStarted name='" + name + "']")
     }
 
-    function suiteFinished(name, error = "", stack = "") {
+    function suiteFinished(name) {
         print("##teamcity[testSuiteFinished name='" + name + "']")
+    }
 
-        if (error != "") {
-            print("##teamcity[message text='" + error + "' status='ERROR' errorDetails='" + stack + "']")
-        }
+    function suiteError(name, error, stack = "") {
+        print("##teamcity[message text='" + error + "' status='ERROR' errorDetails='" + stack + "']")
+        suiteFinished(name)
     }
 
     function testStarted(name) {
