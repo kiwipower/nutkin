@@ -507,7 +507,7 @@ describe("Nutkin", function() {
     
                 local lines = printer.getLines()
                 expect(lines.len()).to.equal(2)
-                expect(lines[0]).to.equal("##teamcity[message text='An error' status='ERROR' errorDetails='A stack trace']\n")
+                expect(lines[0]).to.equal("##teamcity[message text='suiteError: An error' status='ERROR' errorDetails='A stack trace']\n")
                 expect(lines[1]).to.equal("##teamcity[testSuiteFinished name='A Suite']\n")
             })
     
