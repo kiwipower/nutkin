@@ -77,6 +77,10 @@ class Spec {
         return only
     }
 
+    function reportTestFailed(reporter, e, stack) {
+        reporter.testHasFailed(name, e, stack)
+    }
+
     function run(reporter, onlyMode) {
         if (onlyMode && !only) return []
 
@@ -96,10 +100,11 @@ class Spec {
                     e = Failure(e)
                     stack = "\nStack: " + ::stackTrace()
                 }
-                if (reporter.testHasFailed(name, e, stack)) {
-                    return [Outcome.FAILED]
-                } else {
+                reporter.testHasFailed(name, e, stack)
+                if (reporter.doNotReportIndividualTestFailures()) {
                     return [Outcome.PASSED]
+                } else {
+                    return [Outcome.FAILED]
                 }
             }
         }
@@ -244,6 +249,12 @@ class Suite {
         }
     }
 
+    function reportTestFailed(reporter, e, stack) {
+        foreach(runnable in runQueue) {
+            runnable.reportTestFailed(reporter, e, stack)
+        }
+    }
+
     function run(reporter, onlyMode) {
         if (onlyMode && !only) {
             return []
@@ -251,6 +262,8 @@ class Suite {
 
         local explicitOnlyInChild = hasAnOnlyDescendant()
         local outcomes = []
+        local suiteError = null
+        local suiteStack = null
 
         reporter.suiteStarted(name)
 
@@ -258,15 +271,26 @@ class Suite {
             runBeforeAlls()
 
             foreach(runnable in runQueue) {
-                runBeforeEaches()
-                outcomes.extend(runnable.run(reporter, explicitOnlyInChild ? only : false))
-                runAfterEaches()
+                try {
+                    runBeforeEaches()
+                    outcomes.extend(runnable.run(reporter, explicitOnlyInChild ? only : false))
+                    runAfterEaches()
+                } catch (e) {
+                    suiteError = e
+                    suiteStack = "\nStack: " + ::stackTrace()
+                    runnable.reportTestFailed(reporter, e, suiteStack)
+                }
             }
 
             runAfterAlls()
             reporter.suiteFinished(name)
         } catch (e) {
-            reporter.suiteErrorDetected(name, e, "\nStack: " + ::stackTrace())
+            suiteError = e
+            suiteStack = "\nStack: " + ::stackTrace()
+        }
+
+        if (suiteError != null) {
+            reporter.suiteErrorDetected(name, suiteError, suiteStack)
         }
 
         return outcomes

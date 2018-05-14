@@ -34,11 +34,11 @@ class Reporter {
     }
 
     function testHasFailed(name, failure, stack = "") {
-        local itReallyFailed = testFailed(name, failure, stack)
-        if (itReallyFailed) {
+        testFailed(name, failure, stack)
+
+        if (!doNotReportIndividualTestFailures()) {
             testFailures.append(name)
         }
-        return itReallyFailed
     }
 
     function suiteErrorDetected(name, error, stack = "") {
@@ -52,7 +52,8 @@ class Reporter {
     function suiteError(name, error, stack = "")
     function testStarted(name) {}
     function testFinished(name) {}
-    function testFailed(name, failure, stack = "") { return true }
+    function testFailed(name, failure, stack = "") {}
+    function doNotReportIndividualTestFailures() { return false }
     function testSkipped(name) {}
     function begin() {}
     function end(passed, failed, skipped, timeTaken) {}
@@ -123,7 +124,6 @@ class ConsoleReporter extends Reporter {
             print(skipColour + desc)
         }
         indent--
-        return true
     }
 
     function testSkipped(name) {
@@ -201,7 +201,10 @@ class TeamCityReporter extends Reporter {
     function testFailed(name, failure, stack = "") {
         print("##teamcity[testFailed name='" + name + "' message='" + safeGetErrorMessage(failure) + "' details='" + safeGetErrorDescription(failure) + "']")
         testFinished(name)
-        return false
+    }
+
+    function doNotReportIndividualTestFailures() {
+        return true
     }
 
     function testSkipped(name) {
