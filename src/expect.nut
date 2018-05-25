@@ -91,6 +91,10 @@ class Expectation {
         return execMatcher(TypeMatcher(type, description))
     }
 
+    function ofClass(clazz, description = "") {
+        return execMatcher(InstanceOfMatcher(clazz, description))
+    }
+
     function closeTo(value, precision = 1, description = "") {
         return execMatcher(CloseToMatcher(value, precision, description))
     }

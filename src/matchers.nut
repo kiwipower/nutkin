@@ -225,6 +225,17 @@ class TypeMatcher extends Matcher {
     }
 }
 
+class InstanceOfMatcher extends Matcher {
+
+    function test(actual) {
+        return actual instanceof expected
+    }
+
+    function failureMessage(actual, isNegated) {
+        return "Expected instance of be of different class type"
+    }
+}
+
 class NumberMatcher extends Matcher {
 
     function test(actual) {

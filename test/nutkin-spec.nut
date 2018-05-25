@@ -236,6 +236,20 @@ describe("Nutkin", function() {
             })
         })
 
+        describe("Instance of class", function() {
+            local Foo = class {};
+            local Bar = class {};
+
+            it("Works for correct type", function() {
+                expect(Foo()).to.be.ofClass(Foo);
+            });
+
+            it("Fails as expected", function() {
+                expectReportedFailure("Expected instance of be of different class type")
+                expect(Foo()).to.be.ofClass(Bar);
+            });
+        });
+
         describe("To be close to", function() {
 
             it("compares floating point numbers to a specified precision", function() {
