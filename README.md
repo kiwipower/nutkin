@@ -318,6 +318,10 @@ expect(1).to.be.a.number()
 ```
 expect("something").to.be.ofType("string")
 ```
+* **ofClass** - checks against a specific class instance
+```
+expect(whiskyFrisky).to.be.ofClass(Squirrel)
+```
 * **contains** - expects an array and will work with nested tables
 ```
 expect(squirrels).to.contain("Furly Curly")

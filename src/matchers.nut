@@ -232,7 +232,7 @@ class InstanceOfMatcher extends Matcher {
     }
 
     function failureMessage(actual, isNegated) {
-        return "Expected instance of be of different class type"
+        return "Expected instance" + negateIfRequired(" to be an instance of specified class", isNegated)
     }
 }
 

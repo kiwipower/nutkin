@@ -240,12 +240,16 @@ describe("Nutkin", function() {
             local Foo = class {};
             local Bar = class {};
 
-            it("Works for correct type", function() {
+            it("Checks that a value is an instance of a class", function() {
                 expect(Foo()).to.be.ofClass(Foo);
             });
 
-            it("Fails as expected", function() {
-                expectReportedFailure("Expected instance of be of different class type")
+            it("Works with not", function() {
+                expect(Foo()).not.to.be.ofClass(Bar);
+            });
+
+            it("Fails as expected (expected failure)", function() {
+                expectReportedFailure("Expected instance to be an instance of specified class")
                 expect(Foo()).to.be.ofClass(Bar);
             });
         });
