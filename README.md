@@ -10,7 +10,7 @@ It is currently being developed for use with the [Electric Imp](https://electric
 * [About Squirrel](#about-squirrel)
 * [Getting Started](#getting-started)
 * [Building & Using Nutkin](#building-and-using-nutkin)
-    * [Running The Tests](#running-the-tests)
+    * [Running The Tests](#running-tests)
     * [Continuous Integration](#continuous-integration)
     * [Console Output](#console-output)
 * [How To Write Nutkin Tests](#how-to-write-nutkin-tests)
@@ -27,40 +27,29 @@ It is currently being developed for use with the [Electric Imp](https://electric
 ## About Squirrel
 If you're new to Squirrel, it's probably best to start with the Electric Imp [Squirrel Programming Guide](https://electricimp.com/docs/squirrel/squirrelcrib/) and the [Developer Guides](https://electricimp.com/docs/resources/).
 
-## Getting Started
-To build Nutkin you require [Builder](https://www.npmjs.com/package/Builder) and the [Squirrel](http://www.squirrel-lang.org) compiler. These instructions assume that you are using a Mac and already have [Node/npm](http://nodejs.org) and [brew](http://brew.sh/) installed.
-```
-npm i -g Builder
-brew install squirrel
-```
+## Prerequisites
+* [node/npm](https://nodejs.org/en/)
+* [brew](https://brew.sh) (OSX)
+* [Squirrel](http://www.squirrel-lang.org) compiler
+  * `brew install squirrel`
+* [Builder](https://github.com/electricimp/Builder)
+  * `npm i -g Builder`
 
-## Building and Using Nutkin
-To use Nutkin in your own squirrel code you will need to build the output file and import that.
+## Building and using Nutkin
+To use Nutkin in your own squirrel code you will need to build the output file and import the built file.  To generate `build/nutkin.nut` use `./build.sh`
 
-To build nutkin.nut:
-```
-./build.sh
-```
-This will output the final built file to /build/nutkin.nut
+Copy the `nutkin.nut` into your project import it as required, for example`@import "path/to/nutkin.nut"`
 
-Copy the nutkin.nut file somewhere useful to use and import it as required (note that @import is part of Builder)
-```
-@import "path/to/nutkin.nut"
-```
+**Note** `@import` is part of [Builder](https://github.com/electricimp/Builder)
+
 How you trigger the tests is up to you. One way would be to run the test files using sq in a script.
 
-### Running the tests
-Nutkin can test itself. To run the unit tests do
-```
-./test.sh
-```
+## Running tests
+Nutkin can test itself by running `./test.sh`
 
 ### Continuous Integration
 Nutkin includes a test reporter for [TeamCity](TeamCityReporter) that outputs test information in a format that will let TeamCity automatically show information about the tests run and correctly detect a failure.
-To enable this reporter you need to set the following environment variable in your build:
-```
-NUTKIN_ENV=TEAM_CITY
-```
+To enable this reporter you need to set the following environment variable in your build: `NUTKIN_ENV=TEAM_CITY`
 
 ### Console Output
 By default, Nutkin will output test information using a console reporter. This will output test details to stdout, coloured for clarity:
@@ -71,7 +60,7 @@ By default, Nutkin will output test information using a console reporter. This w
 
 ### Suites and Specs
 
-Tests are specified using ```it()```, and these must be defined inside a ```describe()``` suite
+Tests are specified using `it()`, and these must be defined inside a `describe()` suite
 ```
 describe("A suite", function() {
    it("contains this test", function() {
@@ -108,7 +97,7 @@ describe("A suite", function() {
 
 ### Asserting Behaviour
 
-You can assert values by chaining calls to ```expect()```
+You can assert values by chaining calls to `expect()`
 ```
 it("uses an expect", function() {
     expect(thing).to.equal(otherThing)
@@ -133,7 +122,7 @@ See the [Matchers](#matchers) section later for a list of all built in matchers.
 
 ### Setup and Teardown
 
-You can run some setup code before each test using ```beforeEach()```
+You can run some setup code before each test using `beforeEach()`
 ```
 describe("Has a beforeEach", function() {
     beforeEach(function() {
@@ -142,7 +131,7 @@ describe("Has a beforeEach", function() {
 })
 ```
 
-And, likewise, you can also use ```afterEach()``` for tear down code
+And, likewise, you can also use `afterEach()` for tear down code
 ```
 describe("Has an afterEach", function() {
     afterEach(function() {
@@ -151,7 +140,7 @@ describe("Has an afterEach", function() {
 })
 ```
 
-Nested suites can also specify ```beforeEach()``` and ```afterEach()``` and these are run for each descendant test
+Nested suites can also specify `beforeEach()` and `afterEach()` and these are run for each descendant test
 ```
 describe("Root suite", function() {
     beforeEach(function() {
@@ -190,9 +179,9 @@ describe("Root suite", function() {
 })
 ```
 
-Note that ```beforeEach()``` calls are executed top down in the suite stack, whereas ```afterEach()``` calls are executed bottom up.
+Note that `beforeEach()` calls are executed top down in the suite stack, whereas `afterEach()` calls are executed bottom up.
 
-If you want to run some setup or tear down code once for a describe suite then you can use ```beforeAll()``` and ```afterAll()```:
+If you want to run some setup or tear down code once for a describe suite then you can use `beforeAll()` and `afterAll()`:
 
 ```
 describe("Has a beforeAll", function() {
@@ -210,7 +199,7 @@ describe("Has an afterAll", function() {
 })
 ```
 
-Nested suites can also specify ```beforeAll()``` and ```afterAll()``` and these are run at the start and end of their respective suite:
+Nested suites can also specify `beforeAll()` and `afterAll()` and these are run at the start and end of their respective suite:
 ```
 describe("Root suite", function() {
     beforeAll(function() {
@@ -233,9 +222,9 @@ describe("Root suite", function() {
 })
 ```
 
-Note that, unlike ```beforeEach()``` and ```afterEach()```, ```beforeAll()``` and ```afterAll()``` do not call any ```beforeAll()``` or ```afterAll()``` implementations in their ancestor suites.
+Note that, unlike `beforeEach()` and `afterEach()`, `beforeAll()` and `afterAll()` do not call any `beforeAll()` or `afterAll()` implementations in their ancestor suites.
 
-And, of course, you can mix and match ```beforeAll()```, ```afterAll()```, ```beforeEach()``` and ```afterEach()``` to achieve the setup and tear down that you need.
+And, of course, you can mix and match `beforeAll()`, `afterAll()`, `beforeEach()` and `afterEach()` to achieve the setup and tear down that you need.
 
 ### Test Selection
 
@@ -251,7 +240,7 @@ describe("Skipped test inside this suite", function() {
 })
 ```
 
-You can flag individual tests at the ```it()``` or ```describe()``` level if you want to only run a sub-set of tests
+You can flag individual tests at the `it()` or `describe()` level if you want to only run a sub-set of tests
 ```
 describe.only("Only this suite will run", function() {
     it("This test will be run", function() {})
@@ -270,19 +259,19 @@ describe.only("Suite", function() {
 ```
 
 ## Chainables
-The following are available to use for chaining calls to ```expect()``` to make your tests more readable:
+The following are available to use for chaining calls to `expect()` to make your tests more readable:
 
-* to 
-* be 
-* been 
-* a 
-* has 
-* have 
-* with 
-* that 
-* which 
-* and 
-* of 
+* to
+* be
+* been
+* a
+* has
+* have
+* with
+* that
+* which
+* and
+* of
 * is
 
 
@@ -372,7 +361,7 @@ expect("Whisky Frisky").to.not.equal("Hippity Hop")
 
 ## Custom Matchers
 
-You can easily add your own matchers to Nutkin. All you need to do is extend ```Matcher``` and implement two methods:
+You can easily add your own matchers to Nutkin. All you need to do is extend `Matcher` and implement two methods:
 
 1. **test** - returns true if the value matches, false otherwise
 ```
@@ -383,7 +372,7 @@ function test(actual) { return boolean }
 function failureMessage(actual, isNegated) { return string }
 ```
 
-All matchers have an ```expected``` variable in scope which represents the expected value, i.e. the value passed into ```expect()``` in the test.
+All matchers have an `expected` variable in scope which represents the expected value, i.e. the value passed into `expect()` in the test.
 
 ### Examples
 
@@ -415,7 +404,7 @@ class NameMatcher extends Matcher {
 }
 ```
 
-You can use the ```isNegated``` parameter to customise your failure message for the case when the matcher is preceeded by not:
+You can use the `isNegated` parameter to customise your failure message for the case when the matcher is preceeded by not:
 ```
 test:
 expect("Fluffball").not.toBe(called("Fluffball"))
@@ -439,15 +428,15 @@ class NameMatcher extends Matcher {
 
 All matchers also have the following functions in scope:
 
-* ```isTable(thing): bool```
-* ```isArray(thing): bool```
-* ```isString(thing): bool```
-* ```prettify(thing): string``` - outputs a formatted value - does the right thing for nulls, arrays and tables
-* ```arraysEqual(array1, array2): bool```
-* ```tablesEqual(table1, table2): bool```
-* ```equal: bool``` - generic equality checker that does a deep equal for arrays and tables
-* ```contains(array, thing): bool```
-* ```negateIfRequired(string, bool): string``` - will prefix the given string with a negation (e.g. 'not ') if the second param is true
+* `isTable(thing): bool`
+* `isArray(thing): bool`
+* `isString(thing): bool`
+* `prettify(thing): string` - outputs a formatted value - does the right thing for nulls, arrays and tables
+* `arraysEqual(array1, array2): bool`
+* `tablesEqual(table1, table2): bool`
+* `equal: bool` - generic equality checker that does a deep equal for arrays and tables
+* `contains(array, thing): bool`
+* `negateIfRequired(string, bool): string` - will prefix the given string with a negation (e.g. 'not ') if the second param is true
 
 All of the built-in matchers are implemented this way, so the best place to see an example is in the source code itself.
 
