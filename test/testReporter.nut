@@ -34,4 +34,3 @@ function expectReportedFailure(message) {
 }
 
 reporters["NUTKIN_TEST"] <- TestReporter(Printer())
-

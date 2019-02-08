@@ -19,3 +19,10 @@ stackTrace <- function() {
 
 reporters <- {}
 
+enum Outcome {
+    PASSED,
+    FAILED,
+    SKIPPED
+}
+
+local env = getenv("NUTKIN_ENV")
