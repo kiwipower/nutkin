@@ -1,2 +1,12 @@
-.idea
-/build/
+# IntelliJ
+.idea/*
+!.idea/runConfigurations
+
+# OS
+.DS_Store
+
+# npm/node
+node_modules
+
+# project
+build

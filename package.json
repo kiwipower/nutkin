@@ -1,0 +1,21 @@
+{
+  "name": "nutkin",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiwipower/nutkin"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "mkdirp build && pleasebuild src/nutkin.nut > build/nutkin.nut",
+    "clean": "rimraf build",
+    "test": "npm run build && pleasebuild test/nutkin-spec.nut > build/nutkin-spec.nut && sq build/nutkin-spec.nut"
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.3"
+  },
+  "devDependencies": {
+    "Builder": "^2.5.0"
+  }
+}

@@ -47,6 +47,13 @@ How you trigger the tests is up to you. One way would be to run the test files u
 ## Running tests
 Nutkin can test itself by running `./test.sh`
 
+## npm build and test
+Alternatively `npm` can now be used to build, test or clean the project using:
+
+* `npm run build`
+* `npm test`
+* `npm run clean`
+
 ### Continuous Integration
 Nutkin includes a test reporter for [TeamCity](TeamCityReporter) that outputs test information in a format that will let TeamCity automatically show information about the tests run and correctly detect a failure.
 To enable this reporter you need to set the following environment variable in your build: `NUTKIN_ENV=TEAM_CITY`
