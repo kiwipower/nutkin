@@ -47,6 +47,13 @@ How you trigger the tests is up to you. One way would be to run the test files u
 ## Running tests
 Nutkin can test itself by running `./test.sh`
 
+### Test filter
+Supplying an argument to Nutkin allows the tests to be filtered at runtime, rather than modifying the test code, for example:
+```
+sq build/nutkin.spec.nut pattern
+sq build/nutkin.spec.nut "pattern with spaces"
+```
+
 ## npm build and test
 Alternatively `npm` can now be used to build, test or clean the project using:
 

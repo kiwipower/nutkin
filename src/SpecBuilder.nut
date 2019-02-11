@@ -8,6 +8,6 @@ class SpecBuilder {
     }
 
     constructor(specName, spec, skipped = false, only = false) {
-        Spec(specName, spec, suiteStack.top(), skipped, only)
+        Spec(specName, spec, suiteStack.top(), skipped, only, testPattern)
     }
 }

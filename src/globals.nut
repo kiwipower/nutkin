@@ -26,3 +26,5 @@ enum Outcome {
 }
 
 local env = getenv("NUTKIN_ENV")
+
+testPattern  <- (vargv.len() > 0 ? vargv[0].tolower() : "")

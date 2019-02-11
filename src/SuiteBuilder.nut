@@ -8,6 +8,6 @@ class SuiteBuilder {
     }
 
     constructor(suiteName, suite, skipped = false, only = false) {
-        Suite(suiteName, suite, suiteStack.top(), skipped, only).parse()
+        Suite(suiteName, suite, suiteStack.top(), skipped, only, testPattern).parse()
     }
 }

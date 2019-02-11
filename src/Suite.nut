@@ -8,17 +8,19 @@ class Suite {
     afterEachFunc = null
     skipped = null
     only = null
+    _pattern = null
     runQueue = null
     it = SpecBuilder
     describe = SuiteBuilder
     onlyIf = PredicateSuite
 
-    constructor(suiteName, suite, parentSuite = null, isSkipped = false, isOnly = false) {
+    constructor(suiteName, suite, parentSuite = null, isSkipped = false, isOnly = false, pattern = "") {
         name = suiteName
         suiteBody = suite
         parent = parentSuite
         skipped = isSkipped
         only = isOnly
+        _pattern = pattern
         runQueue = []
 
         if (parentSuite) {
@@ -26,7 +28,7 @@ class Suite {
         }
 
         if (only) {
-            parentSuite.markOnly()
+            markOnly()
         }
     }
 
@@ -73,8 +75,18 @@ class Suite {
         }
     }
 
-    function queue(runnable) {
+    function autoQ(runnable) {
         runQueue.push(runnable)
+    }
+
+    function queue(runnable) {
+        if (runnable.name.tolower().find(_pattern) != null || name.tolower().find(_pattern) != null) {
+            runQueue.push(runnable)
+
+            if (parent && parent.runQueue.find(this) == null) {
+                parent.autoQ(this)
+            }
+        }
     }
 
     function parse() {

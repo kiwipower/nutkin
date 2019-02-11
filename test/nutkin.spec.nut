@@ -41,7 +41,7 @@ class NameMatcher extends Matcher {
 }
 
 local aSquirrel = SquirrelMatcher
-local called = NameMatcher
+local called =     NameMatcher
 
 describe("Nutkin", function() {
     describe("Built-in matchers", function() {
@@ -914,6 +914,20 @@ describe("Nutkin", function() {
 
             expect(timeTaken).to.equal("")
             clock = actualClock
+        })
+    })
+})
+
+describe("Filtering should run 2 tests", function() {
+    describe("should match suite with this pattern (1/2)", function() {
+        it("should run this test", function() {
+            expect(true).toBeTruthy()
+        })
+    })
+
+    describe("should match test in this suite", function() {
+        it("should run test matching pattern (2/2)", function() {
+            expect(true).toBeTruthy()
         })
     })
 })

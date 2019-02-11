@@ -37,7 +37,7 @@ class Nutkin {
     }
 
     function addSuite(name, suite, skipped = false) {
-        rootSuite = Suite(name, suite, null, skipped)
+        rootSuite = Suite(name, suite, null, skipped, false, testPattern)
         rootSuite.parse()
     }
 

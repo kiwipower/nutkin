@@ -4,13 +4,15 @@ class Spec {
     specBody = null
     skipped = null
     only = null
+    _pattern = null
 
-    constructor(specName, spec, parentSuite, isSkipped = false, isOnly = false) {
+    constructor(specName, spec, parentSuite, isSkipped = false, isOnly = false, testPattern = "") {
         name = specName
         suite = parentSuite
         specBody = spec
         skipped = isSkipped
         only = isOnly
+        _pattern = testPattern
 
         parentSuite.queue(this)
 
