@@ -4,7 +4,7 @@ stackTrace <- function() {
     local stackInfo = getstackinfos(level)
 
     while (stackInfo) {
-        output += "\n" + stackInfo.func + "() at " + stackInfo.src + " line [" + stackInfo.line + "]"
+        output += "\n" + stackInfo.func + "() in " + stackInfo.src + ":" + stackInfo.line
 
         if (level > 0) {
             output += ", "
