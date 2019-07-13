@@ -16,6 +16,6 @@
     "rimraf": "^2.6.3"
   },
   "devDependencies": {
-    "Builder": "^2.5.0"
+    "Builder": "^2.8.1"
   }
 }
