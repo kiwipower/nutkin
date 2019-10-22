@@ -32,20 +32,26 @@ If you're new to Squirrel, it's probably best to start with the Electric Imp [Sq
 * [brew](https://brew.sh) (OSX)
 * [Squirrel](http://www.squirrel-lang.org) compiler
   * `brew install squirrel`
+  * See [KiWi Squirrel](https://github.com/kiwipower/squirrel) for a fork that supports Electric   Imp features such as:
+    * unsigned chars
+    * bind() strongrefs
+    * Length-based string functions (as opposed to NULL termination)
 * [Builder](https://github.com/electricimp/Builder)
   * `npm i -g Builder`
 
 ## Building and using Nutkin
-To use Nutkin in your own squirrel code you will need to build the output file and import the built file.  To generate `build/nutkin.nut` use `./build.sh`
+To use Nutkin in your own squirrel code you will need to build the output file and import the built file. To generate `build/nutkin.nut` use `npm build`
 
-Copy the `nutkin.nut` into your project import it as required, for example`@import "path/to/nutkin.nut"`
+Copy the `nutkin.nut` into your project import it as required, for example `@import "path/to/nutkin.nut"`
+
+Additionally `npm build` will also generate `agent.stub.nut` and `device.stub.nut` that provide stubbing for much of the Electric Imp API, which may also be imported as required.
 
 **Note** `@import` is part of [Builder](https://github.com/electricimp/Builder)
 
 How you trigger the tests is up to you. One way would be to run the test files using sq in a script.
 
 ## Running tests
-Nutkin can test itself by running `./test.sh`
+Nutkin can test itself by running `npm test`
 
 ### Test filter
 Supplying an argument to Nutkin allows the tests to be filtered at runtime, rather than modifying the test code, for example:
@@ -55,7 +61,7 @@ sq build/nutkin.spec.nut "pattern with spaces"
 ```
 
 ## npm build and test
-Alternatively `npm` can now be used to build, test or clean the project using:
+`npm` can be used to build, test or clean the project using:
 
 * `npm run build`
 * `npm test`
