@@ -29,6 +29,14 @@ class device {
     }
 
     //===============================
+    function info() {
+        return {
+            id = "5000a0c9a012345e",
+            isconnected = isconnected(),
+            ipaddress = "192.168.0.20"
+        }
+    }
+
     function isconnected() {
         return stub.connect;
     }
