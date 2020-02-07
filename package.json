@@ -12,8 +12,8 @@
     "test": "npm run build && pleasebuild test/nutkin.spec.nut > build/nutkin.spec.nut && sq build/nutkin.spec.nut && sq build/nutkin.spec.nut pattern"
   },
   "dependencies": {
-    "mkdirp": "^0.5.1",
-    "rimraf": "^3.0.0"
+    "mkdirp": "^1.0.3",
+    "rimraf": "^3.0.1"
   },
   "devDependencies": {
     "Builder": "^2.8.1"
