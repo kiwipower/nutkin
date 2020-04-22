@@ -372,6 +372,10 @@ expect(squirrelNutkinPlayingNinepins).toThrow("A crab apple")
 // For compatability with squirrel jasmine:
 expectException("A crab apple", squirrelNutkinPlayingNinepins)
 ```
+* **closeTo** - checks that a float matches with the precision given. Useful for ignoring floating point rounding errors.
+```
+expect(squirrel.length).to.be.closeTo(0.4, 0.1)
+```
 
 Plus the meta-expectation **not**, which can prefix any of the above to give you the inverse, e.g.:
 
