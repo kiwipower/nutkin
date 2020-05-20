@@ -1,4 +1,5 @@
 @include once "src/electric-imp-stubs/common.stub.nut"
+@include once "src/libraries/JSONParser.class.nut"
 
 // Imp stub API
 
@@ -235,7 +236,7 @@ class http {
     for now, just return json (that is not string) back ... until we have code to decode json string here
      */
     function jsondecode(json) {
-        return json;
+        return JSONParser.parse(json);
     }
 
     function jsonencode(value) {
