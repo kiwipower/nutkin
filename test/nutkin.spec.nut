@@ -931,3 +931,6 @@ describe("Filtering should run 2 tests", function() {
         })
     })
 })
+
+// Test the Mock class
+@include once "test/mock.stub.test.nut"
