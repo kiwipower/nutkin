@@ -32,7 +32,7 @@ class MockFunction {
     _callMock = null;
 
 
-    constructor(parentMock, name)
+    constructor(parentMock = null, name = null)
     {
         _parentMock = parentMock;
         _name = name;
