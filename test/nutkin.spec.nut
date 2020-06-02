@@ -459,7 +459,7 @@ describe("Nutkin", function() {
                 // Call it once
                 testFunc("hi");
 
-            //    expect(testFunc).to.be.calledWith(1, 0, "hi");
+                expect(testFunc).to.be.calledWith(1, 0, "hi");
             })
 
             it("works with multiple function calls", function()
@@ -472,8 +472,8 @@ describe("Nutkin", function() {
                 testFunc("Second call");
                 testFunc("more calls");
 
-            //    expect(testFunc).to.be.calledWith(3, 0, "hi");
-             //   expect(testFunc).to.be.calledWith(3, 2, "more calls");
+                expect(testFunc).to.be.calledWith(3, 0, "hi");
+                expect(testFunc).to.be.calledWith(3, 2, "more calls");
             })
 
             it("works when negated", function()
@@ -484,7 +484,7 @@ describe("Nutkin", function() {
                 // Call it once
                 testFunc();
 
-              //  expect(m.rando).to.not.be.calledWith(1, 0);
+                expect(testFunc).to.not.be.calledWith(1, 0, "hello");
             })
 
         })

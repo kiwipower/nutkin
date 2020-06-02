@@ -305,7 +305,7 @@ class MockWasCalledMatcher extends Matcher {
     function failureMessage(actual, isNegated) {
         if (isNegated) {
             local err = "Function WAS called with args: ";
-            foreach (arg in _varg)
+            foreach (arg in expected)
             {
                 err += arg + ", ";
             }
