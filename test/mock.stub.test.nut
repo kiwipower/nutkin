@@ -10,6 +10,7 @@ class MockStubTestClass
 
 }
 
+
 // Test our mock class
 describe( "TestMock", function()
 {
@@ -96,6 +97,108 @@ describe( "TestMock", function()
         expect(callArgs[1][2]).toBe(2);
 
     });
+
+    it("wasCalledWith passed when given valid parameters", function()
+    {
+        local m = Mock();
+
+        // Call an arbritrary function
+        m.hello(18, "this is a string");
+        m.hello(54, "so is this");
+
+        local res1 = m.hello.wasCalledWith(2, 0, 18, Mock.Type("string"));
+        local res2 = m.hello.wasCalledWith(2, 1, Mock.Type("integer"), "so is this");
+
+        expect(res1).toBe(null);
+        expect(res2).toBe(null);
+
+        // Try again with different types and arg count - it shouldn't matter for the MockFunction
+        m.whatsit(false, true, 99, "this is a string");
+        m.whatsit(11, "goop", "fewer args");
+        m.whatsit();
+
+        expect(m.whatsit.wasCalledWith(3, 0, false, Mock.Type("bool"))).toBe(null);
+        expect(m.whatsit.wasCalledWith(3, 1, Mock.Type("integer"), Mock.Type("string"), "fewer args")).toBe(null);
+        expect(m.whatsit.wasCalledWith(3, 2)).toBe(null);
+
+    });
+
+    it("wasCalledWith recognises common types", function()
+    {
+        local m = Mock();
+        // Call an arbitrary function with a range of types
+
+        // integer
+        m.callInt(1);
+        expect(m.callInt.wasCalledWith(1, 0, Mock.Type("integer"))).toBe(null);
+
+        // float
+        m.callFloat(98.234);
+        expect(m.callFloat.wasCalledWith(1, 0, Mock.Type("float"))).toBe(null);
+
+        m.callString("am I a string?");
+        expect(m.callString.wasCalledWith(1, 0, Mock.Type("string"))).toBe(null);
+
+
+        m.callBool(false);
+        expect(m.callBool.wasCalledWith(1, 0, Mock.Type("bool"))).toBe(null);
+
+
+        m.callBlob(blob());
+        expect(m.callBlob.wasCalledWith(1, 0, Mock.Type("blob"))).toBe(null);
+
+
+        local quickClass = class { };
+        m.callInstance(quickClass);
+        expect(m.callInstance.wasCalledWith(1, 0, Mock.Type("instance")));
+        
+    });
+
+    it("Mock.Type doesn't recognise invalid types", function()
+    {
+        // todo: Mock.Type tests could be separated from Mock tests...
+        local excepted = false;
+
+        try{
+            local t = Mock.Type("fakeType");
+        } catch (exception) {
+            excepted = true;
+        }
+
+        expect(excepted).to.be.truthy();
+    });
+
+    it("wasCalledWith fails when given non-matching parameters", function()
+    {
+        local m = Mock();
+
+        // Call an arbritrary function with some different kinds of args
+        m.whatsit();
+        m.whatsit(false, true);
+        m.whatsit(11);
+        m.whatsit(33.42);
+        m.whatsit("stringy");
+
+        // Expect it to fail on wrong call count when all other parameters match
+        expect(m.whatsit.wasCalledWith(1, 0)).to.be.ofType("string");
+
+        // Expect it to fail on too-big-call-number
+        expect(m.whatsit.wasCalledWith(5, 5)).to.be.ofType("string");
+
+        // Sanity check - it should pass here
+        expect(m.whatsit.wasCalledWith(5, 1, false, true)).toBe(null);
+
+        // Expect it to fail if the value doesn't match
+        expect(m.whatsit.wasCalledWith(5, 1, true, true)).to.be.ofType("string");
+
+        expect(m.whatsit.wasCalledWith(5, 2, 12)).to.be.ofType("string");
+
+        // Expect it to fail if calls out of order
+        expect(m.whatsit.wasCalledWith(5, 3, "stringy")).to.be.ofType("string");
+        expect(m.whatsit.wasCalledWith(5, 4, 33.42)).to.be.ofType("string");
+
+    });
+
 
 
     it("Passes the pre-set function return value", function()

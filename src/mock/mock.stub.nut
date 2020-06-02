@@ -58,6 +58,49 @@ class MockFunction {
         _attributes[key] = val;
     }
 
+    function _wasCalledWith(callCount, callToCheck, ...)
+    {
+        // Helper function to collate common arguments
+        if (_callCount != callCount)
+        {
+            return "Call count doesn't match. Expected: " + callCount + ", Actual: " + _callCount;
+        }
+
+        if (callToCheck >= _callCount)
+        {
+            return "Call to check doesn't exist. Checking " + callToCheck + " but only " + _callCount + " calls.";
+        }
+
+
+        foreach (index, arg in vargv)
+        {
+            local actual = _callArgs[callToCheck][index];
+
+            // Type check or value check
+            if (arg instanceof Mock.Type)
+            {
+                local comparison = arg.compare(actual);
+                if (comparison != null)
+                {
+                    return comparison;
+                }
+            } else {
+                if (actual != arg)
+                {
+                    return "Argument " + index + " expected: " + arg + " but actual was " + actual;
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    function _wasAnyCall(...)
+    {
+
+    }
+
     function _get(key)
     {
         // Special cases to access details of the mock calls
@@ -83,6 +126,8 @@ class MockFunction {
                 } else {
                     return _callMock;
                 }
+            case "wasCalledWith":
+                return _wasCalledWith;
         }
 
         // If the user has set this attribute we'll return it (otherwise we have nothing)
@@ -222,3 +267,29 @@ class Mock {
 
 }
 
+class Mock.Type
+{    
+    _type = null;
+    
+    constructor(type)
+    {
+        local allowedTypes = ["bool", "string", "integer", "float", "blob", "instance", "array", "table"];
+
+        if (allowedTypes.find(type) == null)
+        {
+            throw("Type " + type + " not valid");
+        }
+
+        _type = type;
+    }
+
+    function compare(var)
+    {
+        if (typeof(var) != _type)
+        {
+            return "Var " + var + " is not of type " + _type;
+        }
+
+        return null;
+    }
+}

@@ -267,3 +267,50 @@ class ThrowsMatcher extends Matcher {
         return "Expected " + expected + " but caught " + error
     }
 }
+
+class MockWasCalledMatcher extends Matcher {
+
+    constructor(...)
+    {
+                print(vargv.len());
+        foreach (arg in vargv)
+        {
+            print(arg);
+        }
+
+
+        // Call the base constructor with our argv array (this time as an array)
+        base.constructor(vargv, "");
+    }
+
+    function _makeCall(actual)
+    {
+        print(expected.len());
+        foreach (arg in expected)
+        {
+            print(expected);
+        }
+
+        // Put the reference to the MockFunction into the first arg (essentially bindenv for acall)
+        local expContext = clone expected;
+        expContext.insert(0, actual);
+
+        return (actual.wasCalledWith.acall(expContext) == null);
+    }
+
+    function test(actual) {
+        return _makeCall(actual);
+    }
+
+    function failureMessage(actual, isNegated) {
+        if (isNegated) {
+            local err = "Function WAS called with args: ";
+            foreach (arg in _varg)
+            {
+                err += arg + ", ";
+            }
+            return err;
+        }
+        return _makeCall(actual);
+    }
+}

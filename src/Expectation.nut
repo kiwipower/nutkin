@@ -113,6 +113,27 @@ class Expectation {
         }
     }
 
+    function calledWith(...)
+    {
+        print(vargv.len());
+        foreach (arg in vargv)
+        {
+            print(arg);
+        }
+
+        // Create an instance of the Mock matcher without calling constructor
+        local match = MockWasCalledMatcher.instance();
+
+        // Append the object to the vargv array for acall to make it this
+        vargv.insert(0, match);
+
+        // Call the constructor
+        match.constructor.acall(vargv)
+
+        // Return the matcher
+        return execMatcher(match);
+    }
+
     // SquirrelJasmine compatability functions
 
     function toBeTruthy() {

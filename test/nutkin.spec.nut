@@ -7,6 +7,7 @@
 @include once "test/TestPrinter.nut"
 @include once "test/TestReporter.nut"
 @include once "test/TeamCityReporter.nut"
+@include once "src/mock/mock.stub.nut"
 
 env = (!env ? "NUTKIN_TEST" : env)
 
@@ -446,6 +447,46 @@ describe("Nutkin", function() {
                 expectReportedFailure("the index 'noMethod' does not exist")
                 expect(noMethod()).to.equal("WAT")
             })
+        })
+
+        describe("Mock Called With", function() {
+
+            it("works with a single function call", function()
+            {
+                // Create a Mock function
+                local testFunc = MockFunction();
+               
+                // Call it once
+                testFunc("hi");
+
+            //    expect(testFunc).to.be.calledWith(1, 0, "hi");
+            })
+
+            it("works with multiple function calls", function()
+            {
+                // Create a Mock function
+                local testFunc = MockFunction();
+               
+                // Call it a few times
+                testFunc("hi");
+                testFunc("Second call");
+                testFunc("more calls");
+
+            //    expect(testFunc).to.be.calledWith(3, 0, "hi");
+             //   expect(testFunc).to.be.calledWith(3, 2, "more calls");
+            })
+
+            it("works when negated", function()
+            {
+                // Create a Mock function
+                local testFunc = MockFunction();
+               
+                // Call it once
+                testFunc();
+
+              //  expect(m.rando).to.not.be.calledWith(1, 0);
+            })
+
         })
     })
 
