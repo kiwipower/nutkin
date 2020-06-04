@@ -87,9 +87,13 @@ Limitations of the implementation mean that the Mock class cannot mock certain n
 
 ### Before Testing
 
+#### Reset Mock
+
 If a single Mock object is being used across tests (for example if you're mocking an Electric Imp global), the `resetMock()` function should be called at the beginning of each test. This will reset all pre-loaded values and recorded calls.
 
 There's a few interfaces to preload data.
+
+#### Return Value
 
 Any variable (excluding reserved names) can be assigned a value. When the unit under test reads this variable, it will have the assigned value.
 
@@ -116,6 +120,8 @@ m.aFunction.returnValue <- "hello";
 // This prints hello
 print(m.aFunction());
 ```
+
+#### Side Effect Function
 
 Assigning the `sideEffect` can have two effects:
 
@@ -165,6 +171,8 @@ print(newMock == m);
 
 ```
 
+#### Side Effect Array
+
 If `sideEffect` is assigned an array, each entry in the array will be returned in turn every time the mock function is called. If the function is called more times than the array has members, the last element will be repeatedly returned.
 
 ```
@@ -188,6 +196,7 @@ print(m.thisFunc());
 print(m.thisFunc());
 
 ```
+#### Order of Priority
 
 If both `returnValue` and `sideEffect` are assigned, the `sideEffect` has precedence. Only if the `sideEffect` function returns `MockFunction.DefaultReturn` will the `returnValue` be returned.
 
@@ -228,6 +237,8 @@ print(newMock == otherMock);
 
 After a test has run, you may want to examine a Mock object. 
 
+#### Call Count
+
 If a function was called, `called` will be true. `callCount` will record the number of times it was called.
 
 ```
@@ -243,6 +254,8 @@ print(m.hello.called);
 print(m.hello.callCount);
 
 ```
+
+#### Call Arguments
 
 `callArgs` is an array of the last arguments it was called with. `callArgsList` is an array of arrays, containing the arguments from every time the function was called.
 
@@ -288,5 +301,80 @@ print(callArgs[1][1])
 
 // Prints 2
 print(callArgs[1][2])
+
+```
+
+## Using With Nutkin
+
+Nutkin provides additional helpers to enable more effective use of the Mock object.
+
+```
+local m = Mock();
+
+// Call the same arbitrary function a few times
+m.whoopee("this", "is", 1);
+m.whoopee(); // No args for this call
+m.whoopee("third", "call", 3);
+m.whoopee("Different", 4.0, "arg", 19, false, "types");
+
+
+// *Checking call count*
+// Passes
+expect(m.whoopee).to.have.callCount(4);
+
+// Alias for same thing
+expect(m.whoopee).toHaveCallCount(4);
+
+// callCount can be chained with other expectations
+expect(m.whoopee).to.have.callCount(4).and.be.truthy();
+
+// Fails
+expect(m.whoopee).to.have.callCount(2);
+
+
+// *Checking call arguments for specified call*
+// Passes
+expect(m.whoopee).to.be.calledWithAtIndex(0, ["this", "is", 1]);
+
+// Alias for same thing
+expect(m.whoopee).toBeCalledWithAtIndex(0, ["this", "is", 1]);
+
+// Passes (checking for type, not exact argument)
+expect(m.whoopee).to.be.calledWithAtIndex(0, [Mock.Type("string"), "is", Mock.Type("integer")]);
+
+// Fails (index too high)
+expect(m.whoopee).toBeCalledWithAtIndex(4);
+
+// Fails (arguments don't match)
+expect(m.whoopee).toBeCalledWithAtIndex(3, ["third", "call", 3]);
+
+// *Checking arguments for specified type*
+// Passes
+expect(m.whoopee).toBeC
+
+// *Checking arguments for last call*
+// Passes
+expect(m.whoopee).to.be.lastCalledWith("Different", 4.0, "arg", 19, false, "types");
+// Also passes (checking for types)
+expect(m.whoopee).to.be.lastCalledWith(Mock.Type("string"), Mock.Type("float"), Mock.Type("string"), Mock.Type("integer"), Mock.Type("bool"), Mock.Type("string"));
+
+
+// Alias for same thing
+expect(m.whoopee).toBeLastCalledWith("Different", 4.0, "arg", 19, false, "types");
+
+// Fails (not last call)
+expect(m.whoopee).toBeLastCalledWith("third", "call", 3);
+
+
+// *Checking arguments for _any_ call*
+// Passes
+expect(m.whoopee).to.have.anyCallWith();
+// Alias for same thing
+expect(m.whoopee).toHaveAnyCallWith();
+
+// Fails (no call with these args)
+expect(m.whoopee).toHaveAnyCallWith("not", "here");
+
+
 
 ```

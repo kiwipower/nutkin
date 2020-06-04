@@ -136,8 +136,6 @@ class Expectation {
         return execMatcher(MockAnyCallMatcher(vargv));
     }
 
- 
-
     // SquirrelJasmine compatability functions
 
     function toBeTruthy() {
@@ -171,6 +169,31 @@ class Expectation {
     function toBeCloseTo(value, precision = 1) {
         return closeTo(value, precision)
     }
+
+    function toHaveCallCount(value, description = "")
+    {
+        return callCount(value, description);
+    }
+
+    function toBeCalledWithAtIndex(index, argArray)
+    {
+        return calledWithAtIndex(index, argArray);
+    }
+
+    function toBeLastCalledWith(...)
+    {
+        vargv.insert(0, this);
+
+        return lastCalledWith.acall(vargv);
+    }
+
+    function toHaveAnyCallWith(...)
+    {
+        vargv.insert(0, this);
+
+        return anyCallWith.acall(vargv);
+    }
+
 }
 
 class NegatedExpectation extends Expectation {

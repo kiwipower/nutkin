@@ -487,6 +487,18 @@ describe("Nutkin", function() {
 
             })
 
+            it("Call count has alis toHaveCallCount", function() {
+                local testFunc = MockFunction();
+
+                testFunc("a");
+                testFunc("b");
+
+                expect(testFunc).toHaveCallCount(2);
+
+                // Check it can still be chained
+                expect(testFunc).toHaveCallCount(2).toBeTruthy();
+            })
+
             it("Call count fails (expected failure)", function()
             {
                 local testFunc = MockFunction();
@@ -550,6 +562,10 @@ describe("Nutkin", function() {
                 testFunc("hi");
 
                 expect(testFunc).to.be.calledWithAtIndex(0, ["hi"]);
+
+                // Test the alias as well
+                expect(testFunc).toBeCalledWithAtIndex(0, ["hi"]);
+
             })
 
             it("works with multiple function calls", function()
@@ -564,6 +580,10 @@ describe("Nutkin", function() {
 
                 expect(testFunc).to.be.calledWithAtIndex(0, ["hi"]);
                 expect(testFunc).to.be.calledWithAtIndex(2, ["more calls"]);
+
+                // Test the alias as well
+                expect(testFunc).toBeCalledWithAtIndex(2, ["more calls"]);
+
             })
 
             it("works when negated", function()
@@ -624,9 +644,14 @@ describe("Nutkin", function() {
                 testFunc("Help, I'm trapped");
                 expect(testFunc).to.be.lastCalledWith("Help, I'm trapped");
 
+                // Test the alias as well
+                expect(testFunc).toBeLastCalledWith("Help, I'm trapped");
+
                 // Call it again and expect a new lastCall
                 testFunc("in a dream about pies");
                 expect(testFunc).to.be.lastCalledWith("in a dream about pies");
+                // Test the alias as well
+                expect(testFunc).toBeLastCalledWith("in a dream about pies");
 
             })
 
@@ -664,8 +689,18 @@ describe("Nutkin", function() {
                 expect(testFunc).to.have.anyCallWith("call1", "is about ice cream");
                 expect(testFunc).to.have.anyCallWith("call2", "is about pies and gravy");
 
+                // Test the alias as well
+                expect(testFunc).toHaveAnyCallWith("call2", "is about pies and gravy");
+                expect(testFunc).toHaveAnyCallWith("call4", "is still about pizza.", "pizza is not a pie.", "end of.");
 
+            })
 
+            it("Matches function call with no arguments", function() {
+                local testFunc = MockFunction();
+
+                testFunc();
+
+                expect(testFunc).to.have.anyCallWith();
             })
 
             it("Fails when arguments not found (expected failure)", function() {
@@ -675,6 +710,7 @@ describe("Nutkin", function() {
                 testFunc("honestly I'm not obsessed with pie");
                 testFunc("call2", "honest");
                 testFunc("call3", "I mean it");
+                testFunc();
 
                 // Check for a call that doesn't exist
                 expect(testFunc).to.have.anyCallWith("this never happened");
