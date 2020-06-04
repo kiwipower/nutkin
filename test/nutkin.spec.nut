@@ -449,7 +449,97 @@ describe("Nutkin", function() {
             })
         })
 
-        describe("Mock Called With", function() {
+
+    })
+
+    describe("MockFunction matchers", function() {
+        describe("Mock call count", function() {
+            it("Checks the call count of a single function", function() {
+                local testFunc = MockFunction();
+
+                // Call once
+                testFunc("boo");
+
+                // Check call count
+                expect(testFunc).to.have.callCount(1);
+            })
+
+            it("Call count can be chained", function() {
+                local testFunc = MockFunction();
+
+                testFunc(99);
+                testFunc(100);
+
+                expect(testFunc).to.have.callCount(2).and.to.be.truthy();
+            })
+
+            it("Call count can be negated", function() {
+                local testFunc = MockFunction();
+
+                testFunc(99);
+                testFunc(100);
+                testFunc(101);
+
+                expect(testFunc).to.not.have.callCount(1);
+                expect(testFunc).to.not.have.callCount(2);
+                expect(testFunc).to.not.have.callCount(4);
+                expect(testFunc).to.not.have.callCount(5);
+
+            })
+
+            it("Call count fails (expected failure)", function()
+            {
+                local testFunc = MockFunction();
+
+                testFunc(99);
+                testFunc(100);
+                testFunc(101);
+
+                expect(testFunc).to.have.callCount(2);
+            })
+
+            it("Negated call count fails (expected failure)", function()
+            {
+                local testFunc = MockFunction();
+
+                testFunc(99);
+                testFunc(100);
+                testFunc(101);
+
+                expect(testFunc).not.to.have.callCount(3);
+            })
+
+            it("Call count failure causes fail when chained test passes (expected failure)", function()
+            {
+                local testFunc = MockFunction();
+
+                testFunc(99);
+                testFunc(100);
+                testFunc(101);
+                testFunc("holla");
+                testFunc(103);
+
+                expect(testFunc).to.have.callCount(2).and.to.be.truthy();
+
+            })
+
+            it("Chained test causes failure even when callCount passes (expected failure)", function()
+            {
+                local testFunc = MockFunction();
+
+                testFunc(99);
+                testFunc(100);
+                testFunc(101);
+                testFunc("holla");
+                testFunc(103);
+
+                expect(testFunc).to.have.callCount(5).and.to.be.falsy();
+
+            })
+
+        })
+
+        describe("Mock Called With At Index", function() {
 
             it("works with a single function call", function()
             {
@@ -459,7 +549,7 @@ describe("Nutkin", function() {
                 // Call it once
                 testFunc("hi");
 
-                expect(testFunc).to.be.calledWith(1, 0, "hi");
+                expect(testFunc).to.be.calledWithAtIndex(0, ["hi"]);
             })
 
             it("works with multiple function calls", function()
@@ -472,8 +562,8 @@ describe("Nutkin", function() {
                 testFunc("Second call");
                 testFunc("more calls");
 
-                expect(testFunc).to.be.calledWith(3, 0, "hi");
-                expect(testFunc).to.be.calledWith(3, 2, "more calls");
+                expect(testFunc).to.be.calledWithAtIndex(0, ["hi"]);
+                expect(testFunc).to.be.calledWithAtIndex(2, ["more calls"]);
             })
 
             it("works when negated", function()
@@ -484,10 +574,114 @@ describe("Nutkin", function() {
                 // Call it once
                 testFunc();
 
-                expect(testFunc).to.not.be.calledWith(1, 0, "hello");
+                expect(testFunc).to.not.be.calledWithAtIndex(0, ["hello"]);
+            })
+
+            it("Fails when function never called (expected failure)", function() {
+                // Create a Mock function
+                local testFunc = MockFunction();
+               
+                // Don't call it yet
+                expect(testFunc).to.be.calledWithAtIndex(0, ["hi"]);
+
+            })
+
+            it("Fails when index out of bound (expected failure)", function() {
+                // Create a Mock function
+                local testFunc = MockFunction();
+
+                // Now call it a few times
+                testFunc("I");
+                testFunc("really");
+                testFunc("like");
+                testFunc("pies!");
+
+                expect(testFunc).to.be.calledWithAtIndex(4, ["pies!"]);
+
+            })
+
+            it("Fails when arguments don't match (expected failure)", function() {
+                // Create a Mock function
+                local testFunc = MockFunction();
+
+                // Now call it a few times
+                testFunc("The", "best");
+                testFunc("pies are");
+                testFunc("from");
+                testFunc("Greggs!");
+
+                expect(testFunc).to.be.calledWithAtIndex(3, ["Gails!"]);
             })
 
         })
+
+        describe("Mock Last Called With", function() {
+            it("Always matches the last function call", function() {
+                // Create a Mock function
+                local testFunc = MockFunction();
+
+                // Call it once and expect the last call
+                testFunc("Help, I'm trapped");
+                expect(testFunc).to.be.lastCalledWith("Help, I'm trapped");
+
+                // Call it again and expect a new lastCall
+                testFunc("in a dream about pies");
+                expect(testFunc).to.be.lastCalledWith("in a dream about pies");
+
+            })
+
+
+            it("Fails when no call made (expected failure)", function() {
+                local testFunc = MockFunction();
+
+                expect(testFunc).to.be.lastCalledWith("meat gravy");
+            })
+
+            it("Fails when arguments don't match (expected failure)", function() {
+                local testFunc = MockFunction();
+
+                testFunc("meaty, meaty thick and juicy gravy");
+                expect(testFunc).to.be.lastCalledWith("meat gravy");
+
+            }) 
+        })
+
+        describe("Mock Any Call With", function() {
+            it("Matches any function call made", function() {
+                local testFunc = MockFunction();
+
+                // Call a few times
+                testFunc("call1", "is about ice cream");
+                testFunc("call2", "is about pies and gravy");
+                testFunc("call3", "is about pizza");
+                testFunc("call4", "is still about pizza.", "pizza is not a pie.", "end of.");
+                testFunc("call5", "pies have crusts over the top", "pizza, where's your crust?");
+                testFunc("call6", "pizza is at most a tart");
+
+                // Match a few times out of order
+                expect(testFunc).to.have.anyCallWith("call4", "is still about pizza.", "pizza is not a pie.", "end of.");
+                expect(testFunc).to.have.anyCallWith(Mock.Type("string"), "pizza is at most a tart");
+                expect(testFunc).to.have.anyCallWith("call1", "is about ice cream");
+                expect(testFunc).to.have.anyCallWith("call2", "is about pies and gravy");
+
+
+
+            })
+
+            it("Fails when arguments not found (expected failure)", function() {
+                local testFunc = MockFunction();
+
+                // Call a few times
+                testFunc("honestly I'm not obsessed with pie");
+                testFunc("call2", "honest");
+                testFunc("call3", "I mean it");
+
+                // Check for a call that doesn't exist
+                expect(testFunc).to.have.anyCallWith("this never happened");
+
+            })
+        })
+        
     })
 
     describe("Custom matchers", function() {

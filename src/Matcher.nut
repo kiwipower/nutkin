@@ -268,43 +268,101 @@ class ThrowsMatcher extends Matcher {
     }
 }
 
-class MockWasCalledMatcher extends Matcher {
 
-    constructor(...)
-    {
-                print(vargv.len());
-        foreach (arg in vargv)
-        {
-            print(arg);
-        }
-
-
-        // Call the base constructor with our argv array (this time as an array)
-        base.constructor(vargv, "");
+class MockCallCountMatcher extends Matcher {
+    function test(actual) {
+        return (actual.hasCallCount(expected) == null);
     }
 
-    function _makeCall(actual)
-    {
-        print(expected.len());
-        foreach (arg in expected)
+    function failureMessage(actual, isNegated) {
+        if (isNegated)
         {
-            print(expected);
+            return "Failed as function DID have " + expected + " calls";
         }
 
+        return actual.hasCallCount(expected);
+    }
+
+}
+
+class MockCalledWithAtIndexMatcher extends Matcher {
+    _index = null;
+    _argArray = null;
+
+    constructor(index, argArray)
+    {
+        _index = index;
+        _argArray = argArray;
+
+        // As we store the 2 expected values in this class, we don't need to pass them to the constructor
+        base.constructor();
+    }
+    
+    function test(actual) {
+        return (actual.wasCalledWithAtIndex(_index, _argArray) == null);
+    }
+
+    function failureMessage(actual, isNegated) {
+        if (isNegated)
+        {
+            local res = "Failed as function WAS called at index " + _index + " with args";
+            foreach (arg in _argArray)
+            {
+                res += " " + arg;
+            }
+            return res;
+        }
+
+        return actual.wasCalledWithAtIndex(_index, _argArray);
+    }
+}
+
+class MockLastCalledMatcher extends Matcher {
+    
+    function _makeCall(actual)
+    {
         // Put the reference to the MockFunction into the first arg (essentially bindenv for acall)
         local expContext = clone expected;
         expContext.insert(0, actual);
 
-        return (actual.wasCalledWith.acall(expContext) == null);
+        return actual.wasLastCalledWith.acall(expContext);
     }
 
     function test(actual) {
-        return _makeCall(actual);
+        return (_makeCall(actual) == null);
     }
 
     function failureMessage(actual, isNegated) {
         if (isNegated) {
-            local err = "Function WAS called with args: ";
+            local err = "Last function call WAS with args: ";
+            foreach (arg in expected)
+            {
+                err += arg + ", ";
+            }
+            return err;
+        }
+        return _makeCall(actual);
+    }
+}
+
+
+class MockAnyCallMatcher extends Matcher {
+    function _makeCall(actual)
+    {
+        // Put the reference to the MockFunction into the first arg (essentially bindenv for acall)
+        local expContext = clone expected;
+        expContext.insert(0, actual);
+
+        return actual.anyCallWith.acall(expContext);
+    }
+
+    function test(actual) {
+        return (_makeCall(actual) == null);
+    }
+
+    function failureMessage(actual, isNegated) {
+        if (isNegated) {
+            local err = "There WAS a call with args: ";
             foreach (arg in expected)
             {
                 err += arg + ", ";

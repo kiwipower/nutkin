@@ -11,7 +11,7 @@
 @include once "src/ConsoleReporter.nut"
 @include once "src/Matcher.nut"
 @include once "src/Expectation.nut"
-@include once "src/mock/Mock.stub.nut"
+@include once "src/mock/mock.stub.nut"
 
 suiteStack <- []
 

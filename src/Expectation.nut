@@ -27,6 +27,7 @@ class Expectation {
         and = this
         of = this
         is = this
+
     }
 
     function isString(x) {
@@ -113,26 +114,29 @@ class Expectation {
         }
     }
 
-    function calledWith(...)
+    function callCount(value, description = "")
     {
-        print(vargv.len());
-        foreach (arg in vargv)
-        {
-            print(arg);
-        }
-
-        // Create an instance of the Mock matcher without calling constructor
-        local match = MockWasCalledMatcher.instance();
-
-        // Append the object to the vargv array for acall to make it this
-        vargv.insert(0, match);
-
-        // Call the constructor
-        match.constructor.acall(vargv)
-
-        // Return the matcher
-        return execMatcher(match);
+        execMatcher(MockCallCountMatcher(value, description));
+        // We return this so we can chain this matcher
+        return this;
     }
+
+    function calledWithAtIndex(index, argArray)
+    {
+        return execMatcher(MockCalledWithAtIndexMatcher(index, argArray));
+    }
+
+    function lastCalledWith(...)
+    {
+        return execMatcher(MockLastCalledMatcher(vargv));
+    }
+
+    function anyCallWith(...)
+    {
+        return execMatcher(MockAnyCallMatcher(vargv));
+    }
+
+ 
 
     // SquirrelJasmine compatability functions
 

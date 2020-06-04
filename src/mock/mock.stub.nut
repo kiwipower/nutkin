@@ -58,7 +58,8 @@ class MockFunction {
         _attributes[key] = val;
     }
 
-    function _wasCalledWith(callCount, callToCheck, ...)
+    // Check for a call with the defined count
+    function _hasCallCount(callCount)
     {
         // Helper function to collate common arguments
         if (_callCount != callCount)
@@ -66,14 +67,24 @@ class MockFunction {
             return "Call count doesn't match. Expected: " + callCount + ", Actual: " + _callCount;
         }
 
+        return null;
+    }
+
+    function _wasCalledWithAtIndex(callToCheck, callArgs = [])
+    {
         if (callToCheck >= _callCount)
         {
             return "Call to check doesn't exist. Checking " + callToCheck + " but only " + _callCount + " calls.";
         }
 
-
-        foreach (index, arg in vargv)
+        // Check that each argument is present
+        foreach (index, arg in callArgs)
         {
+            if (_callArgs[callToCheck].len() <= index)
+            {
+                return "Argument " + index + " expected: " + arg + " but no argument given";
+            }
+
             local actual = _callArgs[callToCheck][index];
 
             // Type check or value check
@@ -92,14 +103,55 @@ class MockFunction {
             }
         }
 
+        // And then check that there's no additional arguments
+        if (_callArgs[callToCheck].len() > callArgs.len())
+        {
+            return "Function called with additional arguments. Expected: " + callArgs.len() + " but got: " + _callArgs[callToCheck].len() + " arguments";
+        }
+
         return null;
 
-    }
+    } 
 
-    function _wasAnyCall(...)
+
+
+    function _anyCallWith(...)
     {
+        local callFound = false;
+
+        // Check each call made in turn looking for this call
+        for (local i = 0; i < _callCount; i++)
+        {
+            local result = _wasCalledWithAtIndex(i, vargv);
+
+            // A null result means the call was matched
+            if (result == null)
+            {
+                callFound = true;
+                break;
+            }
+        }
+
+        if (callFound)
+        {
+            return null;
+        } else {
+            return "Call not found";
+        }
 
     }
+
+    // Check to see if this function was last called with the provided arguments
+    function _wasLastCalledWith(...)
+    {
+        if (_callArgs.len() > 0)
+        {
+            return _wasCalledWithAtIndex(_callArgs.len() - 1, vargv);
+        } else {
+            return "Was not called";
+        }
+    }
+
 
     function _get(key)
     {
@@ -126,8 +178,14 @@ class MockFunction {
                 } else {
                     return _callMock;
                 }
-            case "wasCalledWith":
-                return _wasCalledWith;
+            case "hasCallCount":
+                return _hasCallCount;
+            case "wasLastCalledWith":
+                return _wasLastCalledWith;
+            case "anyCallWith":
+                return _anyCallWith;
+            case "wasCalledWithAtIndex":
+                return _wasCalledWithAtIndex;
         }
 
         // If the user has set this attribute we'll return it (otherwise we have nothing)
