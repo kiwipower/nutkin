@@ -182,16 +182,12 @@ class Expectation {
 
     function toBeLastCalledWith(...)
     {
-        vargv.insert(0, this);
-
-        return lastCalledWith.acall(vargv);
+        return execMatcher(MockLastCalledMatcher(vargv));
     }
 
     function toHaveAnyCallWith(...)
     {
-        vargv.insert(0, this);
-
-        return anyCallWith.acall(vargv);
+        return execMatcher(MockAnyCallMatcher(vargv));
     }
 
 }
