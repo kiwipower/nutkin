@@ -331,7 +331,7 @@ class Mock.Type
     
     constructor(type)
     {
-        local allowedTypes = ["bool", "string", "integer", "float", "blob", "instance", "array", "table"];
+        local allowedTypes = ["bool", "string", "integer", "float", "blob", "instance", "array", "table", "function"];
 
         if (allowedTypes.find(type) == null)
         {
