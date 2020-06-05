@@ -58,6 +58,44 @@ class MockFunction {
         _attributes[key] = val;
     }
 
+    function arraysEqual(a, b) {
+        if (a.len() == b.len()) {
+            foreach (i, value in a) {
+                if (!equal(value, b[i])) {
+                    return false
+                }
+            }
+            return true
+        } else {
+            return false
+        }
+    }
+
+    function tablesEqual(a, b) {
+        if (a.len() == b.len()) {
+            foreach (key, value in a) {
+                if (!(key in b)) {
+                    return false
+                } else if (!equal(value, b[key])) {
+                    return false
+                }
+            }
+            return true
+        } else {
+            return false
+        }
+    }
+
+    function equal(a, b) {
+        if ((typeof(a) == "array") && (typeof(b) == "array")) {
+            return arraysEqual(a, b)
+        } else if ((typeof(a) == "table") && (typeof(b) == "table")) {
+            return tablesEqual(a, b)
+        } else {
+            return a == b
+        }
+    }
+
     // Check for a call with the defined count
     function _hasCallCount(callCount)
     {
@@ -96,7 +134,7 @@ class MockFunction {
                     return comparison;
                 }
             } else {
-                if (actual != arg)
+                if (!equal(actual, arg))
                 {
                     return "Argument " + index + " expected: " + arg + " but actual was " + actual;
                 }
