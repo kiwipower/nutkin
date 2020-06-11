@@ -133,7 +133,14 @@ class MockFunction {
                 {
                     return comparison;
                 }
-            } else {
+            } 
+            else if (arg instanceof Mock.Ignore)
+            {
+                // an arg of Mock.Ignore should be ignored - continue to next argument
+                continue;
+            } 
+            else
+            {
                 if (!equal(actual, arg))
                 {
                     return "Argument " + index + " expected: " + arg + " but actual was " + actual;
@@ -388,4 +395,9 @@ class Mock.Type
 
         return null;
     }
+}
+
+class Mock.Ignore
+{
+
 }

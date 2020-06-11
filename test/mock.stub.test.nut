@@ -143,6 +143,9 @@ describe( "TestMock", function()
         expect(m.whatsit.wasCalledWithAtIndex(0, [false, Mock.Type("bool"), 99, "this is a string"])).toBe(null);
         expect(m.whatsit.wasCalledWithAtIndex(1, [Mock.Type("integer"), Mock.Type("string"), "fewer args"])).toBe(null);
         expect(m.whatsit.wasCalledWithAtIndex(2)).toBe(null);
+        
+        // Check that ignoring the arguments passes
+        expect(m.whatsit.wasCalledWithAtIndex(0, [false, Mock.Type("bool"), Mock.Ignore(), Mock.Ignore()])).toBe(null);
 
     });
 
@@ -251,6 +254,7 @@ describe( "TestMock", function()
        expect(m.myFunc.anyCallWith()).to.be.ofType("string");
 
     });
+
 
     it("Mock.Type doesn't recognise invalid types", function()
     {
