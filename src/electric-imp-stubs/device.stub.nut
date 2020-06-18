@@ -14,10 +14,14 @@ const DIGITAL_OUT = 1024;
 const DIGITAL_OUT_OD = 1280;
 const DIGITAL_OUT_OD_PULLUP = 1536;
 
-const PARITY_NONE = 42;
-const NO_TX = 42;
-const NO_RX = 43;
-const NO_CTSRTS = 44;
+const PARITY_NONE = 0;
+const PARITY_EVEN = 1;
+const PARITY_ODD = 2;
+const NO_TX = 1;
+const NO_RX = 2;
+const NO_CTSRTS = 4;
+const CALLBACK_WITH_FLAGS = 8;
+const TIMING_ENABLED = 16;
 
 const SUSPEND_ON_ERROR = 42;
 const RETURN_ON_ERROR = 43;
