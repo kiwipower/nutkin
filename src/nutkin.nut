@@ -13,6 +13,9 @@
 @include once "src/Expectation.nut"
 @include once "src/mock/mock.stub.nut"
 
+@include once "src/libraries/JSONParser.class.nut"
+@include once "src/libraries/JSONEncoder.class.nut"
+
 suiteStack <- []
 
 reporter <- ConsoleReporter()
