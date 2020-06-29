@@ -9,6 +9,18 @@ function time() {
     return clock_s;
 }
 
+function time_setStubReturn(seconds,subseconds)
+{
+    clock_s = seconds;
+
+    if( typeof subseconds == "integer" ) {
+        clock_subs = subseconds.tofloat();
+    }
+    else {
+        clock_subs = subseconds;
+    }
+}
+
 function date(timestamp = null) {
     // default 1-Jan-2000 00:00:00
     local date = {};
@@ -52,14 +64,7 @@ class imp {
             clock_subs = 0.0;
         },
         function setTimer(seconds,subseconds) {
-            clock_s = seconds;
-
-            if( typeof subseconds == "integer" ) {
-                clock_subs = subseconds.tofloat();
-            }
-            else {
-                clock_subs = subseconds;
-            }
+            time_setStubReturn(seconds, subseconds);
         },
         function sleepFor(seconds) {
             for( local i = 0; i < seconds; i += 0.01 ) {
