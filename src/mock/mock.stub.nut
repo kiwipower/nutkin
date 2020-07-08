@@ -243,14 +243,14 @@ class MockFunction {
 
     }
 
-    // Argument zero is documented as "original_this" in the squirrel2 docs, but not in squirrel3
-    // There's definitely something there... Whatever it is we don't need it :)
-    function _call(originalThis, ...)
+    function acall( arguments )
     {
-        _callCount++;
+        ++_callCount;
+
+        local newCallArgs = arguments.slice( 1, arguments.len() );
 
         // Save the callers arguments for analysis later
-        _callArgs.append(vargv);
+        _callArgs.append( newCallArgs );
 
         // Check if there's a sideEffect function or array
         if ("sideEffect" in _attributes)
@@ -258,8 +258,8 @@ class MockFunction {
             if (typeof(_attributes.sideEffect) == "function")
             {
                 // Create a new vargv array with the context from the original call
-                local allArgs = [originalThis];
-                allArgs.extend(vargv);
+                local allArgs = [newCallArgs[0]];
+                allArgs.extend(newCallArgs);
 
                 // Call the function using acall to pass the array as its arguments
                 local result = _attributes.sideEffect.acall(allArgs);
@@ -292,6 +292,15 @@ class MockFunction {
         
         // If nothing else was set, we return a new Mock class
         return _callMock;
+    }
+
+    // Argument zero is documented as "original_this" in the squirrel2 docs, but not in squirrel3
+    // There's definitely something there... Whatever it is we don't need it :)
+    function _call(originalThis, ...)
+    {
+        local arguments = [originalThis];
+        arguments.extend( vargv );
+        return acall( arguments );
     }
 } 
 
