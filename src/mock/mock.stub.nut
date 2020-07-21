@@ -250,7 +250,7 @@ class MockFunction {
         local newCallArgs = arguments.slice( 1, arguments.len() );
 
         // Save the callers arguments for analysis later
-        _callArgs.append( newCallArgs );
+        _callArgs.append( _deepClone(newCallArgs) );
 
         // Check if there's a sideEffect function or array
         if ("sideEffect" in _attributes)
@@ -301,6 +301,24 @@ class MockFunction {
         local arguments = [originalThis];
         arguments.extend( vargv );
         return acall( arguments );
+    }
+
+    /// Performs a deep clone of a table or array container.
+    /// \warning Container must not have circular references.
+    /// \param  container the container/structure to deep clone.
+    /// \return the cloned container.
+    function _deepClone( container )
+    {
+        switch( typeof( container ) )
+        {
+            case "table":
+                local result = clone container;
+                foreach( k, v in container ) result[k] = deepClone( v );
+                return result;
+            case "array":
+                return container.map( deepClone );
+            default: return container;
+        }
     }
 } 
 
@@ -410,3 +428,5 @@ class Mock.Ignore
 {
 
 }
+
+
