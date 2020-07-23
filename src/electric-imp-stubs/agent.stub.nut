@@ -379,7 +379,18 @@ class regexp2 {
             if(endIndex == null) { break; }
 
             local start = expression.slice( 0, startIndex );
-            local middle = @"\u" + expression.slice( startIndex+3, endIndex );
+            local middle = expression.slice( startIndex+3, endIndex );
+
+            switch( middle )
+            {
+                case "0009": middle = @"\t"; break;
+                case "00A0": middle = @"\n"; break;
+                case "00C0": middle = @"\f"; break;
+                case "00D0": middle = @"\r"; break;
+                case "0020": middle = @"\s"; break;
+                default: break;
+            }
+            
             local end = expression.slice( endIndex+1, expression.len() );
 
             expression = start + middle + end;
