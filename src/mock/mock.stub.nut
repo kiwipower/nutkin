@@ -31,20 +31,12 @@ class MockFunction {
     _callArgs = null;
     _callMock = null;
 
-
     constructor(parentMock = null, name = null)
     {
         _parentMock = parentMock;
         _name = name;
-        _callCount = 0;
 
-        _attributes = {};
-        _callArgs = [];
-
-        // We don't always return a mock (if the user sets a return_value, we return something else)
-        // But we pre-emptively create it anyway
-        _callMock = Mock();
-
+        _resetMockFunction();
     }
 
     // _set and _newslot are just used to record values in this class
@@ -94,6 +86,17 @@ class MockFunction {
         } else {
             return a == b
         }
+    } 
+
+    function _resetMockFunction()
+    {
+        _callCount = 0;
+        _attributes = {};
+        _callArgs = [];
+
+        // We don't always return a mock (if the user sets a return_value, we return something else)
+        // But we pre-emptively create it anyway
+        _callMock = Mock();
     }
 
     // Check for a call with the defined count
@@ -158,8 +161,6 @@ class MockFunction {
 
     } 
 
-
-
     function _anyCallWith(...)
     {
         local callFound = false;
@@ -183,7 +184,6 @@ class MockFunction {
         } else {
             return "Call not found";
         }
-
     }
 
     // Check to see if this function was last called with the provided arguments
@@ -197,12 +197,13 @@ class MockFunction {
         }
     }
 
-
     function _get(key)
     {
         // Special cases to access details of the mock calls
         switch (key)
         {
+            case "resetMockFunction":
+                return _resetMockFunction;
             case "called":
                 return (_callCount > 0);
             case "callCount":
@@ -240,7 +241,6 @@ class MockFunction {
         } else {
             throw null;
         }
-
     }
 
     function acall( arguments )
@@ -382,7 +382,6 @@ class Mock {
             throw null;
         }
 
-
         if (key in _calls)
         {
             return _calls[key];
@@ -391,10 +390,7 @@ class Mock {
         local newReturn = MockFunction(this, key);
         _calls[key] <- newReturn;
         return newReturn;
-
     }
-
-
 }
 
 class Mock.Type
