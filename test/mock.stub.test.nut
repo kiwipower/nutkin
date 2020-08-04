@@ -10,6 +10,9 @@ class MockStubTestClass
 
 }
 
+// Test class used to test Mock.Instance
+class MockInstanceType1 { }
+
 
 // Test our mock class
 describe( "TestMock", function()
@@ -179,6 +182,16 @@ describe( "TestMock", function()
         expect(m.callInstance.wasCalledWithAtIndex(0, [Mock.Type("instance")]));
         
     });
+
+    it("wasCalledWithAtIndex recognise class instances", function()
+    {
+        local m = Mock();
+
+        m.callMyType1(MockInstanceType1());
+
+        expect(m.callMyType1.wasCalledWithAtIndex(0, [Mock.Instance(MockInstanceType1)])).toBe(null);
+
+    })
 
 
 

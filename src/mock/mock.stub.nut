@@ -142,6 +142,14 @@ class MockFunction {
                 // an arg of Mock.Ignore should be ignored - continue to next argument
                 continue;
             } 
+            else if (arg instanceof Mock.Instance)
+            {
+                local comparison = arg.compare(actual);
+                if (comparison != null)
+                {
+                    return comparison;
+                }
+            }
             else
             {
                 if (!equal(actual, arg))
@@ -313,10 +321,10 @@ class MockFunction {
         {
             case "table":
                 local result = clone container;
-                foreach( k, v in container ) result[k] = deepClone( v );
+                foreach( k, v in container ) result[k] = _deepClone( v );
                 return result;
             case "array":
-                return container.map( deepClone );
+                return container.map( _deepClone.bindenv(this) );
             default: return container;
         }
     }
@@ -417,6 +425,26 @@ class Mock.Type
         }
 
         return null;
+    }
+}
+
+class Mock.Instance
+{
+    _classType = null;
+
+    constructor(classType)
+    {
+        _classType = classType;
+    }
+
+    function compare(var)
+    {
+        if (var instanceof _classType)
+        {
+            return null;
+        } else {
+            return "Var " + var + " is not an instance of " + _classType;
+        }
     }
 }
 
