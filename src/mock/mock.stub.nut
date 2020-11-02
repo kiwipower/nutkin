@@ -370,7 +370,7 @@ class Mock {
        _attributes[key] <- value;
     }   
 
-    function _set(key, val)
+    function _set(key, value)
     {
         _attributes[key] = value;
     }
