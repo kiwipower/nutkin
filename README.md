@@ -1,6 +1,6 @@
 # Nutkin
 
-Nutkin is a testing framework for the Squirrel programming language.
+Nutkin is a testing framework, with mocking capabilties, for the Squirrel programming language.
 It is very similar to the Mocha and Chai JavaScript frameworks.
 
 It is currently being developed for use with the [Electric Imp](https://electricimp.com) flavour of Squirrel but should be (mostly) applicable to any use case.
