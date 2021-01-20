@@ -384,20 +384,20 @@ describe("Nutkin", function() {
             })
         })
 
-        describe("Unsorted object", function() {
+        describe("Unordered object", function() {
             it("Works with array of ints", function() {
-                // 2 arrays, unsorted but otherwise the same
+                // 2 arrays, unordered but otherwise the same
                 local item1 = [1, 2, 3, 4];
                 local item2 = [3, 2, 4, 1];
 
-                expect(item1).toBeEqualUnsorted(item2);
+                expect(item1).toBeEqualUnordered(item2);
             })
 
             it("Works with table of arrays", function() {
                 local item1 = {"First": [5, 6, 7, 8, 9, 10], "Second": ["hi", "ho", "its", "off", "to", "work", "we", "go"]};
                 local item2 = {"Second": ["work", "ho", "hi", "its", "go", "we", "to", "off"], "First": [8, 7, 10, 6, 5, 9]};
 
-                expect(item1).toBeEqualUnsorted(item2);
+                expect(item1).toBeEqualUnordered(item2);
             })
 
             it("Works with a table of array of table of array", function() {
@@ -416,21 +416,21 @@ describe("Nutkin", function() {
                         ]
                     };
 
-                expect(item1).toBeEqualUnsorted(item2);
+                expect(item1).toBeEqualUnordered(item2);
             })
 
             it("Fails with a simple array not matching (expected failure)", function() {
                 local item1 = [1, 2, 3, 4];
                 local item2 = [1, 2, 3];
 
-                expect(item1).toBeEqualUnsorted(item2);
+                expect(item1).toBeEqualUnordered(item2);
             })
 
             it("Fails when a nested table and array doesn't match (expected failure)", function() {
                 local item1 = {"example": [{"hi": 2}, {"ho": 3}]};
                 local item2 = {"example": [{"ho": 3}, {"hi": 4}]};
 
-                expect(item1).toBeEqualUnsorted(item2);
+                expect(item1).toBeEqualUnordered(item2);
             })
 
         })

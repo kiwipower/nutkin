@@ -257,7 +257,7 @@ class ThrowsMatcher extends Matcher {
 /// This class implements a Matcher which compares the contents of two tables or arrays
 /// It considers them to match if the contents are the same, regardless of ordering of the arrays
 /// This is useful if you're generating arrays but don't care about the order (eg if they're generated from a foreach over a table)
-class UnsortedObjectMatcher extends Matcher {
+class UnorderedObjectMatcher extends Matcher {
 
     _sortedExpected = null;
     _sortedActual = null;

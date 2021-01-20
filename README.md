@@ -381,7 +381,7 @@ expectException("A crab apple", squirrelNutkinPlayingNinepins)
 ```
 expect(squirrel.length).to.be.closeTo(0.4, 0.1)
 ```
-* **equalUnsorted** - expects a table or array, and recursively compares every array without regard for the order of array members. Particularly useful to validate the contents of arrays which were generated from tables (which are unordered).
+* **equalUnordered** - expects a table or array, and recursively compares every array without regard for the order of array members. Particularly useful to validate the contents of arrays which were generated from tables (which are unordered).
 
 ```
 // For example, the following arrays have the same contents, but not in the same order
@@ -392,9 +392,9 @@ array2 <- [[3, 5, 4], 3, 1, 2];
 table1 <- { "item": ["a", "b", "c"] };
 table2 <- { "item": ["c", "a", "b"] };
 
-expect(array1).to.be.equalUnsorted(array2);
+expect(array1).to.be.equalUnordered(array2);
 // or
-expect(table1).toBeEqualUnsorted(table2);
+expect(table1).toBeEqualUnordered(table2);
 ```
 * **Mock Matchers** - If you use the Mock class, additional matchers are implemented to check for mock interactions. See [Integrating with Nutkin](#integrating-with-nutkin).
 
@@ -565,10 +565,6 @@ describe( "SI7020", function()
 });
 
 ```
-
-#### Code Under Test Creates Class
-
-If the code being tested creates a class, we can't inject a Mock object. This requires a different approach.
 
 ### Usage
 
