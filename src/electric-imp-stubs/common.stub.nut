@@ -262,12 +262,6 @@ function blob::tostring() {
     return s;
 }
 
-function blob::writestring( string ) {
-    foreach( character in string ) {
-        this.writen( character, 'c' );
-    }
-}
-
 class math {
     function abs(x) {
         return ::abs(x);
