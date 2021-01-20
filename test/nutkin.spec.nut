@@ -384,6 +384,57 @@ describe("Nutkin", function() {
             })
         })
 
+        describe("Unsorted object", function() {
+            it("Works with array of ints", function() {
+                // 2 arrays, unsorted but otherwise the same
+                local item1 = [1, 2, 3, 4];
+                local item2 = [3, 2, 4, 1];
+
+                expect(item1).toBeEqualUnsorted(item2);
+            })
+
+            it("Works with table of arrays", function() {
+                local item1 = {"First": [5, 6, 7, 8, 9, 10], "Second": ["hi", "ho", "its", "off", "to", "work", "we", "go"]};
+                local item2 = {"Second": ["work", "ho", "hi", "its", "go", "we", "to", "off"], "First": [8, 7, 10, 6, 5, 9]};
+
+                expect(item1).toBeEqualUnsorted(item2);
+            })
+
+            it("Works with a table of array of table of array", function() {
+                local item1 = {
+                    "this": [
+                        {"item": 1, "data": ["something", "somethingelse", {"nested": [1, 2, 3]}]},
+                        {"item": 2, "data": ["whatever", {"plz": "sayhi"}, {"nested": [2.0, 3.0, 4.0, 5.0, 6.0]}]},
+                        {"item": 3, "data": [ [5.0, 4.0, 3.0], [9.0, 8.0, 3.0], ["woah", "inception"]]}
+                        ]
+                    };
+               local item2 = {
+                    "this": [
+                        {"item": 2, "data": [{"plz": "sayhi"}, "whatever", {"nested": [4.0, 2.0, 5.0, 6.0, 3.0]}]},
+                        {"item": 1, "data": ["somethingelse", {"nested": [1, 2, 3]}, "something" ]},
+                        {"item": 3, "data": [ [ 8.0, 9.0, 3.0], [3.0, 5.0, 4.0 ], ["woah", "inception"]]}
+                        ]
+                    };
+
+                expect(item1).toBeEqualUnsorted(item2);
+            })
+
+            it("Fails with a simple array not matching (expected failure)", function() {
+                local item1 = [1, 2, 3, 4];
+                local item2 = [1, 2, 3];
+
+                expect(item1).toBeEqualUnsorted(item2);
+            })
+
+            it("Fails when a nested table and array doesn't match (expected failure)", function() {
+                local item1 = {"example": [{"hi": 2}, {"ho": 3}]};
+                local item2 = {"example": [{"ho": 3}, {"hi": 4}]};
+
+                expect(item1).toBeEqualUnsorted(item2);
+            })
+
+        })
+
         describe("Chainables", function() {
 
             it("Provides some chaining words to improve test readability that ironically make this test less readable", function() {

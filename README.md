@@ -376,6 +376,21 @@ expectException("A crab apple", squirrelNutkinPlayingNinepins)
 ```
 expect(squirrel.length).to.be.closeTo(0.4, 0.1)
 ```
+* **equalUnsorted** - expects a table or array, and recursively compares every array without regard for the order of array members. Particularly useful to validate the contents of arrays which were generated from tables (which are unordered).
+
+```
+// For example, the following arrays have the same contents, but not in the same order
+array1 <- [1, 2, 3, [5, 4, 3]];
+array2 <- [[3, 5, 4], 3, 1, 2];
+
+// Also works for nested arrays within tables
+table1 <- { "item": ["a", "b", "c"] };
+table2 <- { "item": ["c", "a", "b"] };
+
+expect(array1).to.be.equalUnsorted(array2);
+// or
+expect(table1).toBeEqualUnsorted(table2);
+```
 
 Plus the meta-expectation **not**, which can prefix any of the above to give you the inverse, e.g.:
 

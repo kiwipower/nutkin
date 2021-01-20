@@ -21,23 +21,8 @@ class Matcher {
     }
 
     function prettify(x) {
-        if (isArray(x)) {
-            local array = "["
-            local separator = ""
-            foreach (e in x) {
-                array += separator + prettify(e)
-                separator = ", "
-            }
-            return array + "]"
-        }
-        if (isTable(x)) {
-            local table = "{"
-            local separator = ""
-            foreach (k, v in x) {
-                table += separator + k + ": " + prettify(v)
-                separator = ", "
-            }
-            return table + "}"
+        if (isArray(x) || isTable(x)) {
+           return PrettyPrinter().format(x);
         } else if (x == null) {
             return "(null)"
         } else if (isString(x)) {
@@ -265,6 +250,83 @@ class ThrowsMatcher extends Matcher {
             return "Expected no exception but caught " + error
         }
         return "Expected " + expected + " but caught " + error
+    }
+}
+
+
+/// This class implements a Matcher which compares the contents of two tables or arrays
+/// It considers them to match if the contents are the same, regardless of ordering of the arrays
+/// This is useful if you're generating arrays but don't care about the order (eg if they're generated from a foreach over a table)
+class UnsortedObjectMatcher extends Matcher {
+
+    _sortedExpected = null;
+    _sortedActual = null;
+
+    /// Sorts an object (array or table) recursively depth first based on the JSON representation of the members of the array
+    /// \param obj The object (array or table) to be sorted. Any other type is ignored.
+    function _sortObject(obj) {
+        if (typeof(obj) == "table")
+        {
+            foreach (key, value in obj) {
+                _sortObject(value);
+            }
+        } else if (typeof(obj) == "array") {
+            foreach (entry in obj) {
+                _sortObject(entry);
+            }
+            obj.sort( function( first, second ) {
+                // We need to sort potentially any kind of data
+                // So we convert it to JSON and then sort
+                local jsonFirst = PrettyPrinter().format(first);
+                local jsonSecond = PrettyPrinter().format(second);
+
+                // Very crude - loop through the first JSON looking for differences with the second JSON
+                // This algorithm just needs to be consistent, not sorted by any particular criteria
+                foreach (index, ch in jsonFirst) {
+                    if ((jsonSecond.len() > index) && (ch != jsonSecond[index])) {
+                        return (ch <=> jsonSecond[index]);
+                    }
+                }
+
+                // Here because they're the same
+                return 0;
+
+            });
+
+        }
+    }
+
+    /// Performs a deep clone of a table or array container.
+    /// \warning Container must not have circular references.
+    /// \param  container the container/structure to deep clone.
+    /// \return the cloned container.
+    function _deepClone( container )
+    {
+        switch( typeof( container ) )
+        {
+            case "table":
+                local result = clone container;
+                foreach( k, v in container ) result[k] = _deepClone( v );
+                return result;
+            case "array":
+                return container.map( _deepClone.bindenv(this) );
+            default: return container;
+        }
+    }
+
+    function test(actual) {
+        _sortedExpected = _deepClone(expected);
+        _sortObject(_sortedExpected);
+
+        _sortedActual = _deepClone(actual);
+        _sortObject(_sortedActual);
+
+        return equal(_sortedActual, _sortedExpected);
+
+    }
+
+    function failureMessage(actual, isNegated) {
+        return "Expected " + prettify(_sortedActual) + negateIfRequired(" to equal " + prettify(_sortedExpected), isNegated);
     }
 }
 

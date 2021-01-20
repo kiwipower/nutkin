@@ -100,9 +100,15 @@ class Expectation {
         return execMatcher(CloseToMatcher(value, precision, description))
     }
 
+    function equalUnsorted(value, description = "") {
+        return execMatcher(UnsortedObjectMatcher(value, description));
+    }
+
     function beCloseTo(value, precision = 1, description = "") {
         return closeTo(value, precision, description)
     }
+
+
 
     function toBe(expectedOrMatcher, description = "") {
         if (typeof expectedOrMatcher == "instance") {
@@ -168,6 +174,10 @@ class Expectation {
 
     function toBeCloseTo(value, precision = 1) {
         return closeTo(value, precision)
+    }
+
+    function toBeEqualUnsorted(value, description = "") {
+        return equalUnsorted(value, description);
     }
 
     function toHaveCallCount(value, description = "")
