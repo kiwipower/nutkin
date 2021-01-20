@@ -35,12 +35,14 @@ If you're new to Squirrel, it's probably best to start with the Electric Imp [Sq
 ## Prerequisites
 * [node/npm](https://nodejs.org/en/)
 * [brew](https://brew.sh) (OSX)
-* [Squirrel](http://www.squirrel-lang.org) compiler
-  * `brew install squirrel`
-  * See [KiWi Squirrel](https://github.com/kiwipower/squirrel) for a fork that supports Electric   Imp features such as:
+* [KiWi Squirrel](https://github.com/kiwipower/squirrel) fork of the [Squirrel](http://www.squirrel-lang.org) compiler
+  * The fork changes squirrel to more closely match Electric Imp behaviour, including features such as:
     * unsigned chars
     * bind() strongrefs
     * Length-based string functions (as opposed to NULL termination)
+    * int32 on all platforms
+    * regexp2 library
+  * Nutkin probably can be used with the mainline squirrel release, but it is untested.
 * [Builder](https://github.com/electricimp/Builder)
   * `npm i -g Builder`
 
