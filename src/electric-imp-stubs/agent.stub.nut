@@ -124,7 +124,7 @@ class server {
     function restart() {
         server.capture.restarted = true;
     }
-    function save(dataToSave) {
+    function save(dataToSave, formatType = 1) {
         if( typeof dataToSave == "table" ) {
             server.capture.data = dataToSave;
         } else {
