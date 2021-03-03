@@ -277,8 +277,8 @@ class UnorderedObjectMatcher extends Matcher {
             obj.sort( function( first, second ) {
                 // We need to sort potentially any kind of data
                 // So we convert it to JSON and then sort
-                local jsonFirst = PrettyPrinter().format(first);
-                local jsonSecond = PrettyPrinter().format(second);
+                local jsonFirst = prettify(first);
+                local jsonSecond = prettify(second);
 
                 // Very crude - loop through the first JSON looking for differences with the second JSON
                 // This algorithm just needs to be consistent, not sorted by any particular criteria
