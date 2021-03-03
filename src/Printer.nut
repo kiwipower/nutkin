@@ -1,8 +1,8 @@
-@include once "src/PrettyPrinter.class.nut";
+@include once "src/NutkinPrettyPrinter.class.nut";
 
 class Printer {
 
-    prettyPrinter = PrettyPrinter();
+    prettyPrinter = NutkinPrettyPrinter();
 
     function prettyPrint(object) {
         prettyPrinter.print(object);

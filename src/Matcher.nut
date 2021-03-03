@@ -1,3 +1,5 @@
+@include once "src/NutkinPrettyPrinter.class.nut";
+
 class Matcher {
 
     expected = null
@@ -22,7 +24,7 @@ class Matcher {
 
     function prettify(x) {
         if (isArray(x) || isTable(x)) {
-           return PrettyPrinter().format(x);
+           return NutkinPrettyPrinter().format(x);
         } else if (x == null) {
             return "(null)"
         } else if (isString(x)) {
@@ -277,8 +279,8 @@ class UnorderedObjectMatcher extends Matcher {
             obj.sort( function( first, second ) {
                 // We need to sort potentially any kind of data
                 // So we convert it to JSON and then sort
-                local jsonFirst = prettify(first);
-                local jsonSecond = prettify(second);
+                local jsonFirst = NutkinPrettyPrinter().format(first);
+                local jsonSecond = NutkinPrettyPrinter().format(second);
 
                 // Very crude - loop through the first JSON looking for differences with the second JSON
                 // This algorithm just needs to be consistent, not sorted by any particular criteria
@@ -291,7 +293,7 @@ class UnorderedObjectMatcher extends Matcher {
                 // Here because they're the same
                 return 0;
 
-            });
+            }.bindenv(this));
 
         }
     }

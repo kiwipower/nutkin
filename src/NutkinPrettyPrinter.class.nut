@@ -1,7 +1,7 @@
 @include once "src/libraries/JSONEncoder.class.nut";
 
 /** Class for pretty-printing squirrel objects */
-class PrettyPrinter {
+class NutkinPrettyPrinter {
 
     static version = [1, 0, 1];
 
