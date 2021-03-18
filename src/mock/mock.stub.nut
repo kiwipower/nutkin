@@ -86,7 +86,12 @@ class MockFunction {
         } else {
             return a == b
         }
-    } 
+    }
+
+    function bindenv( unused )
+    {
+        return this;
+    }
 
     function _resetMockFunction()
     {
@@ -351,6 +356,11 @@ class Mock {
 
     function _call(...)
     {
+    }
+
+    function bindenv( unused )
+    {
+        return this;
     }
 
     function resetMock()
