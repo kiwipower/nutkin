@@ -320,6 +320,17 @@ describe( "TestMock", function()
         expect(calledArg2).toBe("hello");
     });
 
+    it("sideEffect function can have no arguments", function()
+    {
+        local m = Mock();
+
+        m.boo.sideEffect <- function() {
+            return "hello you";
+        };
+
+        expect(m.boo()).toBe("hello you");
+    })
+
     it("sideEffect function return ignored when MockDefault", function()
     {
         local m = Mock();

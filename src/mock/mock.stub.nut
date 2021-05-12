@@ -270,12 +270,8 @@ class MockFunction {
         {
             if (typeof(_attributes.sideEffect) == "function")
             {
-                // Create a new vargv array with the context from the original call
-                local allArgs = [newCallArgs[0]];
-                allArgs.extend(newCallArgs);
-
-                // Call the function using acall to pass the array as its arguments
-                local result = _attributes.sideEffect.acall(allArgs);
+                // Call the function using acall to pass the original argument array as its arguments
+                local result = _attributes.sideEffect.acall(arguments);
 
                 // The tester can return DefaultReturn to ignore this sideEffect function
                 if (!(result instanceof MockFunction.DefaultReturn))
