@@ -8,6 +8,7 @@
 @include once "src/Printer.nut"
 @include once "src/Failure.nut"
 @include once "src/Reporter.nut"
+@include once "src/TeamCityReporter.nut"
 @include once "src/ConsoleReporter.nut"
 @include once "src/Matcher.nut"
 @include once "src/Expectation.nut"

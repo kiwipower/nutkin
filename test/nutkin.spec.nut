@@ -6,7 +6,6 @@
 @include once "src/Expectation.nut"
 @include once "test/TestPrinter.nut"
 @include once "test/TestReporter.nut"
-@include once "test/TeamCityReporter.nut"
 @include once "src/mock/mock.stub.nut"
 
 env = (!env ? "NUTKIN_TEST" : env)
