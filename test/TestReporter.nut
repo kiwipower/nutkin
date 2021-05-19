@@ -1,6 +1,30 @@
 class TestReporter extends ConsoleReporter {
     expectedFailure = null
 
+
+    function compareMessages(expected, actual) {
+        
+        local unformat = function(str) {
+            // Removing all the return/etc characters
+            local noSpecials = split(str, "\n\t\r");
+            // Reduce back to a string
+            noSpecials = noSpecials.reduce(@(p, c) p + c);
+
+            // Remove all the whitespace characters
+            local noWhitespace = split(noSpecials, " ");
+
+            // Reduce back to a string with a single space
+            local singleSpace = noWhitespace.reduce(@(p, c) p + " " + c);
+
+            // Strip whitespace from start and end
+            singleSpace = strip(singleSpace);
+
+            return singleSpace;
+        }
+
+        return (unformat(expected) == unformat(actual));
+    }
+
     function expectFailure(expected) {
         expectedFailure = expected
     }
@@ -19,7 +43,7 @@ class TestReporter extends ConsoleReporter {
     }
 
     function testFailed(name, failure, stack = "") {
-        if (expectedFailure && failure.tostring() == expectedFailure) {
+        if (expectedFailure && compareMessages(failure.tostring(), expectedFailure)) {
             base.testFinished(name)
             return false
         }
