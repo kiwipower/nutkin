@@ -1,28 +1,53 @@
 class TeamCityReporter extends Reporter {
 
+    function escapeText(text) {
+        // Team city needs messages to be escaped
+        // escaped_value uses substitutions: '->|', [->|[, ]->|], |->||, newline->|n
+
+        local subs = {
+            "'": "|'",
+            "[": "|[",
+            "]": "|[",
+            "|": "||",
+            "\n": "|n"
+        }
+
+        local escaped = "";
+        for (local index = 0; index < text.len(); index++) {
+            // Can't use the char value as its literally a uint8 - not so good as a string
+            local substr = text.slice(index, index + 1);
+            if (substr in subs) {
+                escaped += subs[substr];
+            } else {
+                escaped += substr;
+            }
+        }
+        return escaped;
+    }
+
     function suiteStarted(name) {
-        print("##teamcity[testSuiteStarted name='" + name + "']")
+        print("##teamcity[testSuiteStarted name='" + escapeText(name) + "']")
     }
 
     function suiteFinished(name) {
-        print("##teamcity[testSuiteFinished name='" + name + "']")
+        print("##teamcity[testSuiteFinished name='" + escapeText(name) + "']")
     }
 
     function suiteError(name, error, stack = "") {
-        print("##teamcity[message text='suiteError: " + error + "' status='ERROR' errorDetails='" + stack + "']")
+        print("##teamcity[message text='suiteError: " + escapeText(name) + "' status='ERROR' errorDetails='" + escapeText(name) + "']")
         suiteFinished(name)
     }
 
     function testStarted(name) {
-        print("##teamcity[testStarted name='" + name + "'] captureStandardOutput='true'")
+        print("##teamcity[testStarted name='" + escapeText(name) + "'] captureStandardOutput='true'")
     }
 
     function testFinished(name) {
-        print("##teamcity[testFinished name='" + name + "']")
+        print("##teamcity[testFinished name='" + escapeText(name) + "']")
     }
 
     function testFailed(name, failure, stack = "") {
-        print("##teamcity[testFailed name='" + name + "' message='" + safeGetErrorMessage(failure) + "' details='" + safeGetErrorDescription(failure) + "']")
+        print("##teamcity[testFailed name='" + escapeText(name) + "' message='" + escapeText(safeGetErrorMessage(failure)) + "' details='" + escapeText(safeGetErrorDescription(failure)) + "']")
         testFinished(name)
     }
 
@@ -31,7 +56,7 @@ class TeamCityReporter extends Reporter {
     }
 
     function testSkipped(name) {
-        print("##teamcity[testIgnored name='" + name + "']")
+        print("##teamcity[testIgnored name='" + escapeText(name) + "']")
     }
 }
 
