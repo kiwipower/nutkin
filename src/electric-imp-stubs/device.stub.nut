@@ -488,6 +488,7 @@ const FRAME_ERROR = 8;
 const PARITY_ERROR = 16;
 const OVERRUN_ERROR = 32;
 const LINE_IDLE = 64;
+const WRITE_HALF_DONE = 128;
 
 class uart {
     function configure(baudRate, wordSize, parity, stopBits, flags, callback) {
