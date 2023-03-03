@@ -73,6 +73,10 @@ class Matcher {
     }
 
     function contains(things, value) {
+        if (isTable(things)) {
+            return (value in things);
+        }
+
         if (isTable(value)) {
             local matcher = function(index, item) {
                 return equal(value, item)
