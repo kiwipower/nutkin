@@ -1,4 +1,4 @@
-@include once "src/libraries/JSONEncoder.class.nut";
+@include once "src/libraries/KiwiJSONEncoder.class.nut";
 
 /** Class for pretty-printing squirrel objects */
 class NutkinPrettyPrinter {
@@ -19,16 +19,16 @@ class NutkinPrettyPrinter {
         _indentStr = (indentStr == null) ? "    " : indentStr;
         _truncate = truncate;
 
-        if ("JSONEncoder" in getroottable()) {
+        if ("KiwiJSONEncoder" in getroottable()) {
             // The JSONEncoder class is available, use it
-            _encode = JSONEncoder.encode.bindenv(JSONEncoder);
+            _encode = KiwiJSONEncoder.encode.bindenv(KiwiJSONEncoder);
 
         } else if (imp.environment() == ENVIRONMENT_AGENT) {
             // We are in the agent, fall back to built in encoder
             _encode = http.jsonencode.bindenv(http);
 
         } else  {
-            throw "Unmet dependency: PrettyPrinter requires JSONEncoder when ran in the device";
+            throw "Unmet dependency: PrettyPrinter requires KiwiJSONEncoder when ran in the device";
         }
     }
 

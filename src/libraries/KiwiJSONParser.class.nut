@@ -10,7 +10,7 @@
  * JSON Parser
  * @package JSONParser
  */
-class JSONParser {
+class KiwiJSONParser {
 
   // should be the same for all components within JSONParser package
   static version = "1.0.1";
@@ -286,6 +286,7 @@ class JSONParser {
     // check is the final state is not ok
     // or if there is somethign left in the str
     if (state != "ok" || regexp("[^\\s]").capture(str, start)) {
+        server.log(str);
       local min = @(a, b) a < b ? a : b;
       local near = str.slice(start, min(str.len(), start + 10));
       throw "JSON Syntax Error near `" + near + "`";
@@ -351,13 +352,13 @@ class _JSONTokenizer {
     this._numberRegex = regexp("^(?:\\-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?)");
 
     // strings
-    this._stringRegex = regexp("^(?:\\\"((?:[^\\r\\n\\t\\\\\\\"]|\\\\(?:[\"\\\\\\/trnfb]|u[0-9a-fA-F]{4}))*)\\\")");
+    this._stringRegex = regexp("^(?:\\\"((?:[^\\t\\\\\\\"]|\\\\(?:[\"\\\\\\/trnfb]|u[0-9a-fA-F]{4}))*)\\\")");
 
     // ltrim pattern
     this._ltrimRegex = regexp("^[\\s\\t\\n\\r]*");
 
     // string unescaper tokenizer pattern
-    this._unescapeRegex = regexp("\\\\(?:(?:u\\d{4})|[\\\"\\\\/bfnrt])");
+    this._unescapeRegex = regexp("\\\\(?:(?:u[0-9a-fA-F]{4})|[\\\"\\\\/bfnrt])");
   }
 
   /**
@@ -430,6 +431,55 @@ class _JSONTokenizer {
     "t": "\t"
   };
 
+  // Encodes an integer unicode code point to UTF-8 raw byte string
+  // Returns a string between 1 and 4 bytes
+  // Note string can include 0x00 - don't assume its a C string
+  function encodeUTF8(c) {
+    local encoding = blob();
+    // Convert a unicode code point to UTF8
+    // https://www.herongyang.com/Unicode/UTF-8-UTF-8-Encoding-Algorithm.html
+    if (c < 0x80) {
+      encoding.writen( c>>0  & 0x7F | 0x00, 'b');
+    } else if (c < 0x0800 ) {
+      encoding.writen(c>>6  & 0x1F | 0xC0, 'b');
+      encoding.writen(c>>0  & 0x3F | 0x80, 'b');
+    } else if (c < 0x010000) {
+      encoding.writen(c>>12 & 0x0F | 0xE0, 'b');
+      encoding.writen(c>>6  & 0x3F | 0x80, 'b');
+      encoding.writen(c>>0  & 0x3F | 0x80, 'b');
+    } else if (c < 0x110000) {
+      encoding.writen(c>>18 & 0x07 | 0xF0, 'b');
+      encoding.writen(c>>12 & 0x3F | 0x80, 'b');
+      encoding.writen(c>>6  & 0x3F | 0x80, 'b');
+      encoding.writen(c>>0  & 0x3F | 0x80, 'b');
+    }
+    return encoding.tostring();
+  }
+  
+    // ********** Conversion Functions **********
+  // Taken from EI utilities library - https://github.com/electricimp/Utilities/blob/master/utilities.lib.nut
+  /**
+    * Convert a hex string (with or without '0x' prefix) to an integer.
+    *
+    * @param {string} hs - The hex string
+    *
+    * @returns {integer} The value of the hex string
+    *
+    */
+  function hexStringToInteger(hs) {
+        // Check input string type
+        if (typeof hs != "string") throw "utilities.hexStringToInteger() requires a string";
+        hs = hs.tolower();
+        if (hs.slice(0, 2) == "0x") hs = hs.slice(2);
+        local i = 0;
+        foreach (c in hs) {
+            local n = c - '0';
+            if (n > 9) n = ((n & 0x1F) - 7);
+            i = (i << 4) + n;
+        }
+        return i;
+    }
+
   /**
    * Unesacape string escaped per JSON standard
    * @param {string} str
@@ -442,7 +492,8 @@ class _JSONTokenizer {
 
     while (start < str.len()) {
       local m = this._unescapeRegex.capture(str, start);
-
+        
+        
       if (m) {
         local token = str.slice(m[0].begin, m[0].end);
 
@@ -452,8 +503,12 @@ class _JSONTokenizer {
 
         if (token.len() == 6) {
           // unicode char in format \uhhhh, where hhhh is hex char code
-          // todo: convert \uhhhh chars
-          res += token;
+          //res += token;
+          // https://developpaper.com/escape-and-unicode-encoding-in-json-serialization/
+          // First convert unicode code point to integer
+          local hex = token.slice(2, 6);
+          local uni = hexStringToInteger(hex);
+          res += encodeUTF8(uni);
         } else {
           // escaped char
           // @see http://www.json.org/
@@ -478,3 +533,4 @@ class _JSONTokenizer {
     return res;
   }
 }
+
