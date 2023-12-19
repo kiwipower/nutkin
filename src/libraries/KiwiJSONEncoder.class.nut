@@ -154,7 +154,7 @@ class KiwiJSONEncoder {
     local hexStr = "";
     for (local i = 0; i < blb.len(); i++)
     {
-      hexStr += stringFormat("%x", blb[i]);
+      hexStr += format("%x", blb[i]);
     }
     return hexStr;
   }
@@ -173,7 +173,7 @@ class KiwiJSONEncoder {
       if ((ch1 & 0x80) == 0x00) {
         // 7-bit Ascii
 
-        ch1 = stringFormat("%c", ch1);
+        ch1 = format("%c", ch1);
 
         if (ch1 == "\"") {
           res += "\\\"";
@@ -202,18 +202,18 @@ class KiwiJSONEncoder {
         if ((ch1 & 0xE0) == 0xC0) {
           // 110xxxxx = 2-byte unicode
           local ch2 = (str[++i] & 0xFF);
-          res += stringFormat("%c%c", ch1, ch2);
+          res += format("%c%c", ch1, ch2);
         } else if ((ch1 & 0xF0) == 0xE0) {
           // 1110xxxx = 3-byte unicode
           local ch2 = (str[++i] & 0xFF);
           local ch3 = (str[++i] & 0xFF);
-          res += stringFormat("%c%c%c", ch1, ch2, ch3);
+          res += format("%c%c%c", ch1, ch2, ch3);
         } else if ((ch1 & 0xF8) == 0xF0) {
           // 11110xxx = 4 byte unicode
           local ch2 = (str[++i] & 0xFF);
           local ch3 = (str[++i] & 0xFF);
           local ch4 = (str[++i] & 0xFF);
-          res += stringFormat("%c%c%c%c", ch1, ch2, ch3, ch4);
+          res += format("%c%c%c%c", ch1, ch2, ch3, ch4);
         }
 
       }
