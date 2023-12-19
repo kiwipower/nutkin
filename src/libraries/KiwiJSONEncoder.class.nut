@@ -2,7 +2,7 @@
 // This file is licensed under the MIT License
 // http://opensource.org/licenses/MIT
 
-class JSONEncoder {
+class KiwiJSONEncoder {
 
   static VERSION = "2.0.0";
 
@@ -91,21 +91,26 @@ class JSONEncoder {
           s = "";
 
           try {
-
             // iterate through instances which implement _nexti meta-method
             foreach (k, v in val) {
               s += ",\"" + k + "\":" + this._encode(v, depth + 1);
             }
 
           } catch (e) {
-
-            // iterate through instances w/o _nexti
-            // serialize properties, but not functions
-            foreach (k, v in val.getclass()) {
-              if (typeof v != "function") {
-                s += ",\"" + k + "\":" + this._encode(val[k], depth + 1);
+            try {
+              // iterate through instances w/o _nexti
+              // serialize properties, but not functions
+              foreach (k, v in val.getclass()) {
+                if (typeof v != "function") {
+                  s += ",\"" + k + "\":" + this._encode(val[k], depth + 1);
+                }
               }
+            } catch (e) {
+              // We're here because we STILL couldn't iterate (normally a _nexti error)
+              // It seems that if we just silently fail we end up with usable JSON most of the time
+              // So let's do that
             }
+
 
           }
 
@@ -119,16 +124,39 @@ class JSONEncoder {
         // This is a workaround for a known bug:
         // on device side Blob.tostring() returns null
         // (instaead of an empty string)
-        r += "\"" + (val.len() ? this._escape(val.tostring()) : "") + "\"";
+        //r += "\"" + (val.len() ? this._escape(val.tostring()) : "") + "\"";
+        r += "\"" + _blobToHexString(val) + "\"";
+        break;
+
+      case "function":
+        // Functions break things
+        // So insert just the name
+        r += "\"function()\""
         break;
 
       // strings and all other
       default:
-        r += "\"" + this._escape(val.tostring()) + "\"";
+        if ("tostring" in val)
+        {
+          r += "\"" + this._escape(val.tostring()) + "\"";
+        } else {
+          r += "\"\"";
+        }
         break;
     }
 
     return r;
+  }
+
+
+  function _blobToHexString(blb)
+  {
+    local hexStr = "";
+    for (local i = 0; i < blb.len(); i++)
+    {
+      hexStr += stringFormat("%x", blb[i]);
+    }
+    return hexStr;
   }
 
   /**
@@ -145,7 +173,7 @@ class JSONEncoder {
       if ((ch1 & 0x80) == 0x00) {
         // 7-bit Ascii
 
-        ch1 = format("%c", ch1);
+        ch1 = stringFormat("%c", ch1);
 
         if (ch1 == "\"") {
           res += "\\\"";
@@ -174,18 +202,18 @@ class JSONEncoder {
         if ((ch1 & 0xE0) == 0xC0) {
           // 110xxxxx = 2-byte unicode
           local ch2 = (str[++i] & 0xFF);
-          res += format("%c%c", ch1, ch2);
+          res += stringFormat("%c%c", ch1, ch2);
         } else if ((ch1 & 0xF0) == 0xE0) {
           // 1110xxxx = 3-byte unicode
           local ch2 = (str[++i] & 0xFF);
           local ch3 = (str[++i] & 0xFF);
-          res += format("%c%c%c", ch1, ch2, ch3);
+          res += stringFormat("%c%c%c", ch1, ch2, ch3);
         } else if ((ch1 & 0xF8) == 0xF0) {
           // 11110xxx = 4 byte unicode
           local ch2 = (str[++i] & 0xFF);
           local ch3 = (str[++i] & 0xFF);
           local ch4 = (str[++i] & 0xFF);
-          res += format("%c%c%c%c", ch1, ch2, ch3, ch4);
+          res += stringFormat("%c%c%c%c", ch1, ch2, ch3, ch4);
         }
 
       }

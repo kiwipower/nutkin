@@ -1,4 +1,4 @@
-@include once "src/libraries/JSONEncoder.class.nut";
+@include once "src/libraries/KiwiJSONEncoder.class.nut";
 
 /** Class for pretty-printing squirrel objects */
 class NutkinPrettyPrinter {
