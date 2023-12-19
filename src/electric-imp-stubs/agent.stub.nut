@@ -238,7 +238,7 @@ class http {
 
     function jsonencode(value) {
         local en = KiwiJSONEncoder();
-        return en.encode(table);
+        return en.encode(value);
     }
 
     function onrequest(cb) {
